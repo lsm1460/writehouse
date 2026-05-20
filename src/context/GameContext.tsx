@@ -1,0 +1,37 @@
+import { createContext, useContext, useMemo, useSyncExternalStore, type ReactNode } from 'react'
+import { GameEngine } from '~/core/gameEngine'
+import { assets } from '~/assets'
+
+interface GameContextType {
+  engine: GameEngine
+}
+
+const GameContext = createContext<GameContextType | null>(null)
+
+export function GameProvider({ children }: { children: ReactNode }) {
+  const engine = useMemo(() => new GameEngine(assets.map, '1-1'), [])
+
+  useSyncExternalStore(
+    (callback) => {
+      engine.subscribe(callback)
+      return () => {}
+    },
+    () => engine.getSnapshot()
+  )
+
+  return <GameContext.Provider value={{ engine }}>{children}</GameContext.Provider>
+}
+
+export function useGame() {
+  const context = useContext(GameContext)
+  if (!context) {
+    throw new Error('useGame은 반드시 GameProvider 안에서 사용되어야 합니다.')
+  }
+  return {
+    engine: context.engine,
+    ctx: context.engine.ctx,
+    player: context.engine.ctx.player,
+    map: context.engine.ctx.map,
+    inventory: context.engine.ctx.inventory,
+  }
+}
