@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo, useSyncExternalStore, type ReactNode } from 'react'
-import { GameEngine } from '~/core/gameEngine'
 import { assets } from '~/assets'
+import { GameEngine } from '~/core/gameEngine'
 
 interface GameContextType {
   engine: GameEngine

@@ -1,4 +1,5 @@
 import type { MapData } from './gameEngine'
+import { EnvironmentSystem } from './systems/EnvironmentSystem'
 import { FogSystem } from './systems/fogSystem'
 import { InventorySystem } from './systems/inventorySystem'
 import { MapSystem } from './systems/mapSystem'
@@ -11,6 +12,7 @@ export class EngineContext {
   public inventory: InventorySystem
   public fog: FogSystem
   public stage: StageSystem
+  public environment: EnvironmentSystem
 
   private notifyEngine: () => void
 
@@ -22,6 +24,7 @@ export class EngineContext {
     this.inventory = new InventorySystem(this)
     this.fog = new FogSystem(this)
     this.stage = new StageSystem(this)
+    this.environment = new EnvironmentSystem(this.map.grid)
   }
 
   public get stageClear(): boolean {
@@ -39,6 +42,7 @@ export class EngineContext {
 
     if (spawn) {
       this.stage.reset()
+      this.inventory.reset()
 
       this.player.pos = { ...spawn }
       this.player.dir = 'UP'

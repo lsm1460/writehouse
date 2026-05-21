@@ -17,14 +17,26 @@ interface GridCellProps {
 
 export function GridCell({ stageClear, cell }: GridCellProps) {
   const { tile, lightLevel, lightState, isPlayer, isTarget } = cell
-
   const TargetCell = CELL_COMPONENTS[tile.char] || CellDefault
 
-  const cellContent = isPlayer ? '@' : <TargetCell char={tile.char} lightState={lightState} stageClear={stageClear} />
+  const backgroundTile = <TargetCell char={tile.char} lightState={lightState} stageClear={stageClear} />
 
   return (
     <CellFrame lightLevel={lightLevel} isPlayer={isPlayer} isTarget={isTarget}>
-      {cellContent}
+      <div className="relative inline-flex items-center justify-center w-full h-full">
+        {isPlayer && (
+          <span
+            className={`absolute inset-0 flex items-center justify-center text-white font-black z-10 transition-opacity duration-200 ${
+              tile.char === 'g' || tile.char === 'T' ? 'opacity-40 scale-90' : 'opacity-100'
+            }`}
+            style={{ userSelect: 'none' }}
+          >
+            @
+          </span>
+        )}
+
+        <div className="z-20 opacity-100">{backgroundTile}</div>
+      </div>
     </CellFrame>
   )
 }

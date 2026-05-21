@@ -1,10 +1,10 @@
 import { EngineContext } from '../engineContext'
 import type { MapData } from '../gameEngine'
-import { Tile } from '../map/Tile'
 import { createTile } from '../map/tiles'
+import type { GridType } from '../types'
 
 export class MapSystem {
-  public grid: Tile[][] = []
+  public grid: GridType = []
   public roomTitle: string
   
   private ctx: EngineContext

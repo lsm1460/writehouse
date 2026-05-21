@@ -12,8 +12,4 @@ export class TileWall extends Tile {
   override canPick(): boolean {
     return false
   }
-
-  override canMix(): boolean {
-    return false
-  }
 }

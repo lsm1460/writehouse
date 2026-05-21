@@ -37,14 +37,18 @@ export abstract class Tile {
   }
 
   public mix(char: string) {
-    // 1. 레시피 테이블에서 조합 결과가 있는지 확인
     const mixedResult = getMixedChar(this._char, char)
 
     if (mixedResult) {
       this._char = mixedResult
-      return
+      return true
     }
 
+    if (this._char.trim() !== '') {
+    return false // 조합 실패 및 설치 불가
+  }
+
     this._char = char
+    return true
   }
 }

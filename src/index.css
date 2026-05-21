@@ -1,1 +1,92 @@
 @import "tailwindcss";
+
+@keyframes custom-fire {
+  0%, 100% {
+    transform: scale(1) skewX(0deg);
+    text-shadow: 
+      0 -2px 4px #facc15, 
+      0 -4px 10px #f97316, 
+      0 -8px 20px #ef4444, 
+      0 0 4px #facc15;
+  }
+  25% {
+    transform: scale(1.03) skewX(-2deg);
+    text-shadow: 
+      0 -3px 6px #facc15, 
+      0 -6px 12px #f97316, 
+      0 -10px 24px #dc2626, 
+      0 0 5px #facc15;
+  }
+  50% {
+    transform: scale(0.98) skewX(1deg);
+    text-shadow: 
+      0 -1px 3px #facc15, 
+      0 -3px 8px #f97316, 
+      0 -6px 16px #ef4444, 
+      0 0 3px #facc15;
+  }
+  75% {
+    transform: scale(1.05) skewX(2deg);
+    text-shadow: 
+      0 -4px 7px #facc15, 
+      0 -7px 15px #ea580c, 
+      0 -12px 28px #ef4444, 
+      0 0 6px #facc15;
+  }
+}
+
+.animate-fire {
+  animation: custom-fire 0.4s infinite ease-in-out;
+  display: inline-block;
+  transform-origin: bottom center;
+}
+
+/* 나무(T): 좌우로 묵직하고 확실하게 건들거리는 움직임 (3.5초 주기) */
+@keyframes tree-sway {
+  0%, 100% {
+    transform: rotate(0deg) translateX(0);
+    color: #16a34a; /* text-green-600 */
+    filter: drop-shadow(0 0 2px rgba(22, 163, 74, 0.4));
+  }
+  25% {
+    transform: rotate(4deg) translateX(1px); /* 우측으로 치우침 */
+    color: #4ade80; /* text-green-400 (밝게 빛남) */
+    filter: drop-shadow(0 0 5px rgba(74, 222, 128, 0.7));
+  }
+  75% {
+    transform: rotate(-4deg) translateX(-1px); /* 좌측으로 치우침 */
+    color: #15803d; /* text-green-700 (어두워짐) */
+    filter: drop-shadow(0 0 1px rgba(21, 128, 61, 0.3));
+  }
+}
+
+.animate-tree-sway {
+  display: inline-block;
+  transform-origin: bottom center;
+  animation: tree-sway 3.5s infinite ease-in-out;
+}
+
+/* 잔디(g): 좌우로 부드럽고 경쾌하게 흔들림 (2.2초 주기) */
+@keyframes grass-sway {
+  0%, 100% {
+    transform: rotate(0deg) translateX(0);
+    color: #34d399; /* text-emerald-400 */
+    filter: drop-shadow(0 0 2px rgba(52, 211, 153, 0.4));
+  }
+  25% {
+    transform: rotate(8deg) translateX(1.5px); /* 잔디는 가벼우므로 좀 더 꺾임 */
+    color: #a3e635; /* text-lime-400 (싱그러운 하이라이트) */
+    filter: drop-shadow(0 0 6px rgba(163, 230, 53, 0.8));
+  }
+  75% {
+    transform: rotate(-8deg) translateX(-1.5px);
+    color: #059669; /* text-emerald-600 */
+    filter: drop-shadow(0 0 1px rgba(5, 150, 105, 0.2));
+  }
+}
+
+.animate-grass-sway {
+  display: inline-block;
+  transform-origin: bottom center;
+  animation: grass-sway 2.2s infinite ease-in-out;
+}

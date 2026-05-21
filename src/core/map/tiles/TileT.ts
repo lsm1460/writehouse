@@ -1,11 +1,11 @@
 import { Tile } from '../Tile'
 
-export class TileG extends Tile {
+export class TileT extends Tile {
   constructor(x: number, y: number) {
-    super('G', x, y)
+    super('T', x, y)
   }
 
-  override canPick(): boolean {
+  override get isWalkable(): boolean {
     return false
   }
 }

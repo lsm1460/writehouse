@@ -29,10 +29,18 @@ export class FogSystem {
     const playerPos = this.ctx.player.pos
     this.addLightZone(playerPos.x, playerPos.y, 2, 'PLAYER')
 
+    const LIGHT_RADIUS_MAP: Record<string, number> = {
+      L: 3,
+      F: 2,
+      f: 1
+    }
+
     for (let y = 0; y < grid.length; y++) {
       for (let x = 0; x < grid[y].length; x++) {
-        if (grid[y][x].char === 'L') {
-          this.addLightZone(x, y, 3, 'ENVIRONMENT')
+        const radius = LIGHT_RADIUS_MAP[grid[y][x].char]
+
+        if (radius !== undefined) {
+          this.addLightZone(x, y, radius, 'ENVIRONMENT')
         }
       }
     }

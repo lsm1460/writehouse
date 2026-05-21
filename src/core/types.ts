@@ -1,3 +1,5 @@
+import type { Tile } from "./map/Tile"
+
 export type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT'
 
 export interface Position {
@@ -26,3 +28,5 @@ export interface LightState {
   playerIntensity: number
   environmentIntensity: number
 }
+
+export type GridType = Tile[][]

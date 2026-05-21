@@ -13,8 +13,13 @@ export function GameScreen() {
   const { engine, ctx } = useGame()
 
   useEffect(() => {
+    engine.startLoop()
     ctx.fog.update()
     ctx.onChange()
+      
+      return () => {
+        engine.stopLoop()
+      }
   }, [engine])
 
   useGameInput(engine)

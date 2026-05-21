@@ -5,7 +5,7 @@ export class TileL extends Tile {
     super('L', x, y)
   }
 
-  override canMix(): boolean {
+  override get isWalkable(): boolean {
     return false
   }
 }

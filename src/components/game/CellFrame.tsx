@@ -8,18 +8,10 @@ interface CellFrameProps {
   children: ReactNode
 }
 
-const OPACITY_LEVELS = [0.0, 0.25, 0.55, 0.85, 1.0]
+const OPACITY_LEVELS = [0.1, 0.35, 0.65, 0.85, 1.0]
 const getOpacity = (level: number) => OPACITY_LEVELS[level] ?? 0.0
 
 export function CellFrame({ lightLevel, isPlayer, isTarget, children }: CellFrameProps) {
-  if (lightLevel === 0) {
-    return (
-      <span
-        style={{ width: CELL_SIZE, height: CELL_SIZE }}
-        className="bg-black select-none border border-transparent"
-      />
-    )
-  }
 
   const frameClass = `
     flex items-center justify-center text-base font-bold font-mono transition-all duration-150 select-none text-neutral-300 border border-transparent bg-neutral-950
