@@ -3,12 +3,14 @@ import { FogSystem } from './systems/fogSystem'
 import { InventorySystem } from './systems/inventorySystem'
 import { MapSystem } from './systems/mapSystem'
 import { PlayerSystem } from './systems/playerSystem'
+import { StageSystem } from './systems/StageSystem'
 
 export class EngineContext {
   public map: MapSystem
   public player: PlayerSystem
   public inventory: InventorySystem
   public fog: FogSystem
+  public stage: StageSystem
 
   private notifyEngine: () => void
 
@@ -19,9 +21,16 @@ export class EngineContext {
     this.player = new PlayerSystem(this)
     this.inventory = new InventorySystem(this)
     this.fog = new FogSystem(this)
+    this.stage = new StageSystem(this)
+  }
+
+  public get stageClear(): boolean {
+    return this.stage.isClear
   }
 
   public onChange() {
+    this.stage.updateClearStatus()
+
     this.notifyEngine()
   }
 
@@ -29,6 +38,8 @@ export class EngineContext {
     const spawn = this.map.loadNextRoom()
 
     if (spawn) {
+      this.stage.reset()
+
       this.player.pos = { ...spawn }
       this.player.dir = 'UP'
 

@@ -32,6 +32,8 @@ export function useGame() {
     ctx: context.engine.ctx,
     player: context.engine.ctx.player,
     map: context.engine.ctx.map,
+    fog: context.engine.ctx.fog,
+    stageClear: context.engine.ctx.stageClear,
     inventory: context.engine.ctx.inventory,
   }
 }

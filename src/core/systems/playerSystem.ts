@@ -70,21 +70,10 @@ export class PlayerSystem {
     }
 
     if (this.ctx.map.isWalkable(nextX, nextY)) {
-      const targetTile = this.ctx.map.grid[nextY]?.[nextX]
-
-      if (targetTile?.char === 'G') {
-        const lightState = this.ctx.fog.getLightState(nextX, nextY)
-
-        if (lightState.environmentIntensity === 0) {
-          this.updateTargetPosition()
-          this.ctx.onChange()
-          return
-        }
-      }
-
       this.pos = { x: nextX, y: nextY }
 
-      if (targetTile?.char === 'G') {
+      const targetTile = this.ctx.map.grid[nextY]?.[nextX]
+      if (targetTile?.char === 'G' && this.ctx.stageClear) {
         this.ctx.nextStage()
         return
       }

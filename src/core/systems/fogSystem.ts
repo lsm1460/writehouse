@@ -18,6 +18,10 @@ export class FogSystem {
     return Math.max(state.playerIntensity, state.environmentIntensity)
   }
 
+  public getEnvLightLevel(x: number, y: number): number {
+    return this.getLightState(x, y).environmentIntensity
+  }
+
   public update() {
     this.litTiles.clear()
     const grid = this.ctx.map.grid
@@ -25,7 +29,6 @@ export class FogSystem {
     const playerPos = this.ctx.player.pos
     this.addLightZone(playerPos.x, playerPos.y, 2, 'PLAYER')
 
-    // 2. 횃불 광원 등록 ('ENVIRONMENT')
     for (let y = 0; y < grid.length; y++) {
       for (let x = 0; x < grid[y].length; x++) {
         if (grid[y][x].char === 'L') {
@@ -35,9 +38,6 @@ export class FogSystem {
     }
   }
 
-  /**
-   * [수정] 광원 타입을 받아 해당 필드에 독립적으로 밝기를 기록하는 헬퍼
-   */
   private addLightZone(centerX: number, centerY: number, maxRange: number, type: LightSourceType) {
     for (let dy = -maxRange; dy <= maxRange; dy++) {
       for (let dx = -maxRange; dx <= maxRange; dx++) {
@@ -49,7 +49,7 @@ export class FogSystem {
 
           if (this.ctx.map.isValid(targetX, targetY)) {
             const key = `${targetX},${targetY}`
-            const currentIntensity = (maxRange - distance) + 1
+            const currentIntensity = maxRange - distance + 1
 
             // 기존 상태가 없으면 새로 생성, 있으면 가져옴
             const state = this.litTiles.get(key) || { playerIntensity: 0, environmentIntensity: 0 }
