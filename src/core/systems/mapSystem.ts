@@ -1,6 +1,7 @@
 import { EngineContext } from '../engineContext'
 import type { MapData } from '../gameEngine'
 import { Tile } from '../map/Tile'
+import { createTile } from '../map/tiles'
 
 export class MapSystem {
   public grid: Tile[][] = []
@@ -31,7 +32,7 @@ export class MapSystem {
 
     this.grid = rawGrid.map((row, i) => 
       row.map((cell, j) => {
-        const tile = new Tile(cell, j, i)
+        const tile = createTile(cell, j, i)
         
         if (cell === 'S') {
           spawnPos = { x: j, y: i }

@@ -1,24 +1,53 @@
 import { useGame } from '~/context/GameContext'
 import { GridCell } from './GridCell'
+import { CELL_SIZE } from './consts'
+
+const VERTICAL_PAD = 50
 
 export function StageGrid() {
-  const { map, player } = useGame()
-  
-    const { grid } = map
-    const { pos: playerPos, targetPos } = player
+  const {
+    fog,
+    map: { grid },
+    player: { pos: playerPos, targetPos },
+    stageClear,
+  } = useGame()
+
+  const playerPixelX = playerPos.x * CELL_SIZE + CELL_SIZE / 2
+  const playerPixelY = playerPos.y * CELL_SIZE + CELL_SIZE / 2
+
+  const mapWidth = grid[0]?.length * CELL_SIZE
+  const mapHeight = grid.length * CELL_SIZE
+
+  const offsetX = mapWidth / 2 - playerPixelX
+  const offsetY = mapHeight / 2 - playerPixelY + VERTICAL_PAD
 
   return (
-    <div className="flex flex-col p-4">
-      {grid.map((row, y) => (
-        <div key={y} className="flex">
-          {row.map((tile, x) => {
-            const isPlayer = playerPos.x === x && playerPos.y === y
-            const isTarget = targetPos.x === x && targetPos.y === y
+    <div className="absolute flex flex-col p-4 bg-black select-none">
+      <div
+        style={{
+          transform: `translate(${offsetX}px, ${offsetY}px)`,
+        }}
+        className="flex flex-col transition-transform duration-200 ease-out"
+      >
+        {grid.map((row, y) => (
+          <div key={y} className="flex">
+            {row.map((tile, x) => {
+              const isPlayer = playerPos.x === x && playerPos.y === y
+              const isTarget = targetPos.x === x && targetPos.y === y
 
-            return <GridCell key={x} tile={tile} isPlayer={isPlayer} isTarget={isTarget} />
-          })}
-        </div>
-      ))}
+              const renderable = {
+                tile,
+                lightLevel: fog.getLightLevel(x, y),
+                lightState: fog.getLightState(x, y),
+                isPlayer,
+                isTarget,
+              }
+
+              return <GridCell key={x} cell={renderable} stageClear={stageClear} />
+            })}
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

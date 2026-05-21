@@ -1,27 +1,31 @@
-export class Tile {
+import { getMixedChar } from './tiles/mixRecipes'
+
+export abstract class Tile {
   public isStart: boolean = false
   public _char: string
   public x: number
   public y: number
 
-  constructor(char: string, x: number, y:number) {
+  constructor(char: string, x: number, y: number) {
     this._char = char
     this.x = x
     this.y = y
-    
-    this.isStart = char === 'S'
   }
 
-  get char() {
-    if (['S'].includes(this._char)) {
-      return ''
-    }
-
+  get char(): string {
     return this._char
   }
 
-  get isWalkable() {
-    return this._char !== '#'
+  get isWalkable(): boolean {
+    return true
+  }
+
+  public canPick(): boolean {
+    return true
+  }
+
+  public canMix(): boolean {
+    return true
   }
 
   public setChar(char: string) {
@@ -32,24 +36,15 @@ export class Tile {
     this._char = ''
   }
 
-  public canPick() {
-    return !['#', 'G'].includes(this._char)
-  }
-
-  public canMix() {
-    return !['#', '$', 'L', 'B'].includes(this._char)
-  }
-
   public mix(char: string) {
-    const combined = [this._char, char].sort().join('')
+    // 1. 레시피 테이블에서 조합 결과가 있는지 확인
+    const mixedResult = getMixedChar(this._char, char)
 
-    if (combined === 'I_') {
-      this._char = 'L'
-
+    if (mixedResult) {
+      this._char = mixedResult
       return
     }
 
-    console.log('char', char)
     this._char = char
   }
 }
