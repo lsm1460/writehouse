@@ -11,10 +11,5 @@ export function mapKeyboardToResponse(e: KeyboardEvent): GameAction | null {
   if (e.key === ' ') return { type: 'SPACE_ACTION' }
   if (e.key === 'Enter') return { type: 'ENTER_ACTION' }
 
-  // 퀵슬롯 매핑
-  if (['1', '2', '3', '4'].includes(e.key)) {
-    return { type: 'SELECT_SLOT', slot: Number(e.key) }
-  }
-
   return null // 매핑되지 않은 키는 무시
 }

@@ -18,8 +18,6 @@ export function useGameInput(engine: GameEngine) {
           return engine.processTileAction()
         case 'ENTER_ACTION':
           return console.log('Enter Action')
-        case 'SELECT_SLOT':
-          return engine.selectSlot(action.slot)
       }
     }
 
