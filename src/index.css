@@ -90,3 +90,38 @@
   transform-origin: bottom center;
   animation: grass-sway 2.2s infinite ease-in-out;
 }
+
+@keyframes water-surge {
+  0%, 100% {
+    color: #ffffff;
+    text-shadow: 0 0 2px rgba(255, 255, 255, 0.8);
+  }
+  50% {
+    color: #0ea5e9;
+    text-shadow: 0 0 8px rgba(14, 165, 233, 0.9), 0 0 15px rgba(14, 165, 233, 0.4);
+  }
+}
+
+@keyframes water-ripple {
+  0%, 100% {
+    color: #cbd5e1;
+    text-shadow: 0 0 1px rgba(203, 213, 225, 0.4);
+  }
+  50% {
+    color: #22d3ee;
+    text-shadow: 0 0 6px rgba(34, 211, 238, 0.8);
+  }
+}
+
+.animate-water-W {
+  display: inline-block;
+  /* 브라우저가 GPU 가속을 쓰도록 강제하여 끊김을 방지합니다 */
+  will-change: color, text-shadow;
+  animation: water-surge 3s infinite ease-in-out;
+}
+
+.animate-water-w {
+  display: inline-block;
+  will-change: color, text-shadow;
+  animation: water-ripple 4s infinite ease-in-out;
+}

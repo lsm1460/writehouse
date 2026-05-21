@@ -6,6 +6,7 @@ import { Tilei } from './Tilei'
 import { TileL } from './TileL'
 import { TileS } from './TileS'
 import { TileT } from './TileT'
+import { TileW } from './TileW'
 import { TileWall } from './TileWall'
 
 export function createTile(char: string, x: number, y: number): Tile {
@@ -24,6 +25,10 @@ export function createTile(char: string, x: number, y: number): Tile {
       return new TileF(char, x, y)
     case 'f':
       return new TileF(char, x, y)
+    case 'W':
+      return new TileW(char, x, y)
+    case 'w':
+      return new TileW(char, x, y)
     case 'T':
       return new TileT(x, y)
     default:

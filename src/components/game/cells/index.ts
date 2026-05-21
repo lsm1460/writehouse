@@ -4,6 +4,7 @@ import { CellF } from './CellF'
 import { CellG } from './CellG'
 import { CellL } from './CellL'
 import { CellT } from './CellT'
+import { CellW } from './CellW'
 
 export const CELL_COMPONENTS: Record<string, React.ComponentType<any>> = {
   L: CellL,
@@ -13,4 +14,6 @@ export const CELL_COMPONENTS: Record<string, React.ComponentType<any>> = {
   i: Cell_i,
   F: CellF,
   f: CellF,
+  W: CellW,
+  w: CellW,
 }

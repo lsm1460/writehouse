@@ -1,3 +1,4 @@
+import { COMPASS_DIRECTIONS } from '~/core/consts'
 import type { GridType } from '~/core/types'
 import { Tile } from '../Tile'
 import type { IEnvironmentTile } from './IEnvironmentTile'
@@ -51,18 +52,7 @@ export class TileF extends Tile implements IEnvironmentTile {
   private spreadFire(grid: GridType): boolean {
     let spreadSuccess = false
 
-    const directions = [
-      [-1, -1],
-      [0, -1],
-      [1, -1],
-      [-1, 0],
-      [1, 0],
-      [-1, 1],
-      [0, 1],
-      [1, 1],
-    ]
-
-    for (const [dx, dy] of directions) {
+    for (const [dx, dy] of COMPASS_DIRECTIONS) {
       const nx = this.x + dx
       const ny = this.y + dy
 
@@ -92,17 +82,7 @@ export class TileF extends Tile implements IEnvironmentTile {
   }
 
   private checkAdjacentOxygen(grid: GridType): boolean {
-    const directions = [
-      [-1, -1],
-      [0, -1],
-      [1, -1],
-      [-1, 0],
-      [1, 0],
-      [-1, 1],
-      [0, 1],
-      [1, 1],
-    ]
-    for (const [dx, dy] of directions) {
+    for (const [dx, dy] of COMPASS_DIRECTIONS) {
       const nx = this.x + dx
       const ny = this.y + dy
       if (ny >= 0 && ny < grid.length && nx >= 0 && nx < grid[ny].length) {

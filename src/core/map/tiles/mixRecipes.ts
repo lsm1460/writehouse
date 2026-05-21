@@ -3,7 +3,9 @@ export const MIX_RECIPES: Record<string, string> = {
   Fg: 'F',
   FT: 'F',
   fg: 'f',
-  Tf: 'F'
+  Tf: 'F',
+  Fw: ' ',
+  FW: ' ',
 }
 
 export function getMixedChar(charA: string, charB: string): string | null {
