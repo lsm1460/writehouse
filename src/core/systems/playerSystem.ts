@@ -1,5 +1,6 @@
 import { EngineContext } from '../engineContext'
-import type { Direction, Position } from '../types'
+import type { Direction, GridType, Position } from '../types'
+import { isOutOfBounds } from '../utils/grid'
 
 export class PlayerSystem {
   public pos: Position = { x: 0, y: 0 }
@@ -84,5 +85,25 @@ export class PlayerSystem {
     this.ctx.onChange()
 
     return true
+  }
+
+  public checkEnvironmentEffects(grid: GridType): boolean {
+    const { x, y } = this.pos
+
+    if (isOutOfBounds(x, y, grid)) {
+      return false
+    }
+
+    const currentTile = grid[y][x]
+
+    if (currentTile.char === 'f') {
+      return true
+    }
+
+    if (currentTile.isElectrified) {
+      return true
+    }
+
+    return false
   }
 }

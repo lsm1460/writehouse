@@ -9,7 +9,7 @@ export function mapKeyboardToResponse(e: KeyboardEvent): GameAction | null {
 
   // 액션 키 매핑
   if (e.key === ' ') return { type: 'SPACE_ACTION' }
-  if (e.key === 'Enter') return { type: 'ENTER_ACTION' }
+  if (e.key.toLowerCase() === 'r') return { type: 'RETRY_ACTION' }
 
   return null // 매핑되지 않은 키는 무시
 }

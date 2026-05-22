@@ -18,8 +18,8 @@ export function useGameInput(engine: GameEngine) {
           return engine.move(action.direction)
         case 'SPACE_ACTION':
           return engine.processTileAction()
-        case 'ENTER_ACTION':
-          return console.log('Enter Action')
+        case 'RETRY_ACTION':
+          return engine.retryStage()
       }
     }
 

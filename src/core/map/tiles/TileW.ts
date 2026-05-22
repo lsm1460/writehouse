@@ -1,15 +1,20 @@
 import { CARDINAL_DIRECTIONS } from '~/core/consts'
 import type { GridType } from '~/core/types'
+import { isOutOfBounds } from '~/core/utils/grid'
 import { createTile } from '.'
 import { Tile } from '../Tile'
+import { WalkableTile } from './types'
 
 interface WaterChange {
   x: number
   y: number
+  type: 'REPLACE' | 'WET'
   char: string
 }
 
 export class TileW extends Tile {
+  isWet = true
+   
   private spreadTimer: number = 0
   private readonly SPREAD_INTERVAL: number = 0
 
@@ -17,21 +22,26 @@ export class TileW extends Tile {
     super(char, x, y)
   }
 
-  get isWalkable(): boolean {
+  override get isWalkable(): boolean {
     return true
   }
 
   public onEnvironmentUpdate(deltaTime: number, mapGrid: GridType): boolean {
+    console.log(1)
     if (this._char === 'w') {
+      console.log(2)
       return false
     }
-
+    
+    console.log(3)
     this.spreadTimer += deltaTime
     if (this.spreadTimer >= this.SPREAD_INTERVAL) {
+      console.log(4)
       this.spreadTimer = 0
       return this.spreadWater(mapGrid)
     }
-
+    
+    console.log(5)
     return false
   }
 
@@ -61,7 +71,7 @@ export class TileW extends Tile {
         const ny = cy + d[1]
         const key = `${nx},${ny}`
 
-        if (this.isOutOfBounds(nx, ny, mapGrid) || visited.has(key)) {
+        if (isOutOfBounds(nx, ny, mapGrid) || visited.has(key)) {
           continue
         }
 
@@ -72,10 +82,15 @@ export class TileW extends Tile {
           queue.push([nx, ny])
         } else if (this.canExtinguishFire(targetTile)) {
           visited.add(key)
-          targetsToUpdate.push({ x: nx, y: ny, char: ' ' })
+          targetsToUpdate.push({ x: nx, y: ny, type: 'REPLACE', char: ' ' })
         } else if (this.canFlowInto(targetTile)) {
           visited.add(key)
-          targetsToUpdate.push({ x: nx, y: ny, char: 'w' })
+
+          if (targetTile.char.trim() === '') {
+            targetsToUpdate.push({ x: nx, y: ny, type: 'REPLACE', char: 'w' })
+          } else {
+            targetsToUpdate.push({ x: nx, y: ny, type: 'WET', char: targetTile.char })
+          }
         }
       }
     }
@@ -83,21 +98,25 @@ export class TileW extends Tile {
     return targetsToUpdate
   }
 
-  private isOutOfBounds(x: number, y: number, mapGrid: GridType): boolean {
-    return y < 0 || y >= mapGrid.length || x < 0 || x >= mapGrid[y].length
-  }
-
   private canExtinguishFire(tile: Tile): boolean {
     return tile.char === 'F' || tile.char === 'f'
   }
 
   private canFlowInto(tile: Tile): boolean {
-    return tile.isWalkable && tile.char !== 'W'
+    return tile.char !== 'W' && tile instanceof WalkableTile
   }
 
   private applyTileChanges(mapGrid: GridType, changes: WaterChange[]): void {
     changes.forEach((target) => {
-      mapGrid[target.y][target.x] = createTile(target.char, target.x, target.y)
+      const currentTile = mapGrid[target.y][target.x]
+
+      if (target.type === 'REPLACE') {
+        mapGrid[target.y][target.x] = createTile(target.char, target.x, target.y)
+      } else if (target.type === 'WET') {
+        if (currentTile instanceof WalkableTile) {
+          currentTile.wet()
+        }
+      }
     })
   }
 

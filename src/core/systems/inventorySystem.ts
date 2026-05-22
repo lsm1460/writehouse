@@ -29,11 +29,6 @@ export class InventorySystem {
     if (!targetTile.canPick() || !this.canPick()) return
 
     targetTile.onDestroy(grid)
-
-    console.log({
-      char: targetTile.char,
-      meta: targetTile.getData(),
-    })
     this.currentItem = {
       char: targetTile.char,
       meta: targetTile.getData(),
@@ -48,7 +43,6 @@ export class InventorySystem {
 
   public leftOrMix(targetTile: Tile, grid: GridType) {
     if (!this.currentItem) return
-    if (!targetTile.canPick()) return
 
     const itemChar = this.currentItem.char
     const itemMeta = this.currentItem.meta

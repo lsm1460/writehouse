@@ -6,7 +6,7 @@ interface QuickSlotsProps {
 
 export function QuickSlots({ inventorySystem }: QuickSlotsProps) {
   const { currentItem } = inventorySystem
-  const hasItem = currentItem?.char?.trim() !== ''
+  const hasItem = !!currentItem?.char?.trim()
 
   const slotClass = `
     relative w-8 h-8 flex items-center justify-center text-2xl font-bold rounded border transition-all duration-100

@@ -22,7 +22,7 @@ export function GridCell({ stageClear, cell }: GridCellProps) {
   const backgroundTile = <TargetCell char={tile.char} tile={tile} lightState={lightState} stageClear={stageClear} />
 
   return (
-    <CellFrame lightLevel={lightLevel} isPlayer={isPlayer} isTarget={isTarget}>
+    <CellFrame lightLevel={lightLevel} isPlayer={isPlayer} isTarget={isTarget} isWet={tile.isWet} isElectrified={tile.isElectrified}>
       <div className="relative inline-flex items-center justify-center w-full h-full">
         {isPlayer && (
           <span

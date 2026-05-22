@@ -7,6 +7,9 @@ export abstract class Tile {
   public x: number
   public y: number
 
+  public isWet = false
+  public isElectrified = false
+
   constructor(char: string, x: number, y: number) {
     this._char = char
     this.x = x
@@ -25,8 +28,12 @@ export abstract class Tile {
     return 0
   }
 
+  public get isEmptyFloor(): boolean {
+    return this._char.trim() === ''
+  }
+
   public canPick(): boolean {
-    return true
+    return this._char.trim() !== ''
   }
 
   public canMix(): boolean {
@@ -53,7 +60,11 @@ export abstract class Tile {
     return getMixedChar(this._char, incomingChar)
   }
 
-  public get isEmptyFloor(): boolean {
-    return this._char.trim() === ''
+  charge() {
+    this.isElectrified = true
+  }
+
+  discharge() {
+    this.isElectrified = false
   }
 }

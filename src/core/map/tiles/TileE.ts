@@ -35,14 +35,13 @@ export class TileE extends EnergyTile {
 
     if (this.age >= this.ENERGY_LIFETIME) {
       this.discharge()
-      this.clearConnectedWires(grid)
       return true
     }
 
     return this.propagatePower(grid)
   }
 
-  private discharge() {
+  discharge() {
     this.isDischarged = true
     this.age = 0
   }

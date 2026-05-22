@@ -17,7 +17,7 @@ export function mapGamepadToResponse(gamepad: Gamepad): GameAction | null {
 
   // 3. 기능 버튼 매핑 (A, B, 범퍼 키)
   if (gamepad.buttons[0]?.pressed) return { type: 'SPACE_ACTION' } // A
-  if (gamepad.buttons[1]?.pressed) return { type: 'ENTER_ACTION' } // B
+  // if (gamepad.buttons[1]?.pressed) return { type: 'ENTER_ACTION' } // B
 
   return null
 }

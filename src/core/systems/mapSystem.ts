@@ -45,6 +45,10 @@ export class MapSystem {
     return spawnPos
   }
 
+  public reloadCurrentRoom() {
+    return this.loadRoom(this.currentRoomId)
+  }
+
   public loadNextRoom() {
     const rooms = this.mapData.floors[0].rooms
     const currentIndex = rooms.findIndex((r) => r.room_id === this.currentRoomId)

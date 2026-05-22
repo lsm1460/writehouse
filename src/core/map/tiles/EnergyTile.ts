@@ -1,7 +1,7 @@
-import { COMPASS_DIRECTIONS } from '~/core/consts'
+import { CARDINAL_DIRECTIONS } from '~/core/consts'
 import type { GridType } from '~/core/types'
 import { Tile } from '../Tile'
-import { type IEnvironmentTile, IElectricTile } from './types'
+import { type IEnvironmentTile, type IElectricTile } from './types'
 
 export abstract class EnergyTile extends Tile implements IEnvironmentTile {
   constructor(char: string, x: number, y: number) {
@@ -12,8 +12,25 @@ export abstract class EnergyTile extends Tile implements IEnvironmentTile {
 
   public abstract onEnvironmentUpdate(deltaTime: number, grid: GridType): boolean
 
-  protected propagatePower(grid: GridType): boolean {
-    let anyWireChanged = false
+  public propagatePower(grid: GridType): boolean {
+    if (!this.hasEnergy) return false
+
+    return this.traverseNetwork(grid, (tile) => {
+      if ('isElectric' in tile && (tile as unknown as IElectricTile).isElectric) {
+        return (tile as unknown as IElectricTile).setPower(true)
+      }
+      
+      if (tile.isWet) {
+        tile.charge()
+        return true
+      }
+
+      return false
+    })
+  }
+
+  private traverseNetwork(grid: GridType, visitor: (tile: Tile) => boolean): boolean {
+    let anyStateChanged = false
 
     const queue: Array<{ x: number; y: number }> = [{ x: this.x, y: this.y }]
     const visited = new Set<string>()
@@ -22,43 +39,35 @@ export abstract class EnergyTile extends Tile implements IEnvironmentTile {
     while (queue.length > 0) {
       const current = queue.shift()!
 
-      for (const [dx, dy] of COMPASS_DIRECTIONS) {
+      for (const [dx, dy] of CARDINAL_DIRECTIONS) {
         const nx = current.x + dx
         const ny = current.y + dy
         const key = `${nx},${ny}`
 
-        if (ny >= 0 && ny < grid.length && nx >= 0 && nx < grid[ny].length) {
-          if (visited.has(key)) continue
+        if (ny < 0 || ny >= grid.length || nx < 0 || nx >= grid[ny].length) {
+          continue
+        }
 
-          const targetTile = grid[ny][nx]
-          if (targetTile instanceof IElectricTile) {
-            visited.add(key)
+        if (visited.has(key)) {
+          continue
+        }
 
-            const isChanged = targetTile.setPower(true)
-            if (isChanged) {
-              anyWireChanged = true
-            }
+        const targetTile = grid[ny][nx]
+        const isElectric = 'isElectric' in targetTile && (targetTile as unknown as IElectricTile).isElectric
+        const isWetTile = targetTile.isWet
 
-            queue.push({ x: nx, y: ny })
+        if (isElectric || isWetTile) {
+          visited.add(key)
+          
+          if (visitor(targetTile)) {
+            anyStateChanged = true
           }
+
+          queue.push({ x: nx, y: ny })
         }
       }
     }
 
-    return anyWireChanged
-  }
-
-  protected clearConnectedWires(grid: GridType) {
-    for (let y = 0; y < grid.length; y++) {
-      for (let x = 0; x < grid[y].length; x++) {
-        if (grid[y][x] instanceof IElectricTile) {
-          ;(grid[y][x] as IElectricTile).resetPower()
-        }
-      }
-    }
-  }
-
-  override onDestroy(grid: GridType): void {
-    this.clearConnectedWires(grid)
+    return anyStateChanged
   }
 }

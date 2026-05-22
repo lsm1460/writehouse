@@ -1,7 +1,8 @@
 import { COMPASS_DIRECTIONS } from '~/core/consts'
 import type { GridType } from '~/core/types'
+import { isOutOfBounds } from '~/core/utils/grid'
 import { Tile } from '../Tile'
-import type { IEnvironmentTile } from './types'
+import { type IEnvironmentTile, WalkableTile } from './types'
 
 export class TileF extends Tile implements IEnvironmentTile {
   public fireStage: 'STRONG' | 'WEAK' | 'EXTINGUISHED' = 'STRONG'
@@ -19,45 +20,34 @@ export class TileF extends Tile implements IEnvironmentTile {
   }
 
   override get lightRadius() {
-    if (this.char === 'F') {
-      return 2
-    } else if (this.char === 'f') {
-      return 1
-    }
-
+    if (this.char === 'F') return 2
+    if (this.char === 'f') return 1
     return 0
   }
 
   public onEnvironmentUpdate(deltaTime: number, grid: GridType): boolean {
     if (this.fireStage === 'EXTINGUISHED') return false
 
-    let hasChanged = false
-    const hasOil = this.checkAdjacentOil(grid)
-
-    if (hasOil) {
+    if (this.checkAdjacentOil(grid)) {
       if (this.fireStage === 'WEAK') {
         this.reignite()
-        hasChanged = true
-      }
-    } else {
-      this.age += deltaTime
-      if (this.age >= this.FIRE_LIFETIME) {
-        this.degrade()
         return true
       }
+      return false
+    }
+
+    this.age += deltaTime
+    if (this.age >= this.FIRE_LIFETIME) {
+      this.degrade()
+      return true
     }
 
     if (this.isInitialTurn) {
       this.isInitialTurn = false
-      return hasChanged
+      return false
     }
 
-    const didSpread = this.spreadFire(grid)
-    if (didSpread) {
-      hasChanged = true
-    }
-
-    return hasChanged
+    return this.spreadFire(grid)
   }
 
   private spreadFire(grid: GridType): boolean {
@@ -67,24 +57,23 @@ export class TileF extends Tile implements IEnvironmentTile {
       const nx = this.x + dx
       const ny = this.y + dy
 
-      if (ny >= 0 && ny < grid.length && nx >= 0 && nx < grid[ny].length) {
-        const targetTile = grid[ny][nx]
+      if (isOutOfBounds(nx, ny, grid)) continue
 
-        if (targetTile.char === 'T') {
-          const newFire = new TileF('F', nx, ny)
-          newFire.fireStage = 'STRONG'
-          newFire.setChar('F')
+      const targetTile = grid[ny][nx]
 
-          grid[ny][nx] = newFire
+      if (targetTile instanceof WalkableTile) {
+        const wasWet = targetTile.isWet
+        targetTile.dry()
+
+        if (wasWet) {
           spreadSuccess = true
-        } else if (targetTile.char === 'g') {
-          const newFire = new TileF('f', nx, ny)
-          newFire.fireStage = 'WEAK'
-          newFire.setChar('f')
-
-          grid[ny][nx] = newFire
-          spreadSuccess = true
+          continue
         }
+      }
+
+      if (targetTile.char === 'T' || targetTile.char === 'g') {
+        grid[ny][nx] = this.createSpreadFireTile(targetTile.char, nx, ny)
+        spreadSuccess = true
       }
     }
 
@@ -92,26 +81,32 @@ export class TileF extends Tile implements IEnvironmentTile {
   }
 
   private checkAdjacentOil(grid: GridType): boolean {
-    for (const [dx, dy] of COMPASS_DIRECTIONS) {
+    return COMPASS_DIRECTIONS.some(([dx, dy]) => {
       const nx = this.x + dx
       const ny = this.y + dy
-      if (ny >= 0 && ny < grid.length && nx >= 0 && nx < grid[ny].length) {
-        if (grid[ny][nx].char === 'O') return true
-      }
-    }
-    return false
+      return !isOutOfBounds(nx, ny, grid) && grid[ny][nx].char === 'O'
+    })
+  }
+
+  private createSpreadFireTile(targetChar: string, x: number, y: number): TileF {
+    const isTree = targetChar === 'T'
+    const stage = isTree ? 'STRONG' : 'WEAK'
+    const char = isTree ? 'F' : 'f'
+
+    const newFire = new TileF(char, x, y)
+    newFire.fireStage = stage
+    return newFire
   }
 
   private degrade() {
     if (this.fireStage === 'STRONG') {
       this.fireStage = 'WEAK'
       this.setChar('f')
-      this.age = 0
     } else if (this.fireStage === 'WEAK') {
       this.fireStage = 'EXTINGUISHED'
       this.setChar(' ')
-      this.age = 0
     }
+    this.age = 0
   }
 
   private reignite() {

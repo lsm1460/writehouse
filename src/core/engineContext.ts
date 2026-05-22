@@ -24,17 +24,39 @@ export class EngineContext {
     this.inventory = new InventorySystem(this)
     this.fog = new FogSystem(this)
     this.stage = new StageSystem(this)
-    this.environment = new EnvironmentSystem(this.map.grid)
+    this.environment = new EnvironmentSystem(this)
+  }
+
+  public get grid() {
+    return this.map.grid
   }
 
   public get stageClear(): boolean {
     return this.stage.isClear
   }
 
+  public init() {
+    this.fog.update()
+    this.onChange()
+
+    this.tickTurn()
+  }
+
   public onChange() {
     this.stage.updateClearStatus()
-
     this.notifyEngine()
+  }
+
+  public tickTurn(): boolean {
+    const TURN_DELTA = 1.0
+    const hasChanges = this.environment.update(TURN_DELTA)
+
+    if (hasChanges) {
+      this.fog.update()
+    }
+
+    const isGameOver = this.player.checkEnvironmentEffects(this.grid)
+    return !isGameOver
   }
 
   public nextStage() {
@@ -48,8 +70,22 @@ export class EngineContext {
       this.player.dir = 'UP'
 
       this.player.updateTargetPosition()
-      this.fog.update()
-      this.onChange()
+      this.init()
+    }
+  }
+
+  public retryStage() {
+    const spawn = this.map.reloadCurrentRoom()
+
+    if (spawn) {
+      this.stage.reset()
+      this.inventory.reset()
+
+      this.player.pos = { ...spawn }
+      this.player.dir = 'UP'
+
+      this.player.updateTargetPosition()
+      this.init()
     }
   }
 }

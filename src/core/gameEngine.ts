@@ -1,19 +1,22 @@
 import { EngineContext } from './engineContext'
 
 export type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT'
+export type GameStatus = 'PLAYING' | 'GAME_OVER'
+
 export interface Position {
   x: number
   y: number
 }
+
 export interface MapData {
   floors: { rooms: { room_id: string; title: string; grid: string[][] }[] }[]
 }
 
 export class GameEngine {
   public ctx: EngineContext
-
   private stateId: number = 0
   private onUpdateCallback?: () => void
+  private status: GameStatus = 'PLAYING'
 
   constructor(mapData: MapData, roomId: string = '1-1') {
     this.ctx = new EngineContext(mapData, roomId, () => this.notify())
@@ -21,6 +24,10 @@ export class GameEngine {
 
   public getSnapshot() {
     return this.stateId
+  }
+
+  get gameStatus(): GameStatus {
+    return this.status
   }
 
   public subscribe(callback: () => void) {
@@ -33,17 +40,21 @@ export class GameEngine {
   }
 
   public start() {
-    this.ctx.fog.update()
-    this.ctx.onChange()
-    this.tickTurn()
+    this.ctx.init()
   }
 
   public move(dir: Direction) {
-    const isMove = this.ctx.player.move(dir)
-    isMove && this.tickTurn()
+    if (this.status === 'GAME_OVER') return
+
+    const isMoved = this.ctx.player.move(dir)
+    if (isMoved) {
+      this.processTurn()
+    }
   }
 
   public processTileAction() {
+    if (this.status === 'GAME_OVER') return
+
     const { map, inventory } = this.ctx
     const targetTile = map.getTargetTile()
 
@@ -55,16 +66,27 @@ export class GameEngine {
       inventory.leftOrMix(targetTile, map.grid)
     }
 
-    this.tickTurn()
+    this.processTurn()
   }
 
-  private tickTurn() {
-    const TURN_DELTA = 1.0
-    const hasChanges = this.ctx.environment.update(TURN_DELTA)
+  public nextStage() {
+    if (this.status === 'GAME_OVER') return
+    this.ctx.nextStage()
+  }
 
-    if (hasChanges) {
-      this.ctx.fog.update()
+  public retryStage() {
+    this.status = 'PLAYING'
+
+    this.ctx.retryStage()
+  }
+
+  private processTurn() {
+    const isAlive = this.ctx.tickTurn()
+    
+    if (!isAlive) {
+      this.status = 'GAME_OVER'
     }
+
     this.notify()
   }
 }
