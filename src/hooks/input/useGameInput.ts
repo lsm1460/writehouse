@@ -6,10 +6,12 @@ import type { GameAction } from './types'
 
 export function useGameInput(engine: GameEngine) {
   const lastGamepadTime = useRef<number>(0)
+  const lastKeyboardTime = useRef<number>(0)
   const gamepadCooldownMS = 200
+  const keyboardCooldownMS = 120
+  const activeKeys = useRef<Record<string, boolean>>({})
 
   useEffect(() => {
-    // 공통 액션 처리기
     const executeAction = (action: GameAction) => {
       switch (action.type) {
         case 'MOVE':
@@ -21,19 +23,42 @@ export function useGameInput(engine: GameEngine) {
       }
     }
 
-    // 키보드 리스너
     const handleKeyDown = (e: KeyboardEvent) => {
-      const action = mapKeyboardToResponse(e)
-      if (action) executeAction(action)
+      activeKeys.current[e.key] = true
     }
 
-    // 게임패드 루프
-    const checkGamepad = () => {
+    const handleKeyUp = (e: KeyboardEvent) => {
+      activeKeys.current[e.key] = false
+    }
+
+    const checkKeyboard = (now: number) => {
+      let hasActiveKey = false
+      for (const key in activeKeys.current) {
+        if (activeKeys.current[key]) {
+          hasActiveKey = true
+          break
+        }
+      }
+
+      if (hasActiveKey && now - lastKeyboardTime.current >= keyboardCooldownMS) {
+        for (const key in activeKeys.current) {
+          if (activeKeys.current[key]) {
+            const fakeEvent = { key } as KeyboardEvent
+            const action = mapKeyboardToResponse(fakeEvent)
+            if (action) {
+              executeAction(action)
+              lastKeyboardTime.current = now
+            }
+          }
+        }
+      }
+    }
+
+    const checkGamepad = (now: number) => {
       const gamepads = navigator.getGamepads ? navigator.getGamepads() : []
       const gamepad = gamepads[0]
 
       if (gamepad) {
-        const now = performance.now()
         if (now - lastGamepadTime.current >= gamepadCooldownMS) {
           const action = mapGamepadToResponse(gamepad)
           if (action) {
@@ -44,20 +69,23 @@ export function useGameInput(engine: GameEngine) {
       }
     }
 
-    // 등록 및 시작
     window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('keyup', handleKeyUp)
 
     let frameId: number
     const loop = () => {
-      checkGamepad()
+      const now = performance.now()
+      checkKeyboard(now)
+      checkGamepad(now)
       frameId = requestAnimationFrame(loop)
     }
     frameId = requestAnimationFrame(loop)
 
-    // 해제
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('keyup', handleKeyUp)
       cancelAnimationFrame(frameId)
+      activeKeys.current = {}
     }
   }, [engine])
 }
