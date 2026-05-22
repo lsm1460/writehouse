@@ -1,73 +1,57 @@
-# React + TypeScript + Vite
+# WriteHouse
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+WriteHouse는 React 19와 Vite를 기반으로 구축된 그리드 기반 타일 상호작용 게임 엔진입니다. 사용자는 맵을 탐험하며 타일을 수집하고, 서로 다른 타일을 조합하여 환경을 변화시키거나 새로운 아이템을 만들어낼 수 있습니다.
 
-Currently, two official plugins are available:
+## 진행중인 요소..
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- F + I = A? A + \_ = 8? A는 무엇으로 하지?
+- I+3 = B -> 3턴 뒤 터지는 폭탄
+- 몬스터 순찰
 
-## React Compiler
+## 🚀 주요 기능
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **그리드 기반 이동 시스템**: 플레이어는 2D 그리드 맵 위를 상하좌우로 이동할 수 있습니다.
+- **타일 상호작용 및 조합**:
+  - 특정 타일을 인벤토리에 수집할 수 있으며, 타일의 상태(예: 전력 타일의 방전 상태 등)가 보존됩니다.
+  - 수집한 타일을 다른 타일과 조합(Mix)하여 새로운 속성을 가진 타일로 변화시킵니다. (예: `I` + `_` = `L`, `F` + `g` = `F`)
+- **동적 환경 시스템**: `EnvironmentSystem`을 통해 시간에 따라 변화하는 환경 요소들을 관리합니다.
+- **안개 시스템 (Fog of War)**: 플레이어의 시야에 따른 동적인 안개 효과를 제공합니다.
+- **반응형 UI**: 다양한 화면 크기에 대응하기 위한 윈도우 스케일링 기능을 포함합니다.
 
-## Expanding the ESLint configuration
+## 🛠 기술 스택
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Frontend**: React 19, TypeScript
+- **Styling**: Tailwind CSS 4
+- **Build Tool**: Vite 8
+- **Testing**: Vitest
+- **State Management**: Context API 기반 커스텀 게임 엔진 연동
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 📂 프로젝트 구조
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- `src/core`: 게임의 핵심 로직 (엔진, 시스템, 타일 정의 등)
+- `src/components`: 게임 화면 및 UI 컴포넌트
+- `src/hooks`: 게임 입력 처리 및 UI 관련 커스텀 훅
+- `src/assets`: 맵 데이터(JSON) 및 이미지 리소스
+- `src/context`: React와 게임 엔진을 연결하는 컨텍스트
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🛠 설치 및 실행
+
+```bash
+# 의존성 설치
+npm install
+
+# 개발 서버 실행
+npm run dev
+
+# 프로젝트 빌드
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🎮 조작법
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- **이동**: 방향키 (Arrow Keys) 또는 WASD
+- **상호작용 (수집/조합)**: 스페이스바 (Space) 또는 지정된 액션 키
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
+
+이 프로젝트는 TypeScript의 정적 타이핑을 활용하여 견고한 게임 로직을 구현하며, React의 선언적 UI 프레임워크와 명령형 게임 엔진 로직을 효율적으로 결합하는 것을 목표로 합니다.

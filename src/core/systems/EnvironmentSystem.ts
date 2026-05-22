@@ -1,4 +1,4 @@
-import { isEnvironmentTile } from '../map/tiles/IEnvironmentTile'
+import { isEnvironmentTile } from '../map/tiles/types'
 import type { GridType } from '../types'
 
 export class EnvironmentSystem {

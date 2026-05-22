@@ -11,7 +11,7 @@ interface WaterChange {
 
 export class TileW extends Tile {
   private spreadTimer: number = 0
-  private readonly SPREAD_INTERVAL: number = 1.0
+  private readonly SPREAD_INTERVAL: number = 0
 
   constructor(char: string, x: number, y: number) {
     super(char, x, y)

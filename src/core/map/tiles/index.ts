@@ -1,37 +1,68 @@
 import type { Tile } from '../Tile'
+import { BlockTile } from './BlockTile'
 import { FloorTile } from './FloorTile'
+import { Tile1 } from './Tile1'
+import { Tile8 } from './Tile8'
+import { Tilei } from './Tile_i'
+import { TileE } from './TileE'
 import { TileF } from './TileF'
 import { TileG } from './TileG'
-import { Tilei } from './Tilei'
 import { TileL } from './TileL'
 import { TileS } from './TileS'
-import { TileT } from './TileT'
 import { TileW } from './TileW'
 import { TileWall } from './TileWall'
 
-export function createTile(char: string, x: number, y: number): Tile {
+export function createTile(char: string, x: number, y: number, meta?: any): Tile {
+  let tile: Tile
+
   switch (char) {
     case 'S':
-      return new TileS(x, y)
+      tile = new TileS(x, y)
+      break
     case '#':
-      return new TileWall(x, y)
+      tile = new TileWall(x, y)
+      break
     case 'G':
-      return new TileG(x, y)
+      tile = new TileG(x, y)
+      break
     case 'L':
-      return new TileL(x, y)
+      tile = new TileL(x, y)
+      break
     case 'i':
-      return new Tilei(x, y)
+      tile = new Tilei(x, y)
+      break
     case 'F':
-      return new TileF(char, x, y)
+      tile = new TileF(char, x, y)
+      break
     case 'f':
-      return new TileF(char, x, y)
+      tile = new TileF(char, x, y)
+      break
     case 'W':
-      return new TileW(char, x, y)
+      tile = new TileW(char, x, y)
+      break
     case 'w':
-      return new TileW(char, x, y)
-    case 'T':
-      return new TileT(x, y)
+      tile = new TileW(char, x, y)
+      break
+    case 'E':
+      tile = new TileE(x, y)
+      break
+    case '8':
+      tile = new Tile8(x, y)
+      break
+    case '1':
+      tile = new Tile1(x, y)
+      break
+    case 'I':
+    case 'O':
+      tile = new BlockTile(char, x, y)
+      break
     default:
-      return new FloorTile(char, x, y) // '_', 'I', '.' 등등
+      tile = new FloorTile(char, x, y) // '_', 'I', '.' 등등
   }
+
+  if (meta) {
+    tile.setData(meta)
+  }
+
+  return tile
 }

@@ -1,6 +1,6 @@
-import { Tile } from '../Tile'
+import { WalkableTile } from './types'
 
-export class TileS extends Tile {
+export class TileS extends WalkableTile {
   public isStart = true
 
   constructor(x: number, y: number) {

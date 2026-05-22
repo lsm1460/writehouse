@@ -48,7 +48,7 @@ export class PlayerSystem {
       this.dir = dir
       this.updateTargetPosition()
       this.ctx.onChange()
-      return
+      return false
     }
 
     let nextX = this.pos.x
@@ -82,5 +82,7 @@ export class PlayerSystem {
     this.ctx.fog.update()
     this.updateTargetPosition()
     this.ctx.onChange()
+
+    return true
   }
 }

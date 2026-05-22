@@ -1,3 +1,4 @@
+import type { GridType } from '../types'
 import { getMixedChar } from './tiles/mixRecipes'
 
 export abstract class Tile {
@@ -17,7 +18,11 @@ export abstract class Tile {
   }
 
   get isWalkable(): boolean {
-    return true
+    return false
+  }
+
+  get lightRadius() {
+    return 0
   }
 
   public canPick(): boolean {
@@ -36,19 +41,19 @@ export abstract class Tile {
     this._char = ''
   }
 
-  public mix(char: string) {
-    const mixedResult = getMixedChar(this._char, char)
+  public onDestroy(grid: GridType): void {}
 
-    if (mixedResult) {
-      this._char = mixedResult
-      return true
-    }
-
-    if (this._char.trim() !== '') {
-    return false // 조합 실패 및 설치 불가
+  public getData(): any {
+    return null
   }
 
-    this._char = char
-    return true
+  public setData(data: any): void {}
+
+  public getMixedResult(incomingChar: string): string | null {
+    return getMixedChar(this._char, incomingChar)
+  }
+
+  public get isEmptyFloor(): boolean {
+    return this._char.trim() === ''
   }
 }

@@ -8,7 +8,7 @@ export function useGameInput(engine: GameEngine) {
   const lastGamepadTime = useRef<number>(0)
   const lastKeyboardTime = useRef<number>(0)
   const gamepadCooldownMS = 200
-  const keyboardCooldownMS = 120
+  const keyboardCooldownMS = 150
   const activeKeys = useRef<Record<string, boolean>>({})
 
   useEffect(() => {

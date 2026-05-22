@@ -6,7 +6,7 @@ interface QuickSlotsProps {
 
 export function QuickSlots({ inventorySystem }: QuickSlotsProps) {
   const { currentItem } = inventorySystem
-  const hasItem = currentItem.trim() !== ''
+  const hasItem = currentItem?.char?.trim() !== ''
 
   const slotClass = `
     relative w-8 h-8 flex items-center justify-center text-2xl font-bold rounded border transition-all duration-100
@@ -18,11 +18,11 @@ export function QuickSlots({ inventorySystem }: QuickSlotsProps) {
   `
 
   return (
-    <div className="flex flex-col items-center font-mono select-none">
+    <div className="flex flex-col items-center select-none">
       <div className="flex bg-black border border-neutral-800 p-1 rounded shadow-2xl">
         <div className={slotClass}>
           <span className={hasItem ? 'animate-pulse' : ''}>
-            {hasItem ? currentItem : ' '}
+            {hasItem ? currentItem?.char : ' '}
           </span>
         </div>
       </div>

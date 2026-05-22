@@ -19,7 +19,7 @@ export function GridCell({ stageClear, cell }: GridCellProps) {
   const { tile, lightLevel, lightState, isPlayer, isTarget } = cell
   const TargetCell = CELL_COMPONENTS[tile.char] || CellDefault
 
-  const backgroundTile = <TargetCell char={tile.char} lightState={lightState} stageClear={stageClear} />
+  const backgroundTile = <TargetCell char={tile.char} tile={tile} lightState={lightState} stageClear={stageClear} />
 
   return (
     <CellFrame lightLevel={lightLevel} isPlayer={isPlayer} isTarget={isTarget}>

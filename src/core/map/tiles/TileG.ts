@@ -1,6 +1,6 @@
-import { Tile } from '../Tile'
+import { WalkableTile } from './types'
 
-export class TileG extends Tile {
+export class TileG extends WalkableTile {
   constructor(x: number, y: number) {
     super('G', x, y)
   }

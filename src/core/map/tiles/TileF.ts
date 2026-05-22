@@ -1,13 +1,14 @@
 import { COMPASS_DIRECTIONS } from '~/core/consts'
 import type { GridType } from '~/core/types'
 import { Tile } from '../Tile'
-import type { IEnvironmentTile } from './IEnvironmentTile'
+import type { IEnvironmentTile } from './types'
 
 export class TileF extends Tile implements IEnvironmentTile {
   public fireStage: 'STRONG' | 'WEAK' | 'EXTINGUISHED' = 'STRONG'
   public age: number = 0
-  private spreadTimer: number = 0 // [추가] 불꽃 확산 주기 타이머 (초 단위)
-  private readonly SPREAD_INTERVAL = 1.5 // 1.5초마다 한 번씩 주변으로 번짐
+  private isInitialTurn: boolean = true
+
+  private readonly FIRE_LIFETIME = 4
 
   constructor(char: string, x: number, y: number) {
     super(char, x, y)
@@ -17,33 +18,43 @@ export class TileF extends Tile implements IEnvironmentTile {
     return this.char !== 'F'
   }
 
+  override get lightRadius() {
+    if (this.char === 'F') {
+      return 2
+    } else if (this.char === 'f') {
+      return 1
+    }
+
+    return 0
+  }
+
   public onEnvironmentUpdate(deltaTime: number, grid: GridType): boolean {
     if (this.fireStage === 'EXTINGUISHED') return false
 
     let hasChanged = false
-    const hasOxygen = this.checkAdjacentOxygen(grid)
+    const hasOil = this.checkAdjacentOil(grid)
 
-    if (hasOxygen) {
+    if (hasOil) {
       if (this.fireStage === 'WEAK') {
         this.reignite()
         hasChanged = true
       }
     } else {
       this.age += deltaTime
-      if (this.age >= 5.0) {
+      if (this.age >= this.FIRE_LIFETIME) {
         this.degrade()
-        return true // 상태가 변했으므로 즉시 리턴
+        return true
       }
     }
 
-    this.spreadTimer += deltaTime
-    if (this.spreadTimer >= this.SPREAD_INTERVAL) {
-      this.spreadTimer = 0 // 타이머 초기화
+    if (this.isInitialTurn) {
+      this.isInitialTurn = false
+      return hasChanged
+    }
 
-      const didSpread = this.spreadFire(grid)
-      if (didSpread) {
-        hasChanged = true
-      }
+    const didSpread = this.spreadFire(grid)
+    if (didSpread) {
+      hasChanged = true
     }
 
     return hasChanged
@@ -56,7 +67,6 @@ export class TileF extends Tile implements IEnvironmentTile {
       const nx = this.x + dx
       const ny = this.y + dy
 
-      // 맵 경계선 예외 처리
       if (ny >= 0 && ny < grid.length && nx >= 0 && nx < grid[ny].length) {
         const targetTile = grid[ny][nx]
 
@@ -81,7 +91,7 @@ export class TileF extends Tile implements IEnvironmentTile {
     return spreadSuccess
   }
 
-  private checkAdjacentOxygen(grid: GridType): boolean {
+  private checkAdjacentOil(grid: GridType): boolean {
     for (const [dx, dy] of COMPASS_DIRECTIONS) {
       const nx = this.x + dx
       const ny = this.y + dy
@@ -105,8 +115,6 @@ export class TileF extends Tile implements IEnvironmentTile {
   }
 
   private reignite() {
-    this.fireStage = 'STRONG'
-    this.setChar('F')
     this.age = 0
   }
 }

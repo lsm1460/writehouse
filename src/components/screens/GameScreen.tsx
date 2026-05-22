@@ -10,16 +10,10 @@ interface GameScreenProps {
 }
 
 export function GameScreen() {
-  const { engine, ctx } = useGame()
+  const { engine } = useGame()
 
   useEffect(() => {
-    engine.startLoop()
-    ctx.fog.update()
-    ctx.onChange()
-      
-      return () => {
-        engine.stopLoop()
-      }
+    engine.start()
   }, [engine])
 
   useGameInput(engine)
@@ -27,7 +21,7 @@ export function GameScreen() {
   return (
     <>
       <ScreenWrapper>
-        <div className="flex-1 w-full relative flex items-center justify-center overflow-hidden">
+        <div className="flex-1 w-full relative flex items-center justify-center overflow-hidden font-sans">
           <StageGrid />
         </div>
       </ScreenWrapper>
