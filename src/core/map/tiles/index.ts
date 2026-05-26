@@ -1,6 +1,7 @@
 import type { Tile } from '../Tile'
 import { BlockTile } from './BlockTile'
 import { FloorTile } from './FloorTile'
+import { PushTile } from './PushTile'
 import { Tile1 } from './Tile1'
 import { Tile8 } from './Tile8'
 import { Tilei } from './Tile_i'
@@ -53,6 +54,9 @@ export function createTile(char: string, x: number, y: number, meta?: any): Tile
       tile = new Tile1(x, y)
       break
     case 'I':
+    case '_':
+      tile = new PushTile(char, x, y)
+      break
     case 'O':
     case 'T':
     case null:

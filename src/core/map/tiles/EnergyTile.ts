@@ -1,9 +1,10 @@
 import { CARDINAL_DIRECTIONS } from '~/core/consts'
 import type { GridType } from '~/core/types'
 import { Tile } from '../Tile'
-import { type IEnvironmentTile, type IElectricTile } from './types'
+import { PushTile } from './PushTile'
+import { type IElectricTile, type IEnvironmentTile } from './types'
 
-export abstract class EnergyTile extends Tile implements IEnvironmentTile {
+export abstract class EnergyTile extends PushTile implements IEnvironmentTile {
   constructor(char: string, x: number, y: number) {
     super(char, x, y)
   }

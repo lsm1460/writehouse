@@ -1,5 +1,6 @@
 import type { GridType } from '~/core/types'
 import { Tile } from '../Tile'
+import { PushTile } from './PushTile'
 
 export abstract class WalkableTile extends Tile {
 
@@ -17,7 +18,7 @@ export abstract class WalkableTile extends Tile {
   }
 }
 
-export abstract class IElectricTile extends Tile {
+export abstract class IElectricTile extends PushTile {
   isElectric = true
   setPower(powered: boolean): boolean {
     return false

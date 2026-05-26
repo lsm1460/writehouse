@@ -44,7 +44,8 @@ export function useGameInput({ engine, onMenuUp, onMenuDown, onMenuSelect }: Use
           if (engine.gameStatus === 'GAME_OVER') {
             return engine.retryStage()
           }
-          return engine.processTileAction()
+          // return engine.processTileAction()
+          break
         case 'RETRY_ACTION':
           return engine.retryStage()
       }

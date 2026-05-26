@@ -1,4 +1,5 @@
 import { EngineContext } from '../engineContext'
+import { createTile } from '../map/tiles'
 import type { Direction, GridType, Position } from '../types'
 import { isOutOfBounds } from '../utils/grid'
 
@@ -18,7 +19,8 @@ export class PlayerSystem {
     const grid = this.ctx.map.grid
     for (let y = 0; y < grid.length; y++) {
       for (let x = 0; x < grid[y].length; x++) {
-        if (grid[y][x].isStart) {
+        if (grid[y][x]?.isStart) {
+          // 옵셔널 체이닝 추가 (벽 null 대응)
           this.pos = { x, y }
           return
         }
@@ -45,6 +47,7 @@ export class PlayerSystem {
   }
 
   public move(dir: Direction) {
+    // 1. 방향이 다르면 방향만 전환
     if (this.dir !== dir) {
       this.dir = dir
       this.updateTargetPosition()
@@ -70,14 +73,59 @@ export class PlayerSystem {
         break
     }
 
+    const grid = this.ctx.map.grid
+    const targetTile = grid[nextY]?.[nextX]
+
+    if (targetTile && targetTile.isPushable) {
+      let pushToX = nextX
+      let pushToY = nextY
+
+      switch (dir) {
+        case 'UP':
+          pushToY -= 1
+          break
+        case 'DOWN':
+          pushToY += 1
+          break
+        case 'LEFT':
+          pushToX -= 1
+          break
+        case 'RIGHT':
+          pushToX += 1
+          break
+      }
+
+      const behindTile = grid[pushToY]?.[pushToX]
+
+      if (behindTile && behindTile !== null) {
+        if (behindTile.char === ' ') {
+          grid[pushToY][pushToX] = createTile(targetTile.char, pushToX, pushToY, { ...targetTile.getData() })
+          grid[nextY][nextX] = createTile(' ', nextX, nextY)
+        } else {
+          const mixedChar = targetTile.getMixedResult(behindTile.char)
+
+          if (mixedChar) {
+            grid[pushToY][pushToX] = createTile(mixedChar, pushToX, pushToY)
+            grid[nextY][nextX] = createTile(' ', nextX, nextY)
+          } else {
+            return false
+          }
+        }
+      } else {
+        return false
+      }
+    }
+
     if (this.ctx.map.isWalkable(nextX, nextY)) {
       this.pos = { x: nextX, y: nextY }
 
-      const targetTile = this.ctx.map.grid[nextY]?.[nextX]
-      if (targetTile?.char === 'G' && this.ctx.stageClear) {
+      const finalTile = grid[nextY]?.[nextX]
+      if (finalTile?.char === 'G' && this.ctx.stageClear) {
         this.ctx.nextStage()
-        return
+        return true
       }
+    } else {
+      return false
     }
 
     this.ctx.fog.update()
@@ -95,6 +143,7 @@ export class PlayerSystem {
     }
 
     const currentTile = grid[y][x]
+    if (!currentTile || currentTile === null) return false
 
     if (currentTile.char === 'f') {
       return true

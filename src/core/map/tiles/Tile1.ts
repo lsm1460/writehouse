@@ -11,6 +11,10 @@ export class Tile1 extends IElectricTile {
     return true
   }
 
+  override get isPushable(): boolean {
+    return false
+  }
+
   override get lightRadius() {
     return 0 + (this._hasEnergy ? 1 : 0)
   }

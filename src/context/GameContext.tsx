@@ -34,7 +34,7 @@ export function useGame() {
     map: context.engine.ctx.map,
     fog: context.engine.ctx.fog,
     stageClear: context.engine.ctx.stageClear,
-    inventory: context.engine.ctx.inventory,
+    // inventory: context.engine.ctx.inventory,
     gameState: context.engine.gameStatus,
     save: context.engine.ctx.save
   }

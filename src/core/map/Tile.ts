@@ -24,6 +24,10 @@ export abstract class Tile {
     return false
   }
 
+  get isPushable(): boolean {
+    return false
+  }
+
   get lightRadius() {
     return 0
   }
