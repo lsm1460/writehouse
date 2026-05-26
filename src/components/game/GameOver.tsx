@@ -1,15 +1,44 @@
+import { useEffect, useState } from 'react'
 import { useWindowScale } from '~/hooks/input/ui/useWindowScale'
 import { MenuButton } from '../ui/MenuButton'
 
 interface GameOverProps {
   onRestart: () => void
+  delayMS?: number
 }
 
-export function GameOver({ onRestart }: GameOverProps) {
+export function GameOver({ onRestart, delayMS = 300 }: GameOverProps) {
   const { scale } = useWindowScale()
+  const [isRendered, setIsRendered] = useState(false)
+  const [opacity, setOpacity] = useState(0)
+
+  useEffect(() => {
+    const renderTimer = setTimeout(() => {
+      setIsRendered(true)
+    }, delayMS)
+
+    return () => clearTimeout(renderTimer)
+  }, [delayMS])
+
+  useEffect(() => {
+    if (isRendered) {
+      const animationFrame = requestAnimationFrame(() => {
+        setOpacity(1)
+      })
+      return () => cancelAnimationFrame(animationFrame)
+    }
+  }, [isRendered])
+
+  if (!isRendered) return null
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/90 z-[100] backdrop-blur-xs">
+    <div
+      className="fixed inset-0 flex items-center justify-center bg-black/40 z-[100] backdrop-blur-xs"
+      style={{
+        opacity: opacity,
+        transition: 'opacity 500ms ease-out',
+      }}
+    >
       <div
         className="flex flex-col items-center justify-center relative"
         style={{
@@ -22,14 +51,11 @@ export function GameOver({ onRestart }: GameOverProps) {
         <div className="mb-8 text-center">
           <h2 className="text-5xl font-black text-neutral-400 tracking-tighter uppercase">Game Over</h2>
         </div>
-
-        <MenuButton
-          onClick={onRestart}
-          className="shadow-[0_0_20px_rgba(255,255,255,0.15)]"
-          textClassName="text-xl"
-        >
-          RETRY STAGE
-        </MenuButton>
+        <div className="w-64">
+          <MenuButton onClick={onRestart} className="shadow-[0_0_20px_rgba(255,255,255,0.15)]" isActive>
+            RETRY STAGE
+          </MenuButton>
+        </div>
 
         <div className="absolute bottom-8 text-neutral-700 font-mono text-xs">[Space] or Click to Restart</div>
       </div>

@@ -39,7 +39,7 @@ export class EngineContext {
   }
 
   public init(roomId?: string) {
-    const spawn = this.map.loadRoom(roomId || this.map.currentRoomId || '1-1')
+    const spawn = this.map.loadRoom(roomId || '1-1')
     spawn && this.setPlayer(spawn)
 
     this.fog.update()
@@ -48,8 +48,8 @@ export class EngineContext {
     this.tickTurn()
   }
 
-  public saveGame() {
-    this.save.save(this.map.currentRoomId)
+  public saveGame(id: string) {
+    this.save.save(id)
   }
 
   public onChange() {
@@ -70,29 +70,17 @@ export class EngineContext {
   }
 
   public nextStage() {
-    const spawn = this.map.loadNextRoom()
-
+    const id = this.map.getNextRoomId()
     
-    if (spawn) {
-      this.saveGame()
-      this.setPlayer(spawn)
-      this.init(this.map.currentRoomId)
+    if (id) {
+      this.saveGame(id)
+      this.init(id)
     }
   }
 
   public retryStage() {
-    const spawn = this.map.reloadCurrentRoom()
-
-    if (spawn) {
-      this.stage.reset()
-      this.inventory.reset()
-
-      this.player.pos = { ...spawn }
-      this.player.dir = 'UP'
-
-      this.player.updateTargetPosition()
-      this.init()
-    }
+    console.log('?2')
+    this.init(this.map.currentRoomId)
   }
 
   private setPlayer(pos: { x: number; y: number }) {

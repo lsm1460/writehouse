@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { useGame } from '~/context/GameContext'
 import { useGameInput } from '~/hooks/input/useGameInput'
 import { GameOver } from '../game/GameOver'
@@ -8,10 +7,6 @@ import { StageGrid } from '../game/StageGrid'
 
 export function GameScreen() {
   const { engine, gameState } = useGame()
-
-  useEffect(() => {
-    engine.start()
-  }, [engine])
 
   useGameInput({ engine })
 

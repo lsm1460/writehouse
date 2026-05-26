@@ -12,7 +12,11 @@ function App() {
   if (gameState === 'TITLE') {
     return (
       <TitleScreen
-        onStart={() => setGameState('PLAYING')}
+        onStart={() => {
+          engine.start()
+
+          setGameState('PLAYING')
+        }}
         {...(save.hasSaveData() && {
           onLoad: () => {
             engine.load()
