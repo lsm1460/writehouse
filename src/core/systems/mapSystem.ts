@@ -5,19 +5,16 @@ import type { GridType } from '../types'
 
 export class MapSystem {
   public grid: GridType = []
+  public currentRoomId: string = ''
   public roomTitle: string
   
   private ctx: EngineContext
   private mapData: MapData
-  private currentRoomId: string
 
-  constructor(ctx: EngineContext, mapData: MapData, roomId: string) {
+  constructor(ctx: EngineContext, mapData: MapData) {
     this.ctx = ctx
     this.mapData = mapData
-    this.currentRoomId = roomId
     this.roomTitle = 'Unknown'
-
-    this.loadRoom(roomId)
   }
 
   public loadRoom(roomId: string): { x: number; y: number } | undefined {

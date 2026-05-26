@@ -54,6 +54,7 @@ export function createTile(char: string, x: number, y: number, meta?: any): Tile
       break
     case 'I':
     case 'O':
+    case 'T':
       tile = new BlockTile(char, x, y)
       break
     default:

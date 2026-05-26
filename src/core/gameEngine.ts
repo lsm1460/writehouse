@@ -1,7 +1,8 @@
 import { EngineContext } from './engineContext'
+import { SaveSystem } from './systems/SaveSystem'
 
 export type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT'
-export type GameStatus = 'PLAYING' | 'GAME_OVER'
+export type GameStatus = 'TITLE' | 'MENU' | 'PLAYING' | 'GAME_OVER'
 
 export interface Position {
   x: number
@@ -16,10 +17,10 @@ export class GameEngine {
   public ctx: EngineContext
   private stateId: number = 0
   private onUpdateCallback?: () => void
-  private status: GameStatus = 'PLAYING'
+  private status: GameStatus = 'TITLE'
 
-  constructor(mapData: MapData, roomId: string = '1-1') {
-    this.ctx = new EngineContext(mapData, roomId, () => this.notify())
+  constructor(mapData: MapData) {
+    this.ctx = new EngineContext(mapData, () => this.notify())
   }
 
   public getSnapshot() {
@@ -40,7 +41,19 @@ export class GameEngine {
   }
 
   public start() {
+    this.status = 'PLAYING'
+    
     this.ctx.init()
+  }
+
+  public load(): boolean {
+    const saveData = this.ctx.save.load()
+    if (!saveData) return false
+    
+    this.status = 'PLAYING'
+    this.ctx.init(saveData.roomId)
+    this.notify()
+    return true
   }
 
   public move(dir: Direction) {

@@ -45,7 +45,7 @@ export function CellFrame({ lightLevel, isPlayer, isTarget, children, isWet, isE
         </>
       )}
 
-      <span className="relative z-10">{children}</span>
+      <span className="relative z-10 flex-1 h-full">{children}</span>
     </span>
   )
 }

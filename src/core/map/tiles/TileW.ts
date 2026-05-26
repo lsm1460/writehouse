@@ -27,21 +27,16 @@ export class TileW extends Tile {
   }
 
   public onEnvironmentUpdate(deltaTime: number, mapGrid: GridType): boolean {
-    console.log(1)
     if (this._char === 'w') {
-      console.log(2)
       return false
     }
     
-    console.log(3)
     this.spreadTimer += deltaTime
     if (this.spreadTimer >= this.SPREAD_INTERVAL) {
-      console.log(4)
       this.spreadTimer = 0
       return this.spreadWater(mapGrid)
     }
     
-    console.log(5)
     return false
   }
 

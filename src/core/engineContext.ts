@@ -4,6 +4,7 @@ import { FogSystem } from './systems/fogSystem'
 import { InventorySystem } from './systems/inventorySystem'
 import { MapSystem } from './systems/mapSystem'
 import { PlayerSystem } from './systems/playerSystem'
+import { SaveSystem } from './systems/SaveSystem'
 import { StageSystem } from './systems/StageSystem'
 
 export class EngineContext {
@@ -13,18 +14,20 @@ export class EngineContext {
   public fog: FogSystem
   public stage: StageSystem
   public environment: EnvironmentSystem
+  public save: SaveSystem
 
   private notifyEngine: () => void
 
-  constructor(mapData: MapData, roomId: string, notifyEngine: () => void) {
+  constructor(mapData: MapData, notifyEngine: () => void) {
     this.notifyEngine = notifyEngine
 
-    this.map = new MapSystem(this, mapData, roomId)
+    this.map = new MapSystem(this, mapData)
     this.player = new PlayerSystem(this)
     this.inventory = new InventorySystem(this)
     this.fog = new FogSystem(this)
     this.stage = new StageSystem(this)
     this.environment = new EnvironmentSystem(this)
+    this.save = new SaveSystem()
   }
 
   public get grid() {
@@ -35,11 +38,18 @@ export class EngineContext {
     return this.stage.isClear
   }
 
-  public init() {
+  public init(roomId?: string) {
+    const spawn = this.map.loadRoom(roomId || this.map.currentRoomId || '1-1')
+    spawn && this.setPlayer(spawn)
+
     this.fog.update()
     this.onChange()
 
     this.tickTurn()
+  }
+
+  public saveGame() {
+    this.save.save(this.map.currentRoomId)
   }
 
   public onChange() {
@@ -62,15 +72,11 @@ export class EngineContext {
   public nextStage() {
     const spawn = this.map.loadNextRoom()
 
+    
     if (spawn) {
-      this.stage.reset()
-      this.inventory.reset()
-
-      this.player.pos = { ...spawn }
-      this.player.dir = 'UP'
-
-      this.player.updateTargetPosition()
-      this.init()
+      this.saveGame()
+      this.setPlayer(spawn)
+      this.init(this.map.currentRoomId)
     }
   }
 
@@ -87,5 +93,15 @@ export class EngineContext {
       this.player.updateTargetPosition()
       this.init()
     }
+  }
+
+  private setPlayer(pos: { x: number; y: number }) {
+    this.stage.reset()
+    this.inventory.reset()
+
+    this.player.pos = { ...pos }
+    this.player.dir = 'UP'
+
+    this.player.updateTargetPosition()
   }
 }

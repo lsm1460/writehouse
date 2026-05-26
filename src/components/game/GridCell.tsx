@@ -23,11 +23,11 @@ export function GridCell({ stageClear, cell }: GridCellProps) {
 
   return (
     <CellFrame lightLevel={lightLevel} isPlayer={isPlayer} isTarget={isTarget} isWet={tile.isWet} isElectrified={tile.isElectrified}>
-      <div className="relative inline-flex items-center justify-center w-full h-full">
+      <div className="inline-flex items-center justify-center w-full h-full">
         {isPlayer && (
           <span
-            className={`absolute inset-0 flex items-center justify-center text-white font-black z-10 transition-opacity duration-200 ${
-              tile.char === 'g' || tile.char === 'T' ? 'opacity-40 scale-90' : 'opacity-100'
+            className={`absolute inset-0 flex items-center justify-center text-white font-black z-10  ${
+              tile.char.trim() ? 'opacity-40 scale-90' : 'opacity-100'
             }`}
             style={{ userSelect: 'none' }}
           >

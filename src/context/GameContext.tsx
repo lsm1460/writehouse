@@ -9,7 +9,7 @@ interface GameContextType {
 const GameContext = createContext<GameContextType | null>(null)
 
 export function GameProvider({ children }: { children: ReactNode }) {
-  const engine = useMemo(() => new GameEngine(assets.map, '1-1'), [])
+  const engine = useMemo(() => new GameEngine(assets.map), [])
 
   useSyncExternalStore(
     (callback) => {
@@ -36,5 +36,6 @@ export function useGame() {
     stageClear: context.engine.ctx.stageClear,
     inventory: context.engine.ctx.inventory,
     gameState: context.engine.gameStatus,
+    save: context.engine.ctx.save
   }
 }
