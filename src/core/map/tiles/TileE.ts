@@ -34,14 +34,14 @@ export class TileE extends EnergyTile {
     this.age += deltaTime
 
     if (this.age >= this.ENERGY_LIFETIME) {
-      this.discharge()
+      this.drained()
       return true
     }
 
     return this.propagatePower(grid)
   }
 
-  discharge() {
+  drained() {
     this.isDischarged = true
     this.age = 0
   }
