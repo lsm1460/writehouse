@@ -55,10 +55,11 @@ export function createTile(char: string, x: number, y: number, meta?: any): Tile
     case 'I':
     case 'O':
     case 'T':
+    case null:
       tile = new BlockTile(char, x, y)
       break
     default:
-      tile = new FloorTile(char, x, y) // '_', 'I', '.' 등등
+      tile = new FloorTile(char, x, y) // '_', '.' 등등
   }
 
   if (meta) {

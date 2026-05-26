@@ -1,5 +1,4 @@
 import { EngineContext } from './engineContext'
-import { SaveSystem } from './systems/SaveSystem'
 
 export type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT'
 export type GameStatus = 'TITLE' | 'MENU' | 'PLAYING' | 'GAME_OVER'
@@ -10,7 +9,7 @@ export interface Position {
 }
 
 export interface MapData {
-  floors: { rooms: { room_id: string; title: string; grid: string[][] }[] }[]
+  floors: { rooms: { room_id: string; title: string; grid: (string | null)[][] }[] }[]
 }
 
 export class GameEngine {
