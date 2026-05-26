@@ -28,26 +28,29 @@ export class TileF extends Tile implements IEnvironmentTile {
   public onEnvironmentUpdate(deltaTime: number, grid: GridType): boolean {
     if (this.fireStage === 'EXTINGUISHED') return false
 
-    if (this.checkAdjacentOil(grid)) {
-      if (this.fireStage === 'WEAK') {
-        this.reignite()
-        return true
-      }
-      return false
-    }
-
-    this.age += deltaTime
-    if (this.age >= this.FIRE_LIFETIME) {
-      this.degrade()
-      return true
-    }
+    let hasChanged = false
 
     if (this.isInitialTurn) {
       this.isInitialTurn = false
       return false
     }
 
-    return this.spreadFire(grid)
+    if (this.checkAdjacentOil(grid)) {
+      if (this.fireStage === 'WEAK') {
+        this.reignite()
+        hasChanged = true // 상태가 변했음을 기록
+      }
+    } else {
+      this.age += deltaTime
+      if (this.age >= this.FIRE_LIFETIME) {
+        this.degrade()
+        return true
+      }
+    }
+
+    const spreadSuccess = this.spreadFire(grid)
+
+    return hasChanged || spreadSuccess
   }
 
   private spreadFire(grid: GridType): boolean {
