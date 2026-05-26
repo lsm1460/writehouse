@@ -22,14 +22,9 @@ export function GameOver({ onRestart, delayMS = 300 }: GameOverProps) {
 
   useEffect(() => {
     if (isRendered) {
-      const animationFrame = requestAnimationFrame(() => {
-        setOpacity(1)
-      })
-      return () => cancelAnimationFrame(animationFrame)
+      setOpacity(1)
     }
   }, [isRendered])
-
-  if (!isRendered) return null
 
   return (
     <div

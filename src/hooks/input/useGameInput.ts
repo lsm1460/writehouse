@@ -14,9 +14,9 @@ interface UseGameInputProps {
 export function useGameInput({ engine, onMenuUp, onMenuDown, onMenuSelect }: UseGameInputProps) {
   const lastGamepadTime = useRef<number>(0)
   const lastKeyboardTime = useRef<number>(0)
-  
+
   const gamepadCooldownMS = 200
-  const keyboardCooldownMS = 200 
+  const keyboardCooldownMS = 150
   const activeKeys = useRef<Record<string, boolean>>({})
 
   useEffect(() => {
@@ -109,12 +109,25 @@ export function useGameInput({ engine, onMenuUp, onMenuDown, onMenuSelect }: Use
     window.addEventListener('blur', handleBlur)
 
     let frameId: number
+    let lastFrameTime = performance.now()
+
+    const fpsLimit = 30
+    const frameInterval = 1000 / fpsLimit
+
     const loop = () => {
       const now = performance.now()
-      checkKeyboard(now)
-      checkGamepad(now)
+      const elapsed = now - lastFrameTime
+
+      if (elapsed >= frameInterval) {
+        lastFrameTime = now - (elapsed % frameInterval)
+
+        checkKeyboard(now)
+        checkGamepad(now)
+      }
+
       frameId = requestAnimationFrame(loop)
     }
+
     frameId = requestAnimationFrame(loop)
 
     return () => {
