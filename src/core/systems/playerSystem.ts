@@ -52,7 +52,6 @@ export class PlayerSystem {
       this.dir = dir
       this.updateTargetPosition()
       this.ctx.onChange()
-      return false
     }
 
     let nextX = this.pos.x
