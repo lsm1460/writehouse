@@ -84,11 +84,6 @@ export class GameEngine {
     this.processTurn()
   }
 
-  public nextStage() {
-    if (this.status === 'GAME_OVER') return
-    this.ctx.nextStage()
-  }
-
   public retryStage() {
     this.status = 'PLAYING'
 

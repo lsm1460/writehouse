@@ -5,7 +5,9 @@
     "config": "Config",
     "move": "Move",
     "retry": "Retry Stage",
-    "menu": "Menu"
+    "menu": "Menu",
+    "lang": "Language",
+    "back": "Back"
   },
   "floors": {
     "title": "Floor {{ floor }}",

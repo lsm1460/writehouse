@@ -5,7 +5,9 @@
     "config": "설정",
     "move": "이동",
     "retry": "재시도",
-    "menu": "메뉴"
+    "menu": "메뉴",
+    "lang": "언어",
+    "back": "뒤로"
   },
   "floors": {
     "title": "{{ floor }} 층",

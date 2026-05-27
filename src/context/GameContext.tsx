@@ -1,6 +1,7 @@
-import { createContext, useContext, useMemo, useSyncExternalStore, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useMemo, useSyncExternalStore, type ReactNode } from 'react'
 import { assets } from '~/assets'
 import { GameEngine } from '~/core/gameEngine'
+import i18n from '~/i18n'
 
 interface GameContextType {
   engine: GameEngine
@@ -18,6 +19,13 @@ export function GameProvider({ children }: { children: ReactNode }) {
     },
     () => engine.getSnapshot()
   )
+
+  useEffect(() => {
+    const saveData = engine.ctx.save.load()
+    if (saveData && saveData.language) {
+      i18n.changeLanguage(saveData.language)
+    }
+  }, [engine])
 
   return <GameContext.Provider value={{ engine }}>{children}</GameContext.Provider>
 }
@@ -38,6 +46,7 @@ export function useGame() {
     gameState: context.engine.gameStatus,
     toggleMenu: context.engine.toggleMenu,
     save: context.engine.ctx.save,
-    currentRoomId: context.engine.ctx.map.currentRoomId
+    currentRoomId: context.engine.ctx.map.currentRoomId,
+    isSaving: context.engine.ctx.save.isSaving,
   }
 }

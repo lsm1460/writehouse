@@ -1,3 +1,4 @@
+import i18n from '~/i18n'
 import type { MapData } from './gameEngine'
 import { EnvironmentSystem } from './systems/EnvironmentSystem'
 import { FogSystem } from './systems/fogSystem'
@@ -27,7 +28,7 @@ export class EngineContext {
     this.fog = new FogSystem(this)
     this.stage = new StageSystem(this)
     this.environment = new EnvironmentSystem(this)
-    this.save = new SaveSystem()
+    this.save = new SaveSystem(notifyEngine)
   }
 
   public get grid() {
@@ -40,7 +41,7 @@ export class EngineContext {
 
   public async init(roomId?: string) {
     const spawn = await this.map.loadRoom(roomId || '1-1')
-    
+
     spawn && this.setPlayer(spawn)
 
     this.fog.update()
@@ -50,7 +51,9 @@ export class EngineContext {
   }
 
   public saveGame(id: string) {
-    this.save.save(id)
+    const currentLanguage = i18n.language || 'ko'
+
+    this.save.save(id, currentLanguage)
   }
 
   public onChange() {
@@ -72,7 +75,7 @@ export class EngineContext {
 
   public nextStage() {
     const id = this.map.getNextRoomId()
-    
+
     if (id) {
       this.saveGame(id)
       this.init(id)
