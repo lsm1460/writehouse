@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html, body {
+  background-color: #171717;
+}
+
 @keyframes custom-fire {
   0%, 100% {
     transform: scale(1) skewX(0deg);

@@ -38,8 +38,9 @@ export class EngineContext {
     return this.stage.isClear
   }
 
-  public init(roomId?: string) {
-    const spawn = this.map.loadRoom(roomId || '1-1')
+  public async init(roomId?: string) {
+    const spawn = await this.map.loadRoom(roomId || '1-1')
+    
     spawn && this.setPlayer(spawn)
 
     this.fog.update()

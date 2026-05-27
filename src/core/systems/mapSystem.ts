@@ -2,6 +2,7 @@ import { EngineContext } from '../engineContext'
 import type { MapData } from '../gameEngine'
 import { createTile } from '../map/tiles'
 import type { GridType } from '../types'
+import { delay } from '../utils'
 
 export class MapSystem {
   public grid: GridType = []
@@ -16,11 +17,13 @@ export class MapSystem {
     this.mapData = mapData
   }
 
-  public loadRoom(roomId: string): { x: number; y: number } | undefined {
+  public async loadRoom(roomId: string): Promise<{ x: number; y: number } | undefined> {
     const roomData = this.findRoomAndFloor(roomId)
 
     this.currentRoomId = roomId
     this.floorNumber = roomData?.floor ? roomData.floor.floor_number : 0
+
+    await delay()
 
     const rawGrid: string[][] = roomData?.room ? JSON.parse(JSON.stringify(roomData.room.grid)) : [[]]
 

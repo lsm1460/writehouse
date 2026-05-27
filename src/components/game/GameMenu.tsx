@@ -37,7 +37,7 @@ export function GameMenu({ onResume, onRestart, onExit }: MenuProps) {
   })
 
   return (
-    <FadeOverlay delayMS={0} durationMS={0}>
+    <FadeOverlay delayMS={0} durationMS={200} midDelayMS={999999}>
       <div className="flex flex-col gap-4 w-64">
         <h2 className="text-3xl text-center text-neutral-400 font-bold mb-4 uppercase tracking-tighter">Pause</h2>
         {menuItems.map((item, index) => (

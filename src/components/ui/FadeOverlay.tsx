@@ -2,60 +2,110 @@ import { useEffect, useState, type ReactNode } from 'react'
 
 interface FadeOverlayProps {
   children: ReactNode
-  in?: boolean
+  mode?: 'fadeIn' | 'fadeOut' | 'fadeInOut'
   delayMS?: number
   durationMS?: number
-  onAnimationEnd?: () => void // 애니메이션 종료 콜백 추가
+  midDelayMS?: number
+  onMidpoint?: () => void
+  onAnimationEnd?: () => void
 }
+
+type TransitionPhase = 'IDLE' | 'FADING_OUT' | 'MIDPOINT' | 'FADING_IN' | 'COMPLETED'
 
 export function FadeOverlay({
   children,
-  in: isOpen = true,
+  mode = 'fadeIn',
   delayMS = 300,
   durationMS = 500,
+  midDelayMS = 1000,
+  onMidpoint,
   onAnimationEnd,
 }: FadeOverlayProps) {
-  const [opacity, setOpacity] = useState(isOpen ? 0 : 1)
+  const [phase, setPhase] = useState<TransitionPhase>('IDLE')
+  const [opacity, setOpacity] = useState(mode === 'fadeOut' ? 1 : 0)
 
   useEffect(() => {
     let timerId: number
-    let animationEndTimerId: number
 
-    const fadeIn = () => {
+    if (mode === 'fadeIn') {
       timerId = setTimeout(() => {
         setOpacity(1)
-        animationEndTimerId = setTimeout(() => onAnimationEnd?.(), durationMS)
+        timerId = setTimeout(() => onAnimationEnd?.(), durationMS)
       }, delayMS)
+      return () => clearTimeout(timerId)
     }
 
-    const fadeOut = () => {
+    if (mode === 'fadeOut') {
       timerId = setTimeout(() => {
         setOpacity(0)
-        animationEndTimerId = setTimeout(() => onAnimationEnd?.(), durationMS)
+        timerId = setTimeout(() => onAnimationEnd?.(), durationMS)
       }, delayMS)
+      return () => clearTimeout(timerId)
     }
 
-    if (isOpen) {
-      fadeIn()
-    } else {
-      fadeOut()
+    if (mode === 'fadeInOut') {
+      switch (phase) {
+        case 'IDLE':
+          timerId = setTimeout(() => {
+            setPhase('FADING_OUT')
+            setOpacity(1)
+          }, delayMS)
+          break
+
+        case 'FADING_OUT':
+          timerId = setTimeout(() => {
+            setPhase('MIDPOINT')
+            onMidpoint?.()
+          }, durationMS)
+          break
+
+        case 'MIDPOINT':
+          timerId = setTimeout(() => {
+            setPhase('FADING_IN')
+            setOpacity(0)
+          }, midDelayMS)
+          break
+
+        case 'FADING_IN':
+          timerId = setTimeout(() => {
+            setPhase('COMPLETED')
+            onAnimationEnd?.()
+          }, durationMS)
+          break
+
+        case 'COMPLETED':
+          break
+      }
     }
 
-    return () => {
-      clearTimeout(timerId)
-      clearTimeout(animationEndTimerId)
-    }
-  }, [isOpen, delayMS, durationMS, onAnimationEnd])
+    return () => clearTimeout(timerId)
+  }, [mode, phase, delayMS, durationMS, midDelayMS, onMidpoint, onAnimationEnd])
+
+  const shouldRenderContent = () => {
+    if (mode === 'fadeIn') return opacity > 0
+    if (mode === 'fadeOut') return true
+    return phase !== 'IDLE' && phase !== 'COMPLETED'
+  }
 
   return (
     <div
-      className="fade absolute inset-0 flex items-center justify-center bg-black/40 z-40 backdrop-blur-xs"
+      className="absolute inset-0 flex items-center justify-center bg-black z-40"
       style={{
         opacity: opacity,
         transition: `opacity ${durationMS}ms ease-out`,
       }}
     >
-      {children}
+      {shouldRenderContent() && (
+        <div
+          className="transition-opacity ease-out"
+          style={{
+            transitionDuration: `${durationMS}ms`,
+            opacity: phase === 'FADING_IN' ? 0 : 1,
+          }}
+        >
+          {children}
+        </div>
+      )}
     </div>
   )
 }
