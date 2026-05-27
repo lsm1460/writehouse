@@ -21,7 +21,7 @@ export function GridCell({ stageClear, cell }: GridCellProps) {
   const TargetCell = CELL_COMPONENTS[tile.char] || CellDefault
 
   const backgroundTile = <TargetCell char={tile.char} tile={tile} lightState={lightState} stageClear={stageClear} />
-
+  
   if (tile.char === null) {
     return <span style={{ width: CELL_SIZE, height: CELL_SIZE }} />
   }

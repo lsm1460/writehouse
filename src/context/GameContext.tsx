@@ -36,6 +36,8 @@ export function useGame() {
     stageClear: context.engine.ctx.stageClear,
     // inventory: context.engine.ctx.inventory,
     gameState: context.engine.gameStatus,
-    save: context.engine.ctx.save
+    toggleMenu: context.engine.toggleMenu,
+    save: context.engine.ctx.save,
+    currentRoomId: context.engine.ctx.map.currentRoomId
   }
 }

@@ -9,7 +9,10 @@ export interface Position {
 }
 
 export interface MapData {
-  floors: { rooms: { room_id: string; title: string; grid: (string | null)[][] }[] }[]
+  floors: {
+    floor_number: number
+    rooms: { room_id: string; grid: (string | null)[][] }[]
+  }[]
 }
 
 export class GameEngine {
@@ -41,14 +44,14 @@ export class GameEngine {
 
   public start() {
     this.status = 'PLAYING'
-    
+
     this.ctx.init()
   }
 
   public load(): boolean {
     const saveData = this.ctx.save.load()
     if (!saveData) return false
-    
+
     this.status = 'PLAYING'
     this.ctx.init(saveData.roomId)
     this.notify()
@@ -92,9 +95,15 @@ export class GameEngine {
     this.ctx.retryStage()
   }
 
+  public toggleMenu() {
+    this.status === 'MENU' ? this.status = 'PLAYING' : this.status = 'MENU'
+
+    this.notify()
+  }
+
   private processTurn() {
     const isAlive = this.ctx.tickTurn()
-    
+
     if (!isAlive) {
       this.status = 'GAME_OVER'
     }

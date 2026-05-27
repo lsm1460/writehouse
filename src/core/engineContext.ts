@@ -79,7 +79,6 @@ export class EngineContext {
   }
 
   public retryStage() {
-    console.log('?2')
     this.init(this.map.currentRoomId)
   }
 

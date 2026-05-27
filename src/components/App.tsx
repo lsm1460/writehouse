@@ -3,11 +3,16 @@ import { useGame } from '~/context/GameContext'
 //
 import { GameScreen } from './screens/GameScreen'
 import { TitleScreen } from './screens/TitleScreen'
+import { ConfigScreen } from './screens/ConfigScreen'
 
 function App() {
   const { save, engine } = useGame()
 
-  const [gameState, setGameState] = useState<'TITLE' | 'PLAYING'>('TITLE')
+  const [gameState, setGameState] = useState<'TITLE' | 'CONFIG' | 'PLAYING'>('TITLE')
+
+  const backToTitle = () => {
+    setGameState('TITLE')
+  }
 
   if (gameState === 'TITLE') {
     return (
@@ -24,12 +29,15 @@ function App() {
             setGameState('PLAYING')
           },
         })}
+        onConfig={() => setGameState('CONFIG')}
         onExit={() => {}}
       />
     )
+  } else if (gameState === 'CONFIG') {
+    return <ConfigScreen backToTitle={backToTitle} />
   }
 
-  return <GameScreen />
+  return <GameScreen backToTitle={backToTitle} />
 }
 
 export default App

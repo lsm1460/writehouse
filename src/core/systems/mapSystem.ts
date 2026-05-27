@@ -5,69 +5,81 @@ import type { GridType } from '../types'
 
 export class MapSystem {
   public grid: GridType = []
+  public floorNumber: number = 0
   public currentRoomId: string = ''
-  public roomTitle: string
-  
+
   private ctx: EngineContext
   private mapData: MapData
 
   constructor(ctx: EngineContext, mapData: MapData) {
     this.ctx = ctx
     this.mapData = mapData
-    this.roomTitle = 'Unknown'
   }
 
   public loadRoom(roomId: string): { x: number; y: number } | undefined {
-  const allRooms = this.mapData.floors.flatMap((f) => f.rooms)
-  const room = allRooms.find((r) => r.room_id === roomId)
-  
-  this.currentRoomId = roomId
-  this.roomTitle = room ? room.title : 'Unknown'
-  
-  const rawGrid: string[][] = room ? JSON.parse(JSON.stringify(room.grid)) : [[]]
+    const roomData = this.findRoomAndFloor(roomId)
 
-  let spawnPos: { x: number; y: number } | undefined = undefined
+    this.currentRoomId = roomId
+    this.floorNumber = roomData?.floor ? roomData.floor.floor_number : 0
 
-  this.grid = rawGrid.map((row, i) => 
-    row.map((cell, j) => {
-      const tile = createTile(cell, j, i)
-      
-      if (cell === 'S') {
-        spawnPos = { x: j, y: i }
+    const rawGrid: string[][] = roomData?.room ? JSON.parse(JSON.stringify(roomData.room.grid)) : [[]]
+
+    return this.buildGrid(rawGrid)
+  }
+
+  private findRoomAndFloor(roomId: string) {
+    for (const floor of this.mapData.floors) {
+      const room = floor.rooms.find((r) => r.room_id === roomId)
+      if (room) {
+        return { floor, room }
       }
-      
-      return tile
-    })
-  )
+    }
+    return undefined
+  }
 
-  return spawnPos
-}
+  private buildGrid(rawGrid: string[][]): { x: number; y: number } | undefined {
+    let spawnPos: { x: number; y: number } | undefined = undefined
+
+    this.grid = rawGrid.map((row, i) =>
+      row.map((cell, j) => {
+        const tile = createTile(cell, j, i)
+
+        if (cell === 'S') {
+          spawnPos = { x: j, y: i }
+        }
+
+        return tile
+      })
+    )
+
+    return spawnPos
+  }
 
   public reloadCurrentRoom() {
     return this.loadRoom(this.currentRoomId)
   }
 
   public getNextRoomId(): string | undefined {
-  for (let f = 0; f < this.mapData.floors.length; f++) {
-    const currentFloor = this.mapData.floors[f]
-    const currentIndex = currentFloor.rooms.findIndex((r) => r.room_id === this.currentRoomId)
+    for (let f = 0; f < this.mapData.floors.length; f++) {
+      const currentFloor = this.mapData.floors[f]
+      const currentIndex = currentFloor.rooms.findIndex((r) => r.room_id === this.currentRoomId)
 
-    if (currentIndex !== -1) {
-      if (currentIndex + 1 < currentFloor.rooms.length) {
-        return currentFloor.rooms[currentIndex + 1].room_id
+      if (currentIndex !== -1) {
+        if (currentIndex + 1 < currentFloor.rooms.length) {
+          return currentFloor.rooms[currentIndex + 1].room_id
+        }
+
+        if (f + 1 < this.mapData.floors.length) {
+          return this.mapData.floors[f + 1].rooms[0].room_id
+        }
+
+        console.log('🎉 마지막 방입니다! 던전의 끝에 도달했습니다.')
+        return undefined
       }
-
-      if (f + 1 < this.mapData.floors.length) {
-        return this.mapData.floors[f + 1].rooms[0].room_id
-      }
-
-      console.log('🎉 마지막 방입니다! 던전의 끝에 도달했습니다.')
-      return undefined
     }
-  }
 
-  return undefined
-}
+    return undefined
+  }
 
   public isWalkable(x: number, y: number): boolean {
     if (!this.isValid(x, y)) return false

@@ -1,0 +1,63 @@
+{
+  "ui": {
+    "new_game": "New Game",
+    "load": "Load",
+    "config": "Config",
+    "move": "Move",
+    "retry": "Retry Stage",
+    "menu": "Menu"
+  },
+  "floors": {
+    "title": "Floor {{ floor }}",
+    "1": "The Begin"
+  },
+  "rooms": {
+    "1-1": "Light",
+    "1-2": "Movement",
+    "1-3": "Behind the Wall",
+    "1-4": "Corner of the Hall",
+    "1-5": "Little Maze",
+    "1-6": "Erosion"
+  },
+  "char": {
+    "_": {
+      "label": "Synthesis Foundation",
+      "example": "I + _ → L"
+    },
+    "i": {
+      "label": "Light Node",
+      "label_active": "Light Node - Active",
+      "label_inactive": "Light Node - Inactive"
+    },
+    "I": {
+      "label": "Wooden Stick",
+      "example": "I + _ → L"
+    },
+    "#": {
+      "label": "Wall"
+    },
+    "L": {
+      "label": "Light",
+      "example": "L + = → E"
+    },
+    "G": {
+      "label": "Gate",
+      "label_open": "Gate - Open",
+      "label_closed": "Gate - Closed"
+    },
+    "g": {
+      "label": "Grass",
+      "label_wet": "Wet Grass",
+      "label_el": "Charged Grass"
+    },
+    "w": {
+      "label": "Puddle"
+    },
+    "W": {
+      "label": "Deep Water"
+    },
+    "8": {
+      "label": "Sustainable Energy"
+    }
+  }
+}

@@ -10,7 +10,7 @@ interface CellFrameProps {
   isElectrified: boolean
 }
 
-const OPACITY_LEVELS = [0.1, 0.6, 0.75, 0.9, 1.0]
+const OPACITY_LEVELS = [0.2, 0.6, 0.75, 0.9, 1.0]
 const getOpacity = (level: number) => OPACITY_LEVELS[level] ?? 1.0
 
 export function CellFrame({ lightLevel, isPlayer, isTarget, children, isWet, isElectrified }: CellFrameProps) {
