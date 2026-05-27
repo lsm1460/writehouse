@@ -14,7 +14,7 @@ function getTileContext(
     case 'i': // 빛 수신기 타일
       return contextData.isActive ? 'active' : 'inactive'
     case 'g': // 빛 수신기 타일
-      return contextData.isElectrified? 'el' : contextData.isWet ? 'wet' : ''
+      return contextData.isElectrified ? 'el' : contextData.isWet ? 'wet' : ''
     default:
       return undefined
   }
@@ -23,7 +23,7 @@ function getTileContext(
 export function GameUi() {
   const { t } = useTranslation()
   const { map, stageClear, fog } = useGame()
-  const { scale } = useWindowScale()
+  const { isReady, scale } = useWindowScale()
   const isGamepadActive = useGamepadActive()
 
   const target = map.getTargetTile()
@@ -33,11 +33,18 @@ export function GameUi() {
     target && charKey === 'i' ? fog.getLightState(target.x, target.y).environmentIntensity > 0 : false
 
   const tileContext = charKey
-    ? getTileContext(charKey, { stageClear, isActive: isLightActive, isWet: target?.isWet || false, isElectrified: target?.isElectrified || false })
+    ? getTileContext(charKey, {
+        stageClear,
+        isActive: isLightActive,
+        isWet: target?.isWet || false,
+        isElectrified: target?.isElectrified || false,
+      })
     : undefined
 
   const label = charKey ? t(`char.${charKey}.label`, { context: tileContext, defaultValue: '' }) : ''
   const example = charKey ? t(`char.${charKey}.example`, { defaultValue: '' }) : ''
+
+  if (!isReady) return
 
   return (
     <div

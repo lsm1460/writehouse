@@ -7,6 +7,7 @@ import { MapSystem } from './systems/mapSystem'
 import { PlayerSystem } from './systems/playerSystem'
 import { SaveSystem } from './systems/SaveSystem'
 import { StageSystem } from './systems/StageSystem'
+import { delay } from './utils'
 
 export class EngineContext {
   public map: MapSystem
@@ -39,8 +40,8 @@ export class EngineContext {
     return this.stage.isClear
   }
 
-  public async init(roomId?: string) {
-    const spawn = await this.map.loadRoom(roomId || '1-1')
+  public init(roomId?: string) {
+    const spawn = this.map.loadRoom(roomId || '1-1')
 
     spawn && this.setPlayer(spawn)
 
@@ -73,11 +74,16 @@ export class EngineContext {
     return !isGameOver
   }
 
-  public nextStage() {
+  public async nextStage() {
     const id = this.map.getNextRoomId()
 
     if (id) {
       this.saveGame(id)
+
+      this.map.currentRoomId = id
+
+      await delay()
+
       this.init(id)
     }
   }

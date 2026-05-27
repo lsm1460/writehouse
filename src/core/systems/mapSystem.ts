@@ -17,13 +17,11 @@ export class MapSystem {
     this.mapData = mapData
   }
 
-  public async loadRoom(roomId: string): Promise<{ x: number; y: number } | undefined> {
+  public loadRoom(roomId: string): { x: number; y: number } | undefined {
     const roomData = this.findRoomAndFloor(roomId)
 
     this.currentRoomId = roomId
     this.floorNumber = roomData?.floor ? roomData.floor.floor_number : 0
-
-    await delay()
 
     const rawGrid: string[][] = roomData?.room ? JSON.parse(JSON.stringify(roomData.room.grid)) : [[]]
 
