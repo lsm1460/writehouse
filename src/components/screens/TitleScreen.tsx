@@ -46,7 +46,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({ onStart, onLoad, onCon
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-neutral-900 z-50">
       <div
-        className="flex flex-col items-center justify-center py-5"
+        className="flex flex-col items-center justify-center pt-10 pb-5"
         style={{
           transform: `scale(${scale})`,
           transformOrigin: 'center center',
@@ -74,7 +74,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({ onStart, onLoad, onCon
           ))}
         </div>
 
-        <div className="mt-auto pb-4 text-neutral-600 font-mono text-xs">
+        <div className="mt-10 pb-4 text-neutral-600 font-mono text-xs">
           © 2026 WriteHouse Studio. All rights reserved.
         </div>
       </div>
