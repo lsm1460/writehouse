@@ -20,7 +20,7 @@ export const ConfigScreen: React.FC<ConfigScreenProps> = ({ backToTitle }) => {
 
   const changeLang = (lang: string) => {
     i18n.changeLanguage(lang)
-    engine.setLang(lang)
+    engine.ctx.setLang(lang)
     setCurrentMenu('MAIN')
   }
 

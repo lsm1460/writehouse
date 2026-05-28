@@ -1,4 +1,5 @@
 import type { MapData } from './gameEngine'
+import { CheatSystem } from './systems/CheatSystem'
 import { EnvironmentSystem } from './systems/EnvironmentSystem'
 import { FogSystem } from './systems/fogSystem'
 import { HistorySystem } from './systems/historySystem'
@@ -18,6 +19,7 @@ export class EngineContext {
   public environment: EnvironmentSystem
   public save: SaveSystem
   private history: HistorySystem
+  private cheat: CheatSystem
   private lang: string
   private notifyEngine: () => void
 
@@ -31,7 +33,9 @@ export class EngineContext {
     this.stage = new StageSystem(this)
     this.environment = new EnvironmentSystem(this)
     this.save = new SaveSystem(notifyEngine)
+
     this.history = new HistorySystem(this)
+    this.cheat = new CheatSystem(this)
 
     this.lang = lang
   }
@@ -48,7 +52,10 @@ export class EngineContext {
     this.history.clear()
     const spawn = this.map.loadRoom(roomId || '1-1')
 
-    spawn && this.setPlayer(spawn)
+    this.stage.reset()
+    this.inventory.reset()
+
+    spawn && this.player.spawn(spawn)
 
     this.fog.update()
     this.onChange()
@@ -116,10 +123,7 @@ export class EngineContext {
     this.save.save(roomId, lang)
   }
 
-  private setPlayer(pos: { x: number; y: number }) {
-    this.stage.reset()
-    this.inventory.reset()
-
-    this.player.spawn(pos)
+  public executeCheat(command: string): string | null {
+    return this.cheat.execute(command)
   }
 }

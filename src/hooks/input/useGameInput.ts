@@ -31,6 +31,7 @@ interface UseGameInputProps {
   onMenuUp?: () => void
   onMenuDown?: () => void
   onMenuSelect?: () => void
+  onAction?: (action: GameAction) => void
   disabled?: boolean
 }
 
@@ -39,6 +40,7 @@ export function useGameInput({
   onMenuUp, 
   onMenuDown, 
   onMenuSelect, 
+  onAction,
   disabled = false 
 }: UseGameInputProps) {
   const lastGamepadTime = useRef<number>(0)
@@ -51,6 +53,10 @@ export function useGameInput({
   const frameInterval = 1000 / fpsLimit
 
   const executeAction = (action: GameAction) => {
+    if (onAction) {
+      onAction(action)
+    }
+
     if (['TITLE', 'MENU', 'GAME_OVER'].includes(engine.gameStatus)) {
       switch (action.type) {
         case 'MOVE':

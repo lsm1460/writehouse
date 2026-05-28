@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useGame } from '~/context/GameContext'
 import { useGameInput } from '~/hooks/input/useGameInput'
-import { GameOver } from '../game/GameOver'
-import { GameUi } from '../game/GameUi'
-import { GameScreenWrapper } from '../game/GameScreenWrapper'
-import { StageGrid } from '../game/StageGrid'
-import { RoomTransition } from '../game/RoomTransition'
+import { useCheatMode } from '~/hooks/useCheatMode'
 import { GameMenu } from '../game/GameMenu'
+import { GameOver } from '../game/GameOver'
+import { GameScreenWrapper } from '../game/GameScreenWrapper'
+import { GameUi } from '../game/GameUi'
+import { RoomTransition } from '../game/RoomTransition'
+import { StageGrid } from '../game/StageGrid'
+import { CheatInput } from '../ui/CheatInput'
 
 type GameScreenProps = {
   backToTitle: () => void
@@ -16,7 +18,13 @@ export function GameScreen({ backToTitle }: GameScreenProps) {
   const { engine, gameState, currentRoomId, map } = useGame()
   const [isTransitioning, setIsTransitioning] = useState(true)
 
-  useGameInput({ engine, disabled: isTransitioning })
+  const { cheatMode, handleActionReport, closeCheatMode } = useCheatMode()
+
+  useGameInput({
+    engine,
+    disabled: isTransitioning || cheatMode,
+    onAction: handleActionReport,
+  })
 
   useEffect(() => {
     setIsTransitioning(true)
@@ -45,6 +53,12 @@ export function GameScreen({ backToTitle }: GameScreenProps) {
           <GameMenu onResume={() => engine.toggleMenu()} onRestart={() => engine.retryStage()} onExit={backToTitle} />
         )}
         {gameState === 'GAME_OVER' && <GameOver onRestart={() => engine.retryStage()} />}
+
+        <CheatInput
+          isOpen={cheatMode}
+          onClose={closeCheatMode}
+          onExecuteCheat={(cmd) => engine.ctx.executeCheat(cmd)}
+        />
       </GameScreenWrapper>
       {gameState === 'PLAYING' && !isTransitioning && <GameUi />}
     </>

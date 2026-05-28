@@ -90,10 +90,6 @@ export class GameEngine {
     this.notify()
   }
 
-  public setLang(lang: string) {
-    this.ctx.setLang(lang)
-  }
-
   private processTurn() {
     const isAlive = this.ctx.tickTurn()
 
