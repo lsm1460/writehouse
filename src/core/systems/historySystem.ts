@@ -29,7 +29,7 @@ export class HistorySystem {
         return cloned
       })
     )
-
+    
     return {
       grid: gridCopy,
       playerPos: { ...this.engine.player.pos },

@@ -15,6 +15,25 @@ export class TileF extends Tile implements IEnvironmentTile {
     super(char, x, y)
   }
 
+  override getData() {
+    return {
+      age: this.age,
+      isInitialTurn: this.isInitialTurn
+    }
+  }
+
+  override setData(data: any) {
+    if (data) {
+      if (typeof data.age === 'number') {
+        this.age = data.age
+      }
+
+      if (typeof data.isInitialTurn === 'boolean') {
+        this.isInitialTurn = data.isInitialTurn
+      }
+    }
+  }
+
   override get isWalkable(): boolean {
     return this.char !== 'F'
   }

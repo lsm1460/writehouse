@@ -11,12 +11,21 @@ export class TileE extends EnergyTile {
   }
 
   override getData() {
-    return { isDischarged: this.isDischarged }
+    return {
+      age: this.age,
+      isDischarged: this.isDischarged,
+    }
   }
 
   override setData(data: any) {
-    if (data && typeof data.isDischarged === 'boolean') {
-      this.isDischarged = data.isDischarged
+    if (data) {
+      if (typeof data.isDischarged === 'boolean') {
+        this.isDischarged = data.isDischarged
+      }
+
+      if (typeof data.age === 'number') {
+        this.age = data.age
+      }
     }
   }
 
