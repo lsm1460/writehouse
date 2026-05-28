@@ -17,7 +17,7 @@ export class EngineContext {
   public stage: StageSystem
   public environment: EnvironmentSystem
   public save: SaveSystem
-  private history: HistorySystem // public에서 private으로 변경
+  private history: HistorySystem
   private lang: string
   private notifyEngine: () => void
 
