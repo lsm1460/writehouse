@@ -26,10 +26,13 @@ export function RoomTransition({ floorNumber, roomId, onTransitionEnd }: RoomTra
       onAnimationEnd={onTransitionEnd}
     >
       <div className="text-center font-mono">
-        <div className="text-base font-bold text-neutral-400 uppercase tracking-tight">
+        <div className="text-xs font-bold text-neutral-500 uppercase tracking-wider">
           {t(`floors.title`, { floor: currentDisplay.floorNumber })} - {t(`floors.${currentDisplay.floorNumber}`)}
         </div>
-        <div className="text-2xl font-black text-white uppercase tracking-wider mt-1">
+
+        <div className="text-sm font-black text-amber-400 tracking-widest uppercase">ROOM {currentDisplay.roomId}</div>
+
+        <div className="text-2xl font-black text-white uppercase tracking-wide mt-1">
           {t(`rooms.${currentDisplay.roomId}`)}
         </div>
       </div>
