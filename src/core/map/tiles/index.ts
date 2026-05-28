@@ -55,11 +55,13 @@ export function createTile(char: string, x: number, y: number, meta?: any): Tile
       break
     case 'I':
     case '_':
+    case '=':
+    case '≡':
+    case 'O':
       tile = new PushTile(char, x, y)
       break
-    case 'O':
     case 'T':
-    case null:
+    case 'H':
       tile = new BlockTile(char, x, y)
       break
     default:

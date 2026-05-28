@@ -115,6 +115,6 @@ export class FogSystem {
   private isWall(x: number, y: number): boolean {
     const grid = this.ctx.map.grid
     
-    return !grid[y] || !grid[y][x] || grid[y][x].char === null
+    return !grid[y] || !grid[y][x] || ['#', 'T'].includes( grid[y][x].char)
   }
 }

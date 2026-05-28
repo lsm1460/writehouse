@@ -47,11 +47,8 @@ export class PlayerSystem {
   }
 
   public move(dir: Direction) {
-    // 1. 방향이 다르면 방향만 전환
     if (this.dir !== dir) {
       this.dir = dir
-      this.updateTargetPosition()
-      this.ctx.onChange()
     }
 
     let nextX = this.pos.x
@@ -142,8 +139,6 @@ export class PlayerSystem {
     }
 
     const currentTile = grid[y][x]
-    if (!currentTile || currentTile === null) return false
-
     if (currentTile.char === 'f') {
       return true
     }

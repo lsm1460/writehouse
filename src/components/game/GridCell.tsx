@@ -20,11 +20,12 @@ export function GridCell({ stageClear, cell }: GridCellProps) {
   const { tile, lightLevel, lightState, isPlayer, isTarget } = cell
   const TargetCell = CELL_COMPONENTS[tile.char] || CellDefault
 
-  const backgroundTile = <TargetCell char={tile.char} tile={tile} lightState={lightState} stageClear={stageClear} />
-  
-  if (tile.char === null) {
-    return <span style={{ width: CELL_SIZE, height: CELL_SIZE }} />
-  }
+  const backgroundTile =
+    tile.char === 'H' ? (
+      <></>
+    ) : (
+      <TargetCell char={tile.char} tile={tile} lightState={lightState} stageClear={stageClear} />
+    )
 
   return (
     <CellFrame
@@ -33,8 +34,9 @@ export function GridCell({ stageClear, cell }: GridCellProps) {
       isTarget={isTarget}
       isWet={tile.isWet}
       isElectrified={tile.isElectrified}
+      isHole={tile.char === 'H'}
     >
-      <div className="inline-flex items-center justify-center w-full h-full">
+      <div className="inline-flex items-center justify-center w-full h-full ">
         {isPlayer && (
           <span
             className={`absolute inset-0 flex items-center justify-center text-white font-black z-10  ${
@@ -46,7 +48,7 @@ export function GridCell({ stageClear, cell }: GridCellProps) {
           </span>
         )}
 
-        <div className="z-20 opacity-100">{backgroundTile}</div>
+        {backgroundTile}
       </div>
     </CellFrame>
   )

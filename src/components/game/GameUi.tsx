@@ -28,7 +28,7 @@ export function GameUi() {
 
   const target = map.getTargetTile()
   const charKey = target?.char?.trim()
-
+  
   const isLightActive =
     target && charKey === 'i' ? fog.getLightState(target.x, target.y).environmentIntensity > 0 : false
 
@@ -40,8 +40,8 @@ export function GameUi() {
         isElectrified: target?.isElectrified || false,
       })
     : undefined
-
-  const label = charKey ? t(`char.${charKey}.label`, { context: tileContext, defaultValue: '' }) : ''
+    
+  const label = t(`char.${charKey}.label`, { context: tileContext, defaultValue: '' })
   const example = charKey ? t(`char.${charKey}.example`, { defaultValue: '' }) : ''
 
   if (!isReady) return

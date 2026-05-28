@@ -95,6 +95,7 @@ export class EngineContext {
 
     if (hasChanges) {
       this.fog.update()
+      this.onChange()
     }
 
     const isGameOver = this.player.checkEnvironmentEffects(this.grid)
