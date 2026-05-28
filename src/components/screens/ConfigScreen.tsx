@@ -53,7 +53,7 @@ export const ConfigScreen: React.FC<ConfigScreenProps> = ({ backToTitle }) => {
       case 'SET_LANG':
         if (item.payload) {
           i18n.changeLanguage(item.payload)
-          save.save(currentRoomId, item.payload)
+          engine.setLang(item.payload)
         }
         setCurrentMenu('MAIN')
         setActiveIndex(0)

@@ -1,7 +1,7 @@
-import i18n from '~/i18n'
 import type { MapData } from './gameEngine'
 import { EnvironmentSystem } from './systems/EnvironmentSystem'
 import { FogSystem } from './systems/fogSystem'
+import { HistorySystem } from './systems/historySystem'
 import { InventorySystem } from './systems/inventorySystem'
 import { MapSystem } from './systems/mapSystem'
 import { PlayerSystem } from './systems/playerSystem'
@@ -17,10 +17,11 @@ export class EngineContext {
   public stage: StageSystem
   public environment: EnvironmentSystem
   public save: SaveSystem
-
+  private history: HistorySystem // public에서 private으로 변경
+  private lang: string
   private notifyEngine: () => void
 
-  constructor(mapData: MapData, notifyEngine: () => void) {
+  constructor(mapData: MapData, lang: string, notifyEngine: () => void) {
     this.notifyEngine = notifyEngine
 
     this.map = new MapSystem(this, mapData)
@@ -30,6 +31,9 @@ export class EngineContext {
     this.stage = new StageSystem(this)
     this.environment = new EnvironmentSystem(this)
     this.save = new SaveSystem(notifyEngine)
+    this.history = new HistorySystem(this)
+
+    this.lang = lang
   }
 
   public get grid() {
@@ -41,6 +45,7 @@ export class EngineContext {
   }
 
   public init(roomId?: string) {
+    this.history.clear()
     const spawn = this.map.loadRoom(roomId || '1-1')
 
     spawn && this.setPlayer(spawn)
@@ -51,10 +56,25 @@ export class EngineContext {
     this.tickTurn()
   }
 
-  public saveGame(id: string) {
-    const currentLanguage = i18n.language || 'ko'
+  public captureState() {
+    return this.history.captureState()
+  }
 
-    this.save.save(id, currentLanguage)
+  public pushState(state: any) {
+    this.history.pushState(state)
+  }
+
+  public isStateChanged(s1: any, s2: any): boolean {
+    return this.history.isStateChanged(s1, s2)
+  }
+
+  public undo(): boolean {
+    const success = this.history.undo()
+    if (!success) return false
+
+    this.fog.update()
+    this.onChange()
+    return true
   }
 
   public onChange() {
@@ -78,12 +98,9 @@ export class EngineContext {
     const id = this.map.getNextRoomId()
 
     if (id) {
-      this.saveGame(id)
-
+      this.save.save(id, this.lang)
       this.map.currentRoomId = id
-
       await delay()
-
       this.init(id)
     }
   }
@@ -92,13 +109,17 @@ export class EngineContext {
     this.init(this.map.currentRoomId)
   }
 
+  public setLang(lang: string) {
+    this.lang = lang
+
+    const roomId = this.save.load()?.roomId || ''
+    this.save.save(roomId, lang)
+  }
+
   private setPlayer(pos: { x: number; y: number }) {
     this.stage.reset()
     this.inventory.reset()
 
-    this.player.pos = { ...pos }
-    this.player.dir = 'UP'
-
-    this.player.updateTargetPosition()
+    this.player.spawn(pos)
   }
 }

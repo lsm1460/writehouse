@@ -10,7 +10,8 @@ export function mapKeyboardToResponse(e: KeyboardEvent): GameAction | null {
   if (['d', 'arrowright'].includes(_key)) return { type: 'MOVE', direction: 'RIGHT' }
 
   // 액션 키 매핑
-  if ([' ', 'enter'].includes(_key)) return { type: 'SPACE_ACTION' }
+  if ([' '].includes(_key)) return { type: 'SPACE_ACTION' }
+  if (['enter'].includes(_key)) return { type: 'ENTER_ACTION' }
   if (_key === 'r') return { type: 'RETRY_ACTION' }
   if (_key === 'escape') return { type: 'MENU' }
 

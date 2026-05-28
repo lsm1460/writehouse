@@ -10,7 +10,7 @@ interface GameContextType {
 const GameContext = createContext<GameContextType | null>(null)
 
 export function GameProvider({ children }: { children: ReactNode }) {
-  const engine = useMemo(() => new GameEngine(assets.map), [])
+  const engine = useMemo(() => new GameEngine(assets.map, i18n.language), [])
 
   useSyncExternalStore(
     (callback) => {

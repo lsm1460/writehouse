@@ -72,11 +72,11 @@ export function GameUi() {
       <div className="w-full text-center text-xs text-neutral-500 font-mono">
         {isGamepadActive ? (
           <>
-            [DPAD/STICK]: {t('ui.move')} | [START]: {t('ui.menu')}
+            [DPAD/STICK]: {t('ui.move')} | [A/B]: {t('ui.undo')} | [START]: {t('ui.menu')}
           </>
         ) : (
           <>
-            [WASD]: {t('ui.move')} | [R]: {t('ui.retry')} | [ESC]: {t('ui.menu')}
+            [WASD]: {t('ui.move')} | [Space]: {t('ui.undo')} | [R]: {t('ui.retry')} | [ESC]: {t('ui.menu')}
           </>
         )}
       </div>

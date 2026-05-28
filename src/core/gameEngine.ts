@@ -21,8 +21,8 @@ export class GameEngine {
   private onUpdateCallback?: () => void
   private status: GameStatus = 'TITLE'
 
-  constructor(mapData: MapData) {
-    this.ctx = new EngineContext(mapData, () => this.notify())
+  constructor(mapData: MapData, lang: string) {
+    this.ctx = new EngineContext(mapData, lang, () => this.notify())
   }
 
   public getSnapshot() {
@@ -44,7 +44,6 @@ export class GameEngine {
 
   public start() {
     this.status = 'PLAYING'
-
     this.ctx.init()
   }
 
@@ -59,41 +58,40 @@ export class GameEngine {
   }
 
   public move(dir: Direction) {
-    if (this.status === 'GAME_OVER') return
+    if (this.status !== 'PLAYING') return
 
-    const isMoved = this.ctx.player.move(dir)
-    if (isMoved) {
+    const beforeState = this.ctx.captureState()
+    this.ctx.player.move(dir)
+
+    const afterState = this.ctx.captureState()
+    if (this.ctx.isStateChanged(beforeState, afterState)) {
+      this.ctx.pushState(beforeState)
       this.processTurn()
     }
   }
 
-  public processTileAction() {
-    if (this.status === 'GAME_OVER') return
+  public undo() {
+    if (this.status !== 'PLAYING' && this.status !== 'GAME_OVER') return
 
-    const { map, inventory } = this.ctx
-    const targetTile = map.getTargetTile()
-
-    if (!targetTile) return
-
-    if (inventory.canPick()) {
-      inventory.pickup(targetTile, map.grid)
-    } else {
-      inventory.leftOrMix(targetTile, map.grid)
+    const undone = this.ctx.undo()
+    if (undone) {
+      this.status = 'PLAYING'
+      this.notify()
     }
-
-    this.processTurn()
   }
 
   public retryStage() {
     this.status = 'PLAYING'
-
     this.ctx.retryStage()
   }
 
   public toggleMenu() {
-    this.status === 'MENU' ? this.status = 'PLAYING' : this.status = 'MENU'
-
+    this.status = this.status === 'MENU' ? 'PLAYING' : 'MENU'
     this.notify()
+  }
+
+  public setLang(lang: string) {
+    this.ctx.setLang(lang)
   }
 
   private processTurn() {

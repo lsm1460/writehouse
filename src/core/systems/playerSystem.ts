@@ -154,4 +154,11 @@ export class PlayerSystem {
 
     return false
   }
+
+  public spawn(pos: {x: number, y: number}) {
+    this.pos = { ...pos }
+    this.dir = 'UP'
+
+    this.updateTargetPosition()
+  }
 }

@@ -7,7 +7,8 @@
     "retry": "재시도",
     "menu": "메뉴",
     "lang": "언어",
-    "back": "뒤로"
+    "back": "뒤로",
+    "undo": "되감기"
   },
   "floors": {
     "title": "{{ floor }} 층",

@@ -51,13 +51,14 @@ export function useGameInput({
   const frameInterval = 1000 / fpsLimit
 
   const executeAction = (action: GameAction) => {
-    if (engine.gameStatus === 'TITLE' || engine.gameStatus === 'MENU') {
+    if (['TITLE', 'MENU', 'GAME_OVER'].includes(engine.gameStatus)) {
       switch (action.type) {
         case 'MOVE':
           if (action.direction === 'UP' && onMenuUp) onMenuUp()
           if (action.direction === 'DOWN' && onMenuDown) onMenuDown()
           break
         case 'SPACE_ACTION':
+        case 'ENTER_ACTION':
           if (onMenuSelect) onMenuSelect()
           break
       }
@@ -73,10 +74,7 @@ export function useGameInput({
       case 'MENU':
         return engine.toggleMenu()
       case 'SPACE_ACTION':
-        if (engine.gameStatus === 'GAME_OVER') {
-          return engine.retryStage()
-        }
-        break
+        return engine.undo()
       case 'RETRY_ACTION':
         return engine.retryStage()
     }

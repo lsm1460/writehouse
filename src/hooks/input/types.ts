@@ -5,3 +5,4 @@ export type GameAction =
   | { type: 'SPACE_ACTION' }
   | { type: 'RETRY_ACTION' }
   | { type: 'MENU' }
+  | { type: 'ENTER_ACTION' }
