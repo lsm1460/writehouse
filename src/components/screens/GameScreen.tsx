@@ -43,7 +43,6 @@ export function GameScreen({ backToTitle }: GameScreenProps) {
 
         {isTransitioning && (
           <RoomTransition
-            floorNumber={map.floorNumber}
             roomId={currentRoomId}
             onTransitionEnd={() => setIsTransitioning(false)}
           />
