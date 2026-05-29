@@ -8,6 +8,7 @@ import { GameScreenWrapper } from '../game/GameScreenWrapper'
 import { GameUi } from '../game/GameUi'
 import { RoomTransition } from '../game/RoomTransition'
 import { StageGrid } from '../game/StageGrid'
+import { Tutorial } from '../game/Tutorial'
 import { CheatInput } from '../ui/CheatInput'
 
 type GameScreenProps = {
@@ -15,7 +16,7 @@ type GameScreenProps = {
 }
 
 export function GameScreen({ backToTitle }: GameScreenProps) {
-  const { engine, gameState, currentRoomId, map } = useGame()
+  const { engine, gameState, currentRoomId } = useGame()
   const [isTransitioning, setIsTransitioning] = useState(true)
 
   const { cheatMode, handleActionReport, closeCheatMode } = useCheatMode()
@@ -41,12 +42,9 @@ export function GameScreen({ backToTitle }: GameScreenProps) {
           <StageGrid />
         </div>
 
-        {isTransitioning && (
-          <RoomTransition
-            roomId={currentRoomId}
-            onTransitionEnd={() => setIsTransitioning(false)}
-          />
-        )}
+        {!isTransitioning && <Tutorial />}
+
+        {isTransitioning && <RoomTransition roomId={currentRoomId} onTransitionEnd={() => setIsTransitioning(false)} />}
 
         {gameState === 'MENU' && (
           <GameMenu onResume={() => engine.toggleMenu()} onRestart={() => engine.retryStage()} onExit={backToTitle} />

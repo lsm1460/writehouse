@@ -62,6 +62,7 @@ export class GameEngine {
 
     const beforeState = this.ctx.captureState()
     this.ctx.player.move(dir)
+    this.ctx.player.updateTargetPosition()
 
     const afterState = this.ctx.captureState()
     if (this.ctx.isStateChanged(beforeState, afterState)) {

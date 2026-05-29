@@ -37,7 +37,7 @@ export function StageGrid() {
 
               const renderable = {
                 tile,
-                lightLevel: fog.getLightLevel(x, y),
+                lightLevel: ['G', 'i'].includes(tile.char) ? 9 : fog.getLightLevel(x, y),
                 lightState: fog.getLightState(x, y),
                 isPlayer,
                 isTarget,

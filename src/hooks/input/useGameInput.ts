@@ -33,6 +33,7 @@ interface UseGameInputProps {
   onMenuSelect?: () => void
   onAction?: (action: GameAction) => void
   disabled?: boolean
+  passive?: boolean
 }
 
 export function useGameInput({ 
@@ -41,7 +42,8 @@ export function useGameInput({
   onMenuDown, 
   onMenuSelect, 
   onAction,
-  disabled = false 
+  disabled = false,
+  passive = false
 }: UseGameInputProps) {
   const lastGamepadTime = useRef<number>(0)
   const lastKeyboardTime = useRef<number>(0)
@@ -55,6 +57,10 @@ export function useGameInput({
   const executeAction = (action: GameAction) => {
     if (onAction) {
       onAction(action)
+    }
+
+    if (passive) {
+      return
     }
 
     if (['TITLE', 'MENU', 'GAME_OVER'].includes(engine.gameStatus)) {

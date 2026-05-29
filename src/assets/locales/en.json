@@ -12,9 +12,12 @@
   },
   "floors": {
     "title": "Floor {{ floor }}",
+    "0": "Tutorial",
     "1": "The Begin"
   },
   "rooms": {
+    "0-1": "Control",
+    "0-2": "Merge",
     "1-1": "Need Light",
     "1-2": "Movement",
     "1-3": "Collapsed Floor",
@@ -25,6 +28,19 @@
     "1-8": "The Right Exit",
     "1-9": "Water Leak",
     "2-1": "Fire"
+  },
+  "tutorial": {
+    "0-1": {
+      "0_1": "@ is the player.\nTry moving with the arrow keys.",
+      "1_1": "Move with the arrow keys to head towards ⚑.",
+      "2_1": "The information and status of the tile\nin the direction the player is facing\nwill be displayed above the tile."
+    },
+    "0-2": {
+      "1_2": "You can push I or _ blocks to create an L block.",
+      "2_2": "L illuminates the surroundings, and if i is within that range, i will be activated.",
+      "2_1": "Once all i are activated, ⚑ will open.",
+      "3_1": "There are many other hidden combination rules to discover!"
+    }
   },
   "char": {
     "_": {

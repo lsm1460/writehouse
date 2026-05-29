@@ -3,7 +3,6 @@ import type { LightState } from '~/core/types'
 import { CellFrame } from './CellFrame'
 import { CELL_COMPONENTS } from './cells'
 import { CellDefault } from './cells/CellDefault'
-import { CELL_SIZE } from './consts'
 
 interface GridCellProps {
   stageClear: boolean
@@ -28,14 +27,7 @@ export function GridCell({ stageClear, cell }: GridCellProps) {
     )
 
   return (
-    <CellFrame
-      lightLevel={lightLevel}
-      isPlayer={isPlayer}
-      isTarget={isTarget}
-      isWet={tile.isWet}
-      isElectrified={tile.isElectrified}
-      isHole={tile.char === 'H'}
-    >
+    <CellFrame lightLevel={lightLevel} isPlayer={isPlayer} isTarget={isTarget} tile={tile}>
       <div className="inline-flex items-center justify-center w-full h-full ">
         {isPlayer && (
           <span

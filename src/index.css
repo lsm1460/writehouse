@@ -25,6 +25,48 @@ html, body {
   }
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; } /* 위에서 살짝 내려오며 등장 */
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes activeShockwave {
+  0% {
+    transform: translate(-50%, -50%) scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.5);
+    opacity: 0;
+  }
+}
+
+.animate-shockwave {
+  animation: activeShockwave 0.8s ease-out forwards; 
+}
+
+@keyframes sparkOut {
+  0% {
+    transform: translate(-50%, -50%) scale(0) rotate(var(--tw-rotate, 0deg)) translateY(0);
+    opacity: 1;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1) rotate(var(--tw-rotate, 0deg)) translateY(-16px);
+    opacity: 0;
+  }
+}
+
+.animate-spark {
+  animation: sparkOut 0.7s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+}
+
 @keyframes custom-fire {
   0%, 100% {
     transform: scale(1) skewX(0deg);

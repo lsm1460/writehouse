@@ -50,7 +50,7 @@ export class EngineContext {
 
   public init(roomId?: string) {
     this.history.clear()
-    const spawn = this.map.loadRoom(roomId || '1-1')
+    const spawn = this.map.loadRoom(roomId || '0-1')
 
     this.stage.reset()
     this.inventory.reset()
