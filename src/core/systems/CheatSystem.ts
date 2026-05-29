@@ -14,9 +14,12 @@ export class CheatSystem {
 
     this.registry = [
       {
-        // "operator" 또는 "operator 1-2" 패턴 매칭
         pattern: /^operator(?:\s+(.+))?$/,
         handler: (match) => this.handleRoomWarp(match[1]?.trim()),
+      },
+      {
+        pattern: /^we(?:_|\s+)need(?:_|\s+)a(?:_|\s+)upload$/,
+        handler: () => this.handleSave(),
       },
     ]
   }
@@ -38,5 +41,13 @@ export class CheatSystem {
         this.ctx.init(roomId),
         `📞 "Signal locked. Patching you through to Room [${roomId}]..."`)
       : '📞 "Operator here. Tell me where to drop you. (e.g., operator 1-2)"'
+  }
+
+  private handleSave(): string {
+    const { save, map, lang } = this.ctx
+    save.save(map.currentRoomId, lang)
+
+    return `📞
+     "Got it. We need a upload. Holding the line while writing the matrix grid to disk..."`
   }
 }

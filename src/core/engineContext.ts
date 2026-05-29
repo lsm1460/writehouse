@@ -18,9 +18,9 @@ export class EngineContext {
   public stage: StageSystem
   public environment: EnvironmentSystem
   public save: SaveSystem
+  public lang: string
   private history: HistorySystem
   private cheat: CheatSystem
-  private lang: string
   private notifyEngine: () => void
 
   constructor(mapData: MapData, lang: string, notifyEngine: () => void) {

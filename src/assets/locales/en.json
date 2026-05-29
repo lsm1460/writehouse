@@ -13,7 +13,8 @@
   "floors": {
     "title": "Floor {{ floor }}",
     "0": "Tutorial",
-    "1": "The Begin"
+    "1": "Prologue",
+    "2": "Exposition"
   },
   "rooms": {
     "0-1": "Control",
@@ -24,10 +25,14 @@
     "1-4": "Little Maze",
     "1-5": "Erosion",
     "1-6": "A Lone Tree",
-    "1-7": "Either One",
+    "1-7": "Fork",
     "1-8": "The Right Exit",
     "1-9": "Water Leak",
-    "2-1": "Fire"
+    "2-1": "Fire",
+    "2-2": "Flint",
+    "2-3": "Trapped Materials",
+    "2-4": "Collapsed Dam",
+    "2-5": "Fuse"
   },
   "tutorial": {
     "0-1": {
