@@ -17,6 +17,7 @@ export class TileF extends Tile implements IEnvironmentTile {
 
   override getData() {
     return {
+      fireStage: this.fireStage,
       age: this.age,
       isInitialTurn: this.isInitialTurn
     }
@@ -24,6 +25,10 @@ export class TileF extends Tile implements IEnvironmentTile {
 
   override setData(data: any) {
     if (data) {
+      if (typeof data.fireStage === 'string') {
+        this.fireStage = data.fireStage
+      }
+
       if (typeof data.age === 'number') {
         this.age = data.age
       }
