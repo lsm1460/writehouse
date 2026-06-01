@@ -5,7 +5,7 @@ import { useGamepadActive } from '~/hooks/input/useGameInput'
 
 export function GameUi() {
   const { t } = useTranslation()
-  const { player } = useGame()
+  const { player, turn } = useGame()
   const { isReady, scale } = useWindowScale()
   const isGamepadActive = useGamepadActive()
 
@@ -24,6 +24,10 @@ export function GameUi() {
       <p className="flex items-center justify-center gap-x-3 font-mono text-xs text-neutral-500">
         <span>
           ({player.pos.x}.{player.pos.y})
+        </span>
+        <span>|</span>
+        <span>
+          {t('ui.turn', { count: turn })}
         </span>
       </p>
 

@@ -43,6 +43,7 @@ export function useGame() {
     fog: context.engine.ctx.fog,
     stageClear: context.engine.ctx.stageClear,
     // inventory: context.engine.ctx.inventory,
+    turn: context.engine.ctx.turn,
     gameState: context.engine.gameStatus,
     toggleMenu: context.engine.toggleMenu,
     save: context.engine.ctx.save,

@@ -10,6 +10,7 @@ export interface HistoryState {
   playerDir: Direction
   playerTargetPos: Position
   currentItem: InventoryItem | null
+  turn: number
 }
 
 export class HistorySystem {
@@ -36,6 +37,7 @@ export class HistorySystem {
       playerDir: this.engine.player.dir,
       playerTargetPos: { ...this.engine.player.targetPos },
       currentItem: this.engine.inventory.currentItem ? { ...this.engine.inventory.currentItem } : null,
+      turn: this.engine.turn,
     }
   }
 
@@ -54,6 +56,7 @@ export class HistorySystem {
     this.engine.player.dir = previousState.playerDir
     this.engine.player.targetPos = previousState.playerTargetPos
     this.engine.inventory.currentItem = previousState.currentItem
+    this.engine.turn = previousState.turn
 
     return true
   }

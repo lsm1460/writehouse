@@ -19,6 +19,7 @@ export class EngineContext {
   public environment: EnvironmentSystem
   public save: SaveSystem
   public lang: string
+  public turn: number = 0
   private history: HistorySystem
   private cheat: CheatSystem
   private notifyEngine: () => void
@@ -49,6 +50,7 @@ export class EngineContext {
   }
 
   public init(roomId?: string) {
+    this.turn = 0
     this.history.clear()
     const spawn = this.map.loadRoom(roomId || '0-1')
 
@@ -90,6 +92,7 @@ export class EngineContext {
   }
 
   public tickTurn(): boolean {
+    this.turn += 1
     const TURN_DELTA = 1.0
     const hasChanges = this.environment.update(TURN_DELTA)
 
