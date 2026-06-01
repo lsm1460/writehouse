@@ -8,7 +8,8 @@
     "menu": "Menu",
     "lang": "Language",
     "back": "Back",
-    "undo": "Undo"
+    "undo": "Undo",
+    "turn": "Turn: {{count}}"
   },
   "floors": {
     "title": "Floor {{ floor }}",
@@ -32,7 +33,19 @@
     "2-2": "Flint",
     "2-3": "Trapped Materials",
     "2-4": "Collapsed Dam",
-    "2-5": "Fuse"
+    "2-5": "Fuse",
+    "2-6": "Prometheus",
+    "2-7": "Tiny Forest",
+    "2-8": "50",
+    "2-9": "Hidden spring",
+    "2-10": "Flame weeding",
+    "2-11": "Break-in",
+    "3-1": "SHOCK HAZARD",
+    "3-2": "Energy Generation",
+    "3-3": "Supply Power",
+    "3-4": "Light position",
+    "3-5": "Blacked-out Corridor",
+    "3-6": "Thermal Power"
   },
   "tutorial": {
     "0-1": {
@@ -94,14 +107,23 @@
       "label": "Deep Pit"
     },
     "F": {
-      "label": "Blazing Fire"
+      "label": "Blazing Fire",
+      "example": "F + _ → E"
     },
     "f": {
-      "label": "Dying Embers"
+      "label": "Dying Embers",
+      "example": "f + _ → E"
     },
     "=": {
       "label": "Flint",
       "example": "I + = → F"
+    },
+    "O": {
+      "label": "Oil",
+      "example": "O + O → 8"
+    },
+    "E": {
+      "label": "non-rechargeable Energy"
     }
   }
 }
