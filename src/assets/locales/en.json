@@ -36,9 +36,9 @@
   },
   "tutorial": {
     "0-1": {
-      "0_1": "@ is the player.\nTry moving with the arrow keys.",
-      "1_1": "Move with the arrow keys to head towards ⚑.",
-      "2_1": "The information and status of the tile\nin the direction the player is facing\nwill be displayed above the tile."
+      "0_2": "@ is the player.\nTry moving with the arrow keys.",
+      "1_2": "Move with the arrow keys to head towards ⚑.",
+      "1_1": "The information and status of the tile\nin the direction the player is facing\nwill be displayed above the tile."
     },
     "0-2": {
       "1_2": "You can push I or _ blocks to create an L block.",
