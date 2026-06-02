@@ -36,11 +36,16 @@ export class CheatSystem {
   }
 
   private handleRoomWarp(roomId: string | undefined): string {
-    return roomId
-      ? ((this.ctx.map.currentRoomId = roomId),
-        this.ctx.init(roomId),
-        `📞 "Signal locked. Patching you through to Room [${roomId}]..."`)
-      : '📞 "Operator here. Tell me where to drop you. (e.g., operator 1-2)"'
+    if (!roomId) {
+      return '📞 "Operator here. Tell me where to drop you. (e.g., operator 1-2)"'
+    }
+
+    const success = this.ctx.init(roomId)
+    if (!success) {
+      return `📞 "Operator to Wanderer: Negative. Room [${roomId}] is an invalid coordinates."`
+    }
+
+    return `📞 "Signal locked. Patching you through to Room [${roomId}]..."`
   }
 
   private handleSave(): string {

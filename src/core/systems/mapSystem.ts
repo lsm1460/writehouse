@@ -19,11 +19,12 @@ export class MapSystem {
 
   public loadRoom(roomId: string): { x: number; y: number } | undefined {
     const roomData = this.findRoomAndFloor(roomId)
+    if (!roomData) return undefined
 
     this.currentRoomId = roomId
-    this.floorNumber = roomData?.floor ? roomData.floor.floor_number : 0
+    this.floorNumber = roomData.floor ? roomData.floor.floor_number : 0
 
-    const rawGrid: string[][] = roomData?.room ? JSON.parse(JSON.stringify(roomData.room.grid)) : [[]]
+    const rawGrid: string[][] = roomData.room ? JSON.parse(JSON.stringify(roomData.room.grid)) : [[]]
 
     return this.buildGrid(rawGrid)
   }

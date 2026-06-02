@@ -49,20 +49,25 @@ export class EngineContext {
     return this.stage.isClear
   }
 
-  public init(roomId?: string) {
+  public init(roomId?: string): boolean {
+    const spawn = this.map.loadRoom(roomId || '0-1')
+    if (!spawn) {
+      return false
+    }
+
     this.turn = 0
     this.history.clear()
-    const spawn = this.map.loadRoom(roomId || '0-1')
 
     this.stage.reset()
     this.inventory.reset()
 
-    spawn && this.player.spawn(spawn)
+    this.player.spawn(spawn)
 
     this.fog.update()
     this.onChange()
 
     this.tickTurn()
+    return true
   }
 
   public captureState() {

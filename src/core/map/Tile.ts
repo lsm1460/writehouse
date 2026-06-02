@@ -29,7 +29,7 @@ export abstract class Tile {
   }
 
   get lightRadius() {
-    return 0
+    return this.isElectrified ? 1 : 0
   }
 
   public get isEmptyFloor(): boolean {

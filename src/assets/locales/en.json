@@ -14,8 +14,9 @@
   "floors": {
     "title": "Floor {{ floor }}",
     "0": "Tutorial",
-    "1": "Prologue",
-    "2": "Exposition"
+    "1": "Exposition",
+    "2": "Complication",
+    "3": "Crisis"
   },
   "rooms": {
     "0-1": "Control",
@@ -45,7 +46,11 @@
     "3-3": "Supply Power",
     "3-4": "Light position",
     "3-5": "Blacked-out Corridor",
-    "3-6": "Thermal Power"
+    "3-6": "Thermal Power",
+    "3-7": "River of Fire",
+    "3-8": "Streetlight",
+    "3-9": "Flood",
+    "3-10": "Review"
   },
   "tutorial": {
     "0-1": {
