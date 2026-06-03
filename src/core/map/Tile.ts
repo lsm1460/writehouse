@@ -28,7 +28,7 @@ export abstract class Tile {
     return false
   }
 
-  get lightRadius() {
+  get lightRadius(): number {
     return this.isElectrified ? 1 : 0
   }
 
