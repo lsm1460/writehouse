@@ -1,7 +1,8 @@
 import { useGame } from '~/context/GameContext'
-import { GridCell } from './GridCell'
-import { EntityCell } from './EntityCell'
 import { CELL_SIZE } from './consts'
+import { DeathEffect } from './DeathEffect'
+import { EntityCell } from './EntityCell'
+import { GridCell } from './GridCell'
 
 const VERTICAL_PAD = 50
 
@@ -11,6 +12,7 @@ export function StageGrid() {
     map: { grid, entities },
     player: { pos: playerPos, targetPos },
     stageClear,
+    deathEvents,
   } = useGame()
 
   const playerPixelX = playerPos.x * CELL_SIZE + CELL_SIZE / 2
@@ -39,7 +41,8 @@ export function StageGrid() {
               const lightLevel = fog.getLightLevel(x, y)
 
               const entity = entities?.[y]?.[x]
-              
+              const currentDeath = deathEvents?.find((e: any) => e.x === x && e.y === y)
+
               const renderable = {
                 tile,
                 lightLevel: ['G', 'i'].includes(tile.char) ? 9 : lightLevel,
@@ -51,6 +54,8 @@ export function StageGrid() {
               return (
                 <div key={x} className="relative stage-grid" style={{ width: CELL_SIZE, height: CELL_SIZE }}>
                   <EntityCell cell={renderable} entity={entity} stageClear={stageClear} />
+
+                  {currentDeath && <DeathEffect reason={currentDeath.reason} />}
 
                   <GridCell cell={renderable} stageClear={stageClear} />
                 </div>

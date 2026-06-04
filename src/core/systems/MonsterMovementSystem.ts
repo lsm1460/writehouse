@@ -1,5 +1,6 @@
-import type { EngineContext } from '../engineContext'
 import type { GridType } from '~/core/types'
+import type { EngineContext } from '../engineContext'
+import { TileF } from '../map/tiles/TileF'
 import { TileM } from '../map/tiles/TileM'
 import type { IMonsterTile } from '../map/tiles/types'
 
@@ -79,6 +80,26 @@ export class MonsterMovementSystem {
     if (entities[ny][nx] !== null) {
       monster.stayQuiet()
       return false
+    }
+
+    const targetTile = grid[ny][nx]
+
+    const isFireTile = targetTile instanceof TileF && targetTile.fireStage !== 'EXTINGUISHED'
+
+    const isElectrifiedTile = (targetTile as any).isElectrified === true
+
+    if (isFireTile || isElectrifiedTile) {
+      const reason = isFireTile ? 'FIRE' : 'ELECTRICITY'
+      entities[cy][cx] = null
+
+      this.ctx.effects.recordDeath({
+        x: cx,
+        y: cy,
+        char: monster.char,
+        reason: reason
+      })
+
+      return true
     }
 
     monster.updatePosition(nx, ny)

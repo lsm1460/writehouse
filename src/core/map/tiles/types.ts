@@ -41,7 +41,6 @@ export interface IMonsterTile {
   lastY: number
   char: string
   
-  // 💡 entities 배열도 함께 받도록 시그니처 수정
   getNextPosition(grid: any[][], entities: any[][]): { nx: number; ny: number }
   updatePosition(nx: number, ny: number): void
   stayQuiet(): void
