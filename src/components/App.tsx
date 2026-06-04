@@ -4,10 +4,17 @@ import { GameScreen } from './screens/GameScreen'
 import { TitleScreen } from './screens/TitleScreen'
 import { ConfigScreen } from './screens/ConfigScreen'
 import { SaveIndicator } from '~/components/ui/SaveIndicator'
+import { MapEditorScreen } from './screens/MapEditorScreen'
 
 type GameStateType = 'TITLE' | 'CONFIG' | 'PLAYING'
 
 function App() {
+  const isEditPath = window.location.pathname.startsWith('/edit')
+
+  if (isEditPath) {
+    return <MapEditorScreen />
+  }
+
   const { save, engine } = useGame()
   const [gameState, setGameState] = useState<GameStateType>('TITLE')
 
