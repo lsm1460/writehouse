@@ -21,7 +21,6 @@ export class PlayerSystem {
     for (let y = 0; y < grid.length; y++) {
       for (let x = 0; x < grid[y].length; x++) {
         if (grid[y][x]?.isStart) {
-          // 옵셔널 체이닝 추가 (벽 null 대응)
           this.pos = { x, y }
           return
         }
@@ -93,6 +92,11 @@ export class PlayerSystem {
         case 'RIGHT':
           pushToX += 1
           break
+      }
+
+      const behindEntity = this.ctx.entities?.[pushToY]?.[pushToX]
+      if (behindEntity && ['M', 'm'].includes(behindEntity.char)) {
+        return false
       }
 
       const behindTile = grid[pushToY]?.[pushToX]
