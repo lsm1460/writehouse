@@ -1,10 +1,11 @@
 import { EngineContext } from '../engineContext'
 import { createTile } from '../map/tiles'
 import type { Direction, GridType, Position } from '../types'
-import { isOutOfBounds } from '../utils/grid'
 
 export class PlayerSystem {
   public pos: Position = { x: 0, y: 0 }
+  public lastX: number = 0
+  public lastY: number = 0
   public dir: Direction = 'UP'
   public targetPos: Position = { x: 0, y: 0 }
   private ctx: EngineContext
@@ -50,6 +51,9 @@ export class PlayerSystem {
     if (this.dir !== dir) {
       this.dir = dir
     }
+
+    this.lastX = this.pos.x
+    this.lastY = this.pos.y
 
     let nextX = this.pos.x
     let nextY = this.pos.y
@@ -130,20 +134,22 @@ export class PlayerSystem {
     return true
   }
 
-  public checkEnvironmentEffects(grid: GridType): boolean {
-    const { x, y } = this.pos
+  public checkEnvironmentEffects(grid: GridType, entities: any[][]): boolean {
+    const { x: newX, y: newY } = this.pos
 
-    if (isOutOfBounds(x, y, grid)) {
-      return false
-    }
+    const tile = grid[newY][newX]
+    if (tile.char === 'f' || tile.isElectrified) return true
 
-    const currentTile = grid[y][x]
-    if (currentTile.char === 'f') {
-      return true
-    }
+    const entity = entities[newY][newX]
+    if (entity && ['M', 'm'].includes(entity.char)) return true
 
-    if (currentTile.isElectrified) {
-      return true
+    if (this.lastX !== newX || this.lastY !== newY) {
+      const entityAtOldPos = entities[this.lastY][this.lastX]
+      if (entityAtOldPos && ['M', 'm'].includes(entityAtOldPos.char)) {
+        const monsterLastX = entityAtOldPos.lastX ?? entityAtOldPos.x
+        const monsterLastY = entityAtOldPos.lastY ?? entityAtOldPos.y
+        if (monsterLastX === newX && monsterLastY === newY) return true
+      }
     }
 
     return false

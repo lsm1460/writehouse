@@ -119,6 +119,10 @@
       "label": "Dying Embers",
       "example": "f + _ → E"
     },
+    "A": {
+      "label": "Ashpan with embers",
+      "example": "A + _ → 8"
+    },
     "=": {
       "label": "Flint",
       "example": "I + = → F"
@@ -129,6 +133,12 @@
     },
     "E": {
       "label": "non-rechargeable Energy"
+    },
+    "M": {
+      "label": "Horizon"
+    },
+    "m": {
+      "label": "Vertical"
     }
   }
 }

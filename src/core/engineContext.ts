@@ -1,6 +1,6 @@
 import type { MapData } from './gameEngine'
+import { EnvironmentManager } from './managers/EnvironmentManager'
 import { CheatSystem } from './systems/CheatSystem'
-import { EnvironmentSystem } from './systems/EnvironmentSystem'
 import { FogSystem } from './systems/fogSystem'
 import { HistorySystem } from './systems/historySystem'
 import { InventorySystem } from './systems/inventorySystem'
@@ -16,7 +16,7 @@ export class EngineContext {
   public inventory: InventorySystem
   public fog: FogSystem
   public stage: StageSystem
-  public environment: EnvironmentSystem
+  public environment: EnvironmentManager
   public save: SaveSystem
   public lang: string
   public turn: number = 0
@@ -32,7 +32,7 @@ export class EngineContext {
     this.inventory = new InventorySystem(this)
     this.fog = new FogSystem(this)
     this.stage = new StageSystem(this)
-    this.environment = new EnvironmentSystem(this)
+    this.environment = new EnvironmentManager(this)
     this.save = new SaveSystem(notifyEngine)
 
     this.history = new HistorySystem(this)
@@ -43,6 +43,10 @@ export class EngineContext {
 
   public get grid() {
     return this.map.grid
+  }
+
+  public get entities() {
+    return this.map.entities
   }
 
   public get stageClear(): boolean {
@@ -106,7 +110,7 @@ export class EngineContext {
       this.onChange()
     }
 
-    const isGameOver = this.player.checkEnvironmentEffects(this.grid)
+    const isGameOver = this.player.checkEnvironmentEffects(this.grid, this.entities)
     return !isGameOver
   }
 
