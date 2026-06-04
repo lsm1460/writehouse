@@ -47,7 +47,7 @@ export function useGameInput({
 }: UseGameInputProps) {
   const lastGamepadTime = useRef<number>(0)
   const lastKeyboardTime = useRef<number>(0)
-  const activeKeys = useRef<Record<string, boolean>>({})
+  const activeCodes = useRef<Record<string, boolean>>({})
 
   const gamepadCooldownMS = 200
   const keyboardCooldownMS = 150
@@ -94,17 +94,17 @@ export function useGameInput({
 
   const checkKeyboard = (now: number) => {
     let hasActiveKey = false
-    for (const key in activeKeys.current) {
-      if (activeKeys.current[key]) {
+    for (const code in activeCodes.current) {
+      if (activeCodes.current[code]) {
         hasActiveKey = true
         break
       }
     }
 
     if (hasActiveKey && now - lastKeyboardTime.current >= keyboardCooldownMS) {
-      for (const key in activeKeys.current) {
-        if (activeKeys.current[key]) {
-          const fakeEvent = { key } as KeyboardEvent
+      for (const code in activeCodes.current) {
+        if (activeCodes.current[code]) {
+          const fakeEvent = { code } as KeyboardEvent
           const action = mapKeyboardToResponse(fakeEvent)
           if (action) {
             executeAction(action)
@@ -129,24 +129,25 @@ export function useGameInput({
 
   useEffect(() => {
     if (disabled) {
-      activeKeys.current = {}
+      activeCodes.current = {}
       return
     }
 
     const handleKeyDown = (e: KeyboardEvent) => {
       setGamepadActive(false)
-      if (['ArrowUp', 'ArrowDown', ' ', 'Enter'].includes(e.key) && engine.gameStatus === 'TITLE') {
+      
+      if (['ArrowUp', 'ArrowDown', 'Space', 'Enter'].includes(e.code) && engine.gameStatus === 'TITLE') {
         e.preventDefault()
       }
-      activeKeys.current[e.key] = true
+      activeCodes.current[e.code] = true
     }
 
     const handleKeyUp = (e: KeyboardEvent) => {
-      activeKeys.current[e.key] = false
+      activeCodes.current[e.code] = false
     }
 
     const handleBlur = () => {
-      activeKeys.current = {}
+      activeCodes.current = {}
     }
 
     window.addEventListener('keydown', handleKeyDown)
@@ -176,7 +177,7 @@ export function useGameInput({
       window.removeEventListener('keyup', handleKeyUp)
       window.removeEventListener('blur', handleBlur)
       cancelAnimationFrame(frameId)
-      activeKeys.current = {}
+      activeCodes.current = {}
     }
   }, [engine, onMenuUp, onMenuDown, onMenuSelect, disabled, frameInterval])
 }

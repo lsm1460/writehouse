@@ -1,19 +1,17 @@
 import type { GameAction } from './types'
 
 export function mapKeyboardToResponse(e: KeyboardEvent): GameAction | null {
-  // 이동 키 매핑
-  const _key = e.key.toLowerCase()
+  const code = e.code
 
-  if (['w', 'arrowup'].includes(_key)) return { type: 'MOVE', direction: 'UP' }
-  if (['s', 'arrowdown'].includes(_key)) return { type: 'MOVE', direction: 'DOWN' }
-  if (['a', 'arrowleft'].includes(_key)) return { type: 'MOVE', direction: 'LEFT' }
-  if (['d', 'arrowright'].includes(_key)) return { type: 'MOVE', direction: 'RIGHT' }
+  if (['KeyW', 'ArrowUp'].includes(code)) return { type: 'MOVE', direction: 'UP' }
+  if (['KeyS', 'ArrowDown'].includes(code)) return { type: 'MOVE', direction: 'DOWN' }
+  if (['KeyA', 'ArrowLeft'].includes(code)) return { type: 'MOVE', direction: 'LEFT' }
+  if (['KeyD', 'ArrowRight'].includes(code)) return { type: 'MOVE', direction: 'RIGHT' }
 
-  // 액션 키 매핑
-  if ([' '].includes(_key)) return { type: 'SPACE_ACTION' }
-  if (['enter'].includes(_key)) return { type: 'ENTER_ACTION' }
-  if (_key === 'r') return { type: 'RETRY_ACTION' }
-  if (_key === 'escape') return { type: 'MENU' }
+  if (code === 'Space') return { type: 'SPACE_ACTION' }
+  if (code === 'Enter') return { type: 'ENTER_ACTION' }
+  if (code === 'KeyR') return { type: 'RETRY_ACTION' }
+  if (code === 'Escape') return { type: 'MENU' }
 
-  return null // 매핑되지 않은 키는 무시
+  return null
 }
