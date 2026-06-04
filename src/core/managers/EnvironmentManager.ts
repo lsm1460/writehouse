@@ -30,7 +30,7 @@ export class EnvironmentManager {
     if (this.updateEnvironmentTiles(deltaTime, grid)) hasAnyTileChanged = true
 
     if (this.electricitySystem.update(grid)) hasAnyTileChanged = true
-    // if (this.fireSystem.update(deltaTime, grid)) hasAnyTileChanged = true
+    if (this.fireSystem.update(deltaTime, grid)) hasAnyTileChanged = true
     if (this.monsterSystem.update(grid)) hasAnyTileChanged = true
     if (this.waterSystem.update(deltaTime, grid)) hasAnyTileChanged = true
 

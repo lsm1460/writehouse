@@ -1,15 +1,12 @@
-import { COMPASS_DIRECTIONS } from '~/core/consts'
-import type { GridType } from '~/core/types'
-import { isOutOfBounds } from '~/core/utils/grid'
 import { Tile } from '../Tile'
-import { type IEnvironmentTile, WalkableTile } from './types'
 
-export class TileF extends Tile implements IEnvironmentTile {
+export class TileF extends Tile {
+  // 시스템이 직접 조회하고 수정할 수 있도록 public으로 개방
   public fireStage: 'STRONG' | 'WEAK' | 'EXTINGUISHED' = 'STRONG'
   public age: number = 0
-  private isInitialTurn: boolean = true
+  public isInitialTurn: boolean = true
 
-  private readonly FIRE_LIFETIME = 4
+  public readonly FIRE_LIFETIME = 4
 
   constructor(char: string, x: number, y: number) {
     super(char, x, y)
@@ -19,23 +16,15 @@ export class TileF extends Tile implements IEnvironmentTile {
     return {
       fireStage: this.fireStage,
       age: this.age,
-      isInitialTurn: this.isInitialTurn
+      isInitialTurn: this.isInitialTurn,
     }
   }
 
   override setData(data: any) {
     if (data) {
-      if (typeof data.fireStage === 'string') {
-        this.fireStage = data.fireStage
-      }
-
-      if (typeof data.age === 'number') {
-        this.age = data.age
-      }
-
-      if (typeof data.isInitialTurn === 'boolean') {
-        this.isInitialTurn = data.isInitialTurn
-      }
+      if (typeof data.fireStage === 'string') this.fireStage = data.fireStage
+      if (typeof data.age === 'number') this.age = data.age
+      if (typeof data.isInitialTurn === 'boolean') this.isInitialTurn = data.isInitialTurn
     }
   }
 
@@ -49,83 +38,7 @@ export class TileF extends Tile implements IEnvironmentTile {
     return 0
   }
 
-  public onEnvironmentUpdate(deltaTime: number, grid: GridType): boolean {
-    if (this.fireStage === 'EXTINGUISHED') return false
-
-    let hasChanged = false
-
-    if (this.isInitialTurn) {
-      this.isInitialTurn = false
-      return false
-    }
-
-    if (this.checkAdjacentOil(grid)) {
-      if (this.fireStage === 'WEAK') {
-        this.reignite()
-        hasChanged = true // 상태가 변했음을 기록
-      }
-    } else {
-      this.age += deltaTime
-      if (this.age >= this.FIRE_LIFETIME) {
-        this.degrade()
-        return true
-      }
-    }
-
-    const spreadSuccess = this.spreadFire(grid)
-
-    return hasChanged || spreadSuccess
-  }
-
-  private spreadFire(grid: GridType): boolean {
-    let spreadSuccess = false
-
-    for (const [dx, dy] of COMPASS_DIRECTIONS) {
-      const nx = this.x + dx
-      const ny = this.y + dy
-
-      if (isOutOfBounds(nx, ny, grid)) continue
-
-      const targetTile = grid[ny][nx]
-
-      if (targetTile instanceof WalkableTile) {
-        const wasWet = targetTile.isWet
-        targetTile.dry()
-
-        if (wasWet) {
-          spreadSuccess = true
-          continue
-        }
-      }
-
-      if (targetTile.char === 'T' || targetTile.char === 'g') {
-        grid[ny][nx] = this.createSpreadFireTile(targetTile.char, nx, ny)
-        spreadSuccess = true
-      }
-    }
-
-    return spreadSuccess
-  }
-
-  private checkAdjacentOil(grid: GridType): boolean {
-    return COMPASS_DIRECTIONS.some(([dx, dy]) => {
-      const nx = this.x + dx
-      const ny = this.y + dy
-      return !isOutOfBounds(nx, ny, grid) && grid[ny][nx].char === 'O'
-    })
-  }
-
-  private createSpreadFireTile(targetChar: string, x: number, y: number): TileF {
-    const isTree = targetChar === 'T'
-    const stage = isTree ? 'STRONG' : 'WEAK'
-    const char = isTree ? 'F' : 'f'
-
-    const newFire = new TileF(char, x, y)
-    newFire.fireStage = stage
-    return newFire
-  }
-
-  private degrade() {
+  public degrade() {
     if (this.fireStage === 'STRONG') {
       this.fireStage = 'WEAK'
       this.setChar('f')
@@ -136,7 +49,7 @@ export class TileF extends Tile implements IEnvironmentTile {
     this.age = 0
   }
 
-  private reignite() {
+  public reignite() {
     this.age = 0
   }
 }
