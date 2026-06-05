@@ -7,7 +7,7 @@ import { type IEnvironmentTile, WalkableTile } from './types'
 export class TileF extends Tile implements IEnvironmentTile {
   public fireStage: 'STRONG' | 'WEAK' | 'EXTINGUISHED' = 'STRONG'
   public age: number = 0
-  private isInitialTurn: boolean = true
+  public isInitialTurn: boolean = true
 
   private readonly FIRE_LIFETIME = 4
 
