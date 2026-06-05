@@ -2,11 +2,12 @@ import { EngineContext } from '../engineContext'
 import type { MapData } from '../gameEngine'
 import { createTile } from '../map/tiles'
 import { FloorTile } from '../map/tiles/FloorTile'
+import type { IMonsterTile } from '../map/tiles/types'
 import type { GridType } from '../types'
 
 export class MapSystem {
   public grid: GridType = []
-  public entities: any[][] = []
+  public entities: (IMonsterTile | null)[][] = []
   public floorNumber: number = 0
   public currentRoomId: string = ''
 
@@ -51,7 +52,7 @@ export class MapSystem {
           const floorTile = new FloorTile(' ', j, i)
 
           const entityTile = createTile(cell, j, i)
-          this.entities[i][j] = entityTile
+          this.entities[i][j] = entityTile as IMonsterTile
 
           return floorTile
         }

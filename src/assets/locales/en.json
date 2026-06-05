@@ -50,7 +50,12 @@
     "3-7": "River of Fire",
     "3-8": "Streetlight",
     "3-9": "Flood",
-    "3-10": "Review"
+    "3-10": "Review",
+    "4-1": "Prison",
+    "4-2": "Escape",
+    "4-3": "Ambush",
+    "4-4": "Counter",
+    "4-5": "Material Storage"
   },
   "tutorial": {
     "0-1": {

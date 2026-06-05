@@ -23,7 +23,7 @@ export class TileW extends Tile {
   }
 
   override get isWalkable(): boolean {
-    return true
+    return this._char === 'w'
   }
 
   public onEnvironmentUpdate(deltaTime: number, mapGrid: GridType): boolean {

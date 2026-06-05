@@ -34,7 +34,7 @@ export function isEnvironmentTile(tile: any): tile is IEnvironmentTile {
   return tile && typeof (tile as any).onEnvironmentUpdate === 'function'
 }
 
-export interface IMonsterTile {
+export interface IMonsterTile extends Tile {
   x: number
   y: number
   lastX: number

@@ -148,7 +148,7 @@ export class PlayerSystem {
     if (entity && ['M', 'm'].includes(entity.char)) return true
 
     if (this.lastX !== newX || this.lastY !== newY) {
-      const entityAtOldPos = entities[this.lastY][this.lastX]
+      const entityAtOldPos = entities[this.lastY]?.[this.lastX]
       if (entityAtOldPos && ['M', 'm'].includes(entityAtOldPos.char)) {
         const monsterLastX = entityAtOldPos.lastX ?? entityAtOldPos.x
         const monsterLastY = entityAtOldPos.lastY ?? entityAtOldPos.y

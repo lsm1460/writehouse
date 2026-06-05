@@ -15,7 +15,7 @@ export function CellM({ char, tile, lightLevel }: CellMProps) {
   const isDown = direction === 'DOWN'
 
   const visibilityOpacity = Math.min(0.3 + lightLevel / 10, 1)
-  console.log('visibilityOpacity',visibilityOpacity)
+  
   let shadowX = '4px'
   let shadowY = '4px'
   if (isLeft) shadowX = '-4px'
