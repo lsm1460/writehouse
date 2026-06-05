@@ -1,6 +1,7 @@
 import type { MapData } from './gameEngine'
+import { EnvironmentManager } from './managers/EnvironmentManager'
 import { CheatSystem } from './systems/CheatSystem'
-import { EnvironmentSystem } from './systems/EnvironmentSystem'
+import { EffectSystem } from './systems/EffectSystem'
 import { FogSystem } from './systems/fogSystem'
 import { HistorySystem } from './systems/historySystem'
 import { InventorySystem } from './systems/inventorySystem'
@@ -16,8 +17,9 @@ export class EngineContext {
   public inventory: InventorySystem
   public fog: FogSystem
   public stage: StageSystem
-  public environment: EnvironmentSystem
+  public environment: EnvironmentManager
   public save: SaveSystem
+  public effects: EffectSystem
   public lang: string
   public turn: number = 0
   private history: HistorySystem
@@ -32,8 +34,9 @@ export class EngineContext {
     this.inventory = new InventorySystem(this)
     this.fog = new FogSystem(this)
     this.stage = new StageSystem(this)
-    this.environment = new EnvironmentSystem(this)
+    this.environment = new EnvironmentManager(this)
     this.save = new SaveSystem(notifyEngine)
+    this.effects = new EffectSystem(this)
 
     this.history = new HistorySystem(this)
     this.cheat = new CheatSystem(this)
@@ -43,6 +46,10 @@ export class EngineContext {
 
   public get grid() {
     return this.map.grid
+  }
+
+  public get entities() {
+    return this.map.entities
   }
 
   public get stageClear(): boolean {
@@ -57,6 +64,7 @@ export class EngineContext {
 
     this.turn = 0
     this.history.clear()
+    this.effects.clear()
 
     this.stage.reset()
     this.inventory.reset()
@@ -86,6 +94,7 @@ export class EngineContext {
     const success = this.history.undo()
     if (!success) return false
 
+    this.effects.clear()
     this.fog.update()
     this.onChange()
     return true
@@ -97,6 +106,8 @@ export class EngineContext {
   }
 
   public tickTurn(): boolean {
+    this.effects.clear()
+    
     this.turn += 1
     const TURN_DELTA = 1.0
     const hasChanges = this.environment.update(TURN_DELTA)
@@ -106,7 +117,7 @@ export class EngineContext {
       this.onChange()
     }
 
-    const isGameOver = this.player.checkEnvironmentEffects(this.grid)
+    const isGameOver = this.player.checkEnvironmentEffects(this.grid, this.entities)
     return !isGameOver
   }
 

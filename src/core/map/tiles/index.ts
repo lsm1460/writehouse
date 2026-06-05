@@ -5,10 +5,13 @@ import { PushTile } from './PushTile'
 import { Tile1 } from './Tile1'
 import { Tile8 } from './Tile8'
 import { Tilei } from './Tile_i'
+import { Tile_m } from './Tile_m'
+import { TileA } from './TileA'
 import { TileE } from './TileE'
 import { TileF } from './TileF'
 import { TileG } from './TileG'
 import { TileL } from './TileL'
+import { TileM } from './TileM'
 import { TileS } from './TileS'
 import { TileW } from './TileW'
 import { TileWall } from './TileWall'
@@ -37,6 +40,15 @@ export function createTile(char: string, x: number, y: number, meta?: any): Tile
       break
     case 'f':
       tile = new TileF(char, x, y)
+      break
+    case 'A':
+      tile = new TileA(x, y)
+      break
+    case 'M':
+      tile = new TileM(x, y)
+      break
+    case 'm':
+      tile = new Tile_m(x, y)
       break
     case 'W':
       tile = new TileW(char, x, y)

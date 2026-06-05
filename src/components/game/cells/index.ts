@@ -1,9 +1,11 @@
 import { Cell_g } from './Cell_g'
 import { Cell_i } from './Cell_i'
+import { CellA } from './CellA'
 import { CellE } from './CellE'
 import { CellF } from './CellF'
 import { CellG } from './CellG'
 import { CellL } from './CellL'
+import { CellM } from './CellM'
 import { CellO } from './CellO'
 import { CellT } from './CellT'
 import { CellW } from './CellW'
@@ -21,5 +23,8 @@ export const CELL_COMPONENTS: Record<string, React.ComponentType<any>> = {
   E: CellE,
   1: CellE,
   8: CellE,
-  O: CellO
+  O: CellO,
+  A: CellA,
+  M: CellM,
+  m: CellM,
 }

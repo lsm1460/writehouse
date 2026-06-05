@@ -33,3 +33,15 @@ export interface IEnvironmentTile {
 export function isEnvironmentTile(tile: any): tile is IEnvironmentTile {
   return tile && typeof (tile as any).onEnvironmentUpdate === 'function'
 }
+
+export interface IMonsterTile {
+  x: number
+  y: number
+  lastX: number
+  lastY: number
+  char: string
+  
+  getNextPosition(grid: any[][], entities: any[][]): { nx: number; ny: number }
+  updatePosition(nx: number, ny: number): void
+  stayQuiet(): void
+}

@@ -1,11 +1,12 @@
 import { EngineContext } from '../engineContext'
 import type { MapData } from '../gameEngine'
 import { createTile } from '../map/tiles'
+import { FloorTile } from '../map/tiles/FloorTile'
 import type { GridType } from '../types'
-import { delay } from '../utils'
 
 export class MapSystem {
   public grid: GridType = []
+  public entities: any[][] = []
   public floorNumber: number = 0
   public currentRoomId: string = ''
 
@@ -42,8 +43,19 @@ export class MapSystem {
   private buildGrid(rawGrid: string[][]): { x: number; y: number } | undefined {
     let spawnPos: { x: number; y: number } | undefined = undefined
 
+    this.entities = Array.from({ length: rawGrid.length }, () => Array(rawGrid[0]?.length || 0).fill(null))
+
     this.grid = rawGrid.map((row, i) =>
       row.map((cell, j) => {
+        if (['M', 'm'].includes(cell)) {
+          const floorTile = new FloorTile(' ', j, i)
+
+          const entityTile = createTile(cell, j, i)
+          this.entities[i][j] = entityTile
+
+          return floorTile
+        }
+
         const tile = createTile(cell, j, i)
 
         if (cell === 'S') {
@@ -95,6 +107,7 @@ export class MapSystem {
   public getTargetTile() {
     const { x, y } = this.ctx.player.targetPos
     if (!this.isValid(x, y)) return
-    return this.grid[y][x]
+
+    return this.entities[y][x] || this.grid[y][x]
   }
 }
