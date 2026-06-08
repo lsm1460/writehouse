@@ -107,9 +107,12 @@ export class EngineContext {
 
   public tickTurn(): boolean {
     this.effects.clear()
-    
+
     this.turn += 1
     const TURN_DELTA = 1.0
+
+    if (this.player.checkEnvironmentEffects(this.grid, this.entities)) return false
+
     const hasChanges = this.environment.update(TURN_DELTA)
 
     if (hasChanges) {
@@ -117,8 +120,7 @@ export class EngineContext {
       this.onChange()
     }
 
-    const isGameOver = this.player.checkEnvironmentEffects(this.grid, this.entities)
-    return !isGameOver
+    return !this.player.checkEnvironmentEffects(this.grid, this.entities)
   }
 
   public async nextStage() {
