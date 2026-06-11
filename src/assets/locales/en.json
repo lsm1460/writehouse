@@ -68,6 +68,10 @@
       "2_2": "L illuminates the surroundings, and if i is within that range, i will be activated.",
       "2_1": "Once all i are activated, ⚑ will open.",
       "3_1": "There are many other hidden combination rules to discover!"
+    },
+    "4-1": {
+      "2_10": "A large monster is ahead. It seems it can only move left and right.",
+      "6_6": "It's a small monster. It looks like it's trying to move only up and down."
     }
   },
   "char": {
