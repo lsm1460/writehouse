@@ -1,6 +1,6 @@
 import { EngineContext } from '../engineContext'
 import { createTile } from '../map/tiles'
-import type { Direction, GridType, Position } from '../types'
+import type { Direction, Position } from '../types'
 
 export class PlayerSystem {
   public pos: Position = { x: 0, y: 0 }
@@ -28,25 +28,24 @@ export class PlayerSystem {
     }
   }
 
-  public updateTargetPosition() {
-    const { x, y } = this.pos
-    switch (this.dir) {
+  private calculateNextPosition(x: number, y: number, dir: Direction): Position {
+    switch (dir) {
       case 'UP':
-        this.targetPos = { x, y: y - 1 }
-        break
+        return { x, y: y - 1 }
       case 'DOWN':
-        this.targetPos = { x, y: y + 1 }
-        break
+        return { x, y: y + 1 }
       case 'LEFT':
-        this.targetPos = { x: x - 1, y }
-        break
+        return { x: x - 1, y }
       case 'RIGHT':
-        this.targetPos = { x: x + 1, y }
-        break
+        return { x: x + 1, y }
     }
   }
 
-  public move(dir: Direction) {
+  public updateTargetPosition() {
+    this.targetPos = this.calculateNextPosition(this.pos.x, this.pos.y, this.dir)
+  }
+
+  public move(dir: Direction): boolean {
     if (this.dir !== dir) {
       this.dir = dir
     }
@@ -54,102 +53,82 @@ export class PlayerSystem {
     this.lastX = this.pos.x
     this.lastY = this.pos.y
 
-    let nextX = this.pos.x
-    let nextY = this.pos.y
+    const { x: nextX, y: nextY } = this.calculateNextPosition(this.pos.x, this.pos.y, dir)
 
-    switch (dir) {
-      case 'UP':
-        nextY -= 1
-        break
-      case 'DOWN':
-        nextY += 1
-        break
-      case 'LEFT':
-        nextX -= 1
-        break
-      case 'RIGHT':
-        nextX += 1
-        break
-    }
-
-    const grid = this.ctx.map.grid
-    const targetTile = grid[nextY]?.[nextX]
-
-    if (targetTile && targetTile.isPushable) {
-      let pushToX = nextX
-      let pushToY = nextY
-
-      switch (dir) {
-        case 'UP':
-          pushToY -= 1
-          break
-        case 'DOWN':
-          pushToY += 1
-          break
-        case 'LEFT':
-          pushToX -= 1
-          break
-        case 'RIGHT':
-          pushToX += 1
-          break
-      }
-
-      const behindEntity = this.ctx.entities?.[pushToY]?.[pushToX]
-      if (behindEntity && ['M', 'm'].includes(behindEntity.char)) {
-        return false
-      }
-
-      const behindTile = grid[pushToY]?.[pushToX]
-
-      if (behindTile && behindTile !== null) {
-        if (behindTile.char === ' ') {
-          grid[pushToY][pushToX] = createTile(targetTile.char, pushToX, pushToY, { ...targetTile.getData() })
-          grid[nextY][nextX] = createTile(' ', nextX, nextY)
-        } else {
-          const mixedChar = targetTile.getMixedResult(behindTile.char)
-
-          if (mixedChar) {
-            grid[pushToY][pushToX] = createTile(mixedChar, pushToX, pushToY)
-            grid[nextY][nextX] = createTile(' ', nextX, nextY)
-          } else {
-            return false
-          }
-        }
-      } else {
-        return false
-      }
-    }
-
-    if (this.ctx.map.isWalkable(nextX, nextY)) {
-      this.pos = { x: nextX, y: nextY }
-
-      const finalTile = grid[nextY]?.[nextX]
-      if (finalTile?.char === 'G' && this.ctx.stageClear) {
-        this.ctx.nextStage()
-        return true
-      }
-    } else {
+    if (!this.tryPushObject(nextX, nextY, dir)) {
       return false
     }
 
-    this.ctx.fog.update()
-    this.ctx.onChange()
+    if (!this.tryWalkTo(nextX, nextY)) {
+      return false
+    }
+
+    this.updateTargetPosition()
+    this.ctx.updateFogAndNotify()
+    return true
+  }
+
+  private tryPushObject(nextX: number, nextY: number, dir: Direction): boolean {
+    const targetTile = this.ctx.getTileAt(nextX, nextY)
+
+    if (!targetTile || !targetTile.isPushable) {
+      return true
+    }
+
+    const { x: pushToX, y: pushToY } = this.calculateNextPosition(nextX, nextY, dir)
+
+    if (this.ctx.getMonsterAt(pushToX, pushToY)) {
+      return false
+    }
+
+    const behindTile = this.ctx.getTileAt(pushToX, pushToY)
+    if (!behindTile) {
+      return false
+    }
+
+    if (behindTile.char === ' ') {
+      this.ctx.setTileAt(pushToX, pushToY, createTile(targetTile.char, pushToX, pushToY, { ...targetTile.getData() }))
+      this.ctx.setTileAt(nextX, nextY, createTile(' ', nextX, nextY))
+      return true
+    }
+
+    const mixedChar = targetTile.getMixedResult(behindTile.char)
+    if (mixedChar) {
+      this.ctx.setTileAt(pushToX, pushToY, createTile(mixedChar, pushToX, pushToY))
+      this.ctx.setTileAt(nextX, nextY, createTile(' ', nextX, nextY))
+      return true
+    }
+
+    return false
+  }
+
+  private tryWalkTo(nextX: number, nextY: number): boolean {
+    if (!this.ctx.isWalkable(nextX, nextY)) {
+      return false
+    }
+
+    this.pos = { x: nextX, y: nextY }
+
+    const finalTile = this.ctx.getTileAt(nextX, nextY)
+    if (finalTile?.char === 'G' && this.ctx.stageClear) {
+      this.ctx.nextStage()
+    }
 
     return true
   }
 
-  public checkEnvironmentEffects(grid: GridType, entities: any[][]): boolean {
+  public checkEnvironmentEffects(): boolean {
     const { x: newX, y: newY } = this.pos
 
-    const tile = grid[newY][newX]
-    if (tile.char === 'f' || tile.isElectrified) return true
+    const tile = this.ctx.getTileAt(newX, newY)
+    if (!tile) return false
 
-    const entity = entities[newY][newX]
-    if (entity && ['M', 'm'].includes(entity.char)) return true
+    if (tile.char === 'f' || tile.isElectrified) return true
+    if (this.ctx.getMonsterAt(newX, newY)) return true
 
     if (this.lastX !== newX || this.lastY !== newY) {
-      const entityAtOldPos = entities[this.lastY]?.[this.lastX]
-      if (entityAtOldPos && ['M', 'm'].includes(entityAtOldPos.char)) {
+      const entityAtOldPos = this.ctx.getMonsterAt(this.lastX, this.lastY)
+      if (entityAtOldPos) {
         const monsterLastX = entityAtOldPos.lastX ?? entityAtOldPos.x
         const monsterLastY = entityAtOldPos.lastY ?? entityAtOldPos.y
         if (monsterLastX === newX && monsterLastY === newY) return true
@@ -162,7 +141,6 @@ export class PlayerSystem {
   public spawn(pos: { x: number; y: number }) {
     this.pos = { ...pos }
     this.dir = 'UP'
-
     this.updateTargetPosition()
   }
 }

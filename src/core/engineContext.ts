@@ -1,5 +1,6 @@
 import type { MapData } from './gameEngine'
 import { EnvironmentManager } from './managers/EnvironmentManager'
+import type { Tile } from './map/Tile'
 import { CheatSystem } from './systems/CheatSystem'
 import { EffectSystem } from './systems/EffectSystem'
 import { FogSystem } from './systems/fogSystem'
@@ -78,6 +79,47 @@ export class EngineContext {
     return true
   }
 
+  public isPlayerAt(x: number, y: number): boolean {
+    return this.player.pos.x === x && this.player.pos.y === y
+  }
+
+  public isTileOccupiedByEntity(x: number, y: number): boolean {
+    const entity = this.map.entities?.[y]?.[x]
+    return entity !== null
+  }
+  
+  public getTileAt(x: number, y: number) {
+    return this.map.grid[y]?.[x]
+  }
+
+  public setTileAt(x: number, y: number, tile: Tile): void {
+    this.map.grid[y][x] = tile
+  }
+
+  public getMonsterAt(x: number, y: number) {
+    const entity = this.map.entities?.[y]?.[x]
+    if (entity && ['M', 'm'].includes(entity.char)) return entity
+    return null
+  }
+
+  public isWalkable(x: number, y: number): boolean {
+    return this.map.isWalkable(x, y)
+  }
+
+  public getPlayerMovementState() {
+    return {
+      x: this.player.pos.x,
+      y: this.player.pos.y,
+      lastX: this.player.lastX,
+      lastY: this.player.lastY,
+    }
+  }
+
+  public updateFogAndNotify(): void {
+    this.fog.update()
+    this.onChange()
+  }
+
   public captureState() {
     return this.history.captureState()
   }
@@ -111,7 +153,7 @@ export class EngineContext {
     this.turn += 1
     const TURN_DELTA = 1.0
 
-    if (this.player.checkEnvironmentEffects(this.grid, this.entities)) return false
+    if (this.player.checkEnvironmentEffects()) return false
 
     const hasChanges = this.environment.update(TURN_DELTA)
 
@@ -120,7 +162,7 @@ export class EngineContext {
       this.onChange()
     }
 
-    return !this.player.checkEnvironmentEffects(this.grid, this.entities)
+    return !this.player.checkEnvironmentEffects()
   }
 
   public async nextStage() {

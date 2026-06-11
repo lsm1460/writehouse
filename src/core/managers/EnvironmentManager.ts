@@ -1,5 +1,6 @@
 import type { EngineContext } from '../engineContext'
 import { isEnvironmentTile, type IEnvironmentTile } from '../map/tiles/types'
+import { DoorSystem } from '../systems/DoorSystem'
 import { ElectricitySystem } from '../systems/ElectricitySystem'
 import { FireSpreadingSystem } from '../systems/FireSpreadingSystem'
 import { MonsterMovementSystem } from '../systems/MonsterMovementSystem'
@@ -11,6 +12,7 @@ export class EnvironmentManager {
   private fireSystem: FireSpreadingSystem
   private monsterSystem: MonsterMovementSystem
   private waterSystem: WaterSpreadingSystem
+  private doorSystem: DoorSystem
 
   constructor(ctx: EngineContext) {
     this.ctx = ctx
@@ -18,6 +20,7 @@ export class EnvironmentManager {
     this.fireSystem = new FireSpreadingSystem(ctx)
     this.monsterSystem = new MonsterMovementSystem(ctx)
     this.waterSystem = new WaterSpreadingSystem(ctx)
+    this.doorSystem = new DoorSystem(ctx)
   }
 
   public update(deltaTime: number): boolean {
@@ -28,9 +31,12 @@ export class EnvironmentManager {
 
     if (this.updateEnvironmentTiles(deltaTime)) hasAnyTileChanged = true
 
-    // if (this.fireSystem.update(deltaTime, grid)) hasAnyTileChanged = true
     if (this.monsterSystem.update(grid)) hasAnyTileChanged = true
+
+    // if (this.fireSystem.update(deltaTime, grid)) hasAnyTileChanged = true
     if (this.electricitySystem.update()) hasAnyTileChanged = true
+    if (this.doorSystem.update()) hasAnyTileChanged = true
+
     if (this.waterSystem.update(deltaTime, grid)) hasAnyTileChanged = true
 
     return hasAnyTileChanged

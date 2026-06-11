@@ -51,7 +51,6 @@ export class TileD extends EnergyTile {
     }
 
     this._hasEnergy = true
-    console.log('monsterDetected',monsterDetected)
     return super.propagatePower(grid)
   }
 }

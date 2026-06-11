@@ -16,18 +16,12 @@ export class MonsterMovementSystem {
     let changed = false
 
     const sortedMonsters = this.collectMonstersByPriority(entities)
-
-    const playerPos = {
-      x: this.ctx.player.pos.x,
-      y: this.ctx.player.pos.y,
-      lastX: this.ctx.player.lastX,
-      lastY: this.ctx.player.lastY,
-    }
+    const playerState = this.ctx.getPlayerMovementState()
 
     for (const monster of sortedMonsters) {
       if (entities[monster.y][monster.x] !== monster) continue
 
-      if (this.processSingleMonsterTurn(monster, grid, entities, playerPos)) {
+      if (this.processSingleMonsterTurn(monster, grid, playerState)) {
         changed = true
       }
     }
@@ -58,11 +52,11 @@ export class MonsterMovementSystem {
   private processSingleMonsterTurn(
     monster: IMonsterTile,
     grid: GridType,
-    entities: any[][],
     player: { x: number; y: number; lastX: number; lastY: number }
   ): boolean {
     const cx = monster.x
     const cy = monster.y
+    const entities = this.ctx.map.entities
 
     const { nx, ny } = monster.getNextPosition(grid, entities)
 
@@ -77,15 +71,13 @@ export class MonsterMovementSystem {
       return false
     }
 
-    if (entities[ny][nx] !== null) {
+    if (this.ctx.isTileOccupiedByEntity(nx, ny)) {
       monster.stayQuiet()
       return false
     }
 
     const targetTile = grid[ny][nx]
-
     const isFireTile = targetTile instanceof TileF && targetTile.fireStage !== 'EXTINGUISHED'
-
     const isElectrifiedTile = (targetTile as any).isElectrified === true
 
     if (isFireTile || isElectrifiedTile) {
