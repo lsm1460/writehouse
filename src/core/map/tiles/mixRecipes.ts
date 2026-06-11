@@ -16,6 +16,7 @@ export const MIX_RECIPES: Record<string, string> = {
   A_: '8',
   EI: '8',
   OO: '8',
+  IↃ: 'D',
   '=_': '≡',
 }
 

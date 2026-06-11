@@ -79,6 +79,7 @@ export function createTile(char: string, x: number, y: number, meta?: any): Tile
     case '=':
     case '≡':
     case 'O':
+    case 'Ↄ':
       tile = new PushTile(char, x, y)
       break
     case 'T':

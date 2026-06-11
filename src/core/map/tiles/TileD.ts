@@ -4,6 +4,7 @@ import { EnergyTile } from './EnergyTile'
 import { isMonsterTile } from './types'
 
 export class TileD extends EnergyTile {
+  isElectric = true
   private _hasEnergy: boolean = false
 
   constructor(x: number, y: number) {
@@ -17,6 +18,10 @@ export class TileD extends EnergyTile {
   override get hasEnergy(): boolean {
     return this._hasEnergy
   }
+
+  setPower() {}
+
+  resetPower() {}
 
   onEnvironmentUpdate() {
     return false

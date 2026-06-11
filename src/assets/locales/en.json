@@ -140,10 +140,13 @@
       "label": "non-rechargeable Energy"
     },
     "M": {
-      "label": "Horizon"
+      "label": "Monster"
     },
     "m": {
-      "label": "Vertical"
+      "label": "Monster"
+    },
+    "Ↄ": {
+      "label": "Sensor"
     }
   }
 }

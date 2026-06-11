@@ -209,7 +209,7 @@ html, body {
 }
 
 .animate-breathe {
-  animation: breathe 2.5s ease-in-out infinite;
+  animation: breathe 0.8s ease-in-out infinite;
 }
 
 @keyframes monsterDeathFade {

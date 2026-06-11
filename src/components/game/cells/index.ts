@@ -1,12 +1,14 @@
 import { Cell_g } from './Cell_g'
 import { Cell_i } from './Cell_i'
 import { CellA } from './CellA'
+import { CellD } from './CellD'
 import { CellE } from './CellE'
 import { CellF } from './CellF'
 import { CellG } from './CellG'
 import { CellL } from './CellL'
 import { CellM } from './CellM'
 import { CellO } from './CellO'
+import { CellSensor } from './CellSensor'
 import { CellT } from './CellT'
 import { CellW } from './CellW'
 
@@ -27,4 +29,6 @@ export const CELL_COMPONENTS: Record<string, React.ComponentType<any>> = {
   A: CellA,
   M: CellM,
   m: CellM,
+  D: CellD,
+  Ↄ: CellSensor,
 }
