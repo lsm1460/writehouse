@@ -11,6 +11,10 @@ export class TileL extends IElectricTile {
     return 3 + (this._hasEnergy ? 1 : 0)
   }
 
+  public get hasEnergy(): boolean {
+    return this._hasEnergy
+  }
+
   public setPower(powered: boolean): boolean {
     const previousState = this._hasEnergy
     this._hasEnergy = powered
