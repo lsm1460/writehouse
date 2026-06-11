@@ -20,7 +20,7 @@ export abstract class EnergyTile extends PushTile implements IEnvironmentTile {
       if ('isElectric' in tile && (tile as unknown as IElectricTile).isElectric) {
         return (tile as unknown as IElectricTile).setPower(true)
       }
-      
+
       if (tile.isWet) {
         tile.charge()
         return true
@@ -59,7 +59,7 @@ export abstract class EnergyTile extends PushTile implements IEnvironmentTile {
 
         if (isElectric || isWetTile) {
           visited.add(key)
-          
+
           if (visitor(targetTile)) {
             anyStateChanged = true
           }

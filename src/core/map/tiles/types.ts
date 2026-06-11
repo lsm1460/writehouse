@@ -45,3 +45,14 @@ export interface IMonsterTile extends Tile {
   updatePosition(nx: number, ny: number): void
   stayQuiet(): void
 }
+
+export function isMonsterTile(tile: any): tile is IMonsterTile {
+  return (
+    tile &&
+    (tile.char === 'm' || tile.char === 'M' || (
+      typeof (tile as any).getNextPosition === 'function' &&
+      typeof (tile as any).updatePosition === 'function' &&
+      typeof (tile as any).stayQuiet === 'function'
+    ))
+  )
+}

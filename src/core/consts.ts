@@ -15,3 +15,10 @@ export const COMPASS_DIRECTIONS = [
   [0, 1],
   [1, 1], // 좌하, 하, 우하
 ] as const
+
+export const DIAGONAL_DIRECTIONS = [
+  [-1, -1],
+  [1, -1],
+  [-1, 1],
+  [1, 1],
+]

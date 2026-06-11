@@ -1,13 +1,12 @@
 import type { EngineContext } from '../engineContext'
 import type { Direction, Position } from '../gameEngine'
 import { createTile } from '../map/tiles'
-import type { IMonsterTile } from '../map/tiles/types'
-import type { GridType } from '../types'
+import type { EntitiesType, GridType } from '../types'
 import type { InventoryItem } from './inventorySystem'
 
 export interface HistoryState {
   grid: GridType
-  entities: (IMonsterTile | null)[][]
+  entities: EntitiesType
   playerPos: Position
   playerDir: Direction
   playerTargetPos: Position

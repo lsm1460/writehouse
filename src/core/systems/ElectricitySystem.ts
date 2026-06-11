@@ -1,6 +1,7 @@
-import type { EngineContext } from '../engineContext'
 import type { GridType } from '~/core/types'
+import type { EngineContext } from '../engineContext'
 import { EnergyTile } from '../map/tiles/EnergyTile'
+import type { TileD } from '../map/tiles/TileD'
 
 export class ElectricitySystem {
   private ctx: EngineContext
@@ -22,13 +23,16 @@ export class ElectricitySystem {
     }
   }
 
-  public update(grid: GridType): boolean {
+  public update(): boolean {
+    const grid = this.ctx.map.grid
+    const entities = this.ctx.map.entities
+
     let changed = false
     for (let y = 0; y < grid.length; y++) {
       for (let x = 0; x < grid[y].length; x++) {
         const tile = grid[y][x]
         if (tile instanceof EnergyTile) {
-          if ((tile as EnergyTile).propagatePower(grid)) {
+          if ((tile as TileD).propagatePower(grid, entities)) {
             changed = true
           }
         }

@@ -1,4 +1,5 @@
 import type { Tile } from "./map/Tile"
+import type { IMonsterTile } from "./map/tiles/types"
 
 export type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT'
 
@@ -30,3 +31,4 @@ export interface LightState {
 }
 
 export type GridType = Tile[][]
+export type EntitiesType = (IMonsterTile | null)[][]

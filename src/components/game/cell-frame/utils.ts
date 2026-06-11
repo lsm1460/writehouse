@@ -1,3 +1,5 @@
+import type { GridType } from '~/core/types'
+
 export function getTileContext(
   char: string,
   contextData: { stageClear: boolean; isActive: boolean; isWet: boolean; isElectrified: boolean }
@@ -16,3 +18,6 @@ export function getTileContext(
 
 export const OPACITY_LEVELS = [0.15, 0.6, 0.75, 0.9, 1.0]
 export const getOpacity = (level: number) => OPACITY_LEVELS[level] ?? 1.0
+
+export const isValidCoords = (grid: GridType, x: number, y: number): boolean =>
+  y >= 0 && y < grid.length && x >= 0 && x < grid[y].length

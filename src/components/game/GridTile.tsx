@@ -1,5 +1,5 @@
 import type { Tile } from '~/core/map/Tile'
-import type { IMonsterTile } from '~/core/map/tiles/types'
+import type { EntitiesType } from '~/core/types'
 import { CELL_SIZE } from './consts'
 import { DeathEffect } from './DeathEffect'
 import { EntityCell } from './EntityCell'
@@ -13,7 +13,7 @@ interface GridTileProps {
     getLightState: (x: number, y: number) => any
     getLightLevel: (x: number, y: number) => number
   }
-  entities: (IMonsterTile | null)[][]
+  entities: EntitiesType
   deathEvents: any[] | null | undefined
   playerPos: { x: number; y: number }
   targetPos: { x: number; y: number }

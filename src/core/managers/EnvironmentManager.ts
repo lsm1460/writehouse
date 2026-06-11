@@ -1,4 +1,3 @@
-import type { GridType } from '~/core/types'
 import type { EngineContext } from '../engineContext'
 import { isEnvironmentTile, type IEnvironmentTile } from '../map/tiles/types'
 import { ElectricitySystem } from '../systems/ElectricitySystem'
@@ -27,17 +26,19 @@ export class EnvironmentManager {
 
     this.electricitySystem.reset(grid)
 
-    if (this.updateEnvironmentTiles(deltaTime, grid)) hasAnyTileChanged = true
+    if (this.updateEnvironmentTiles(deltaTime)) hasAnyTileChanged = true
 
-    if (this.electricitySystem.update(grid)) hasAnyTileChanged = true
     // if (this.fireSystem.update(deltaTime, grid)) hasAnyTileChanged = true
     if (this.monsterSystem.update(grid)) hasAnyTileChanged = true
+    if (this.electricitySystem.update()) hasAnyTileChanged = true
     if (this.waterSystem.update(deltaTime, grid)) hasAnyTileChanged = true
 
     return hasAnyTileChanged
   }
 
-  private updateEnvironmentTiles(deltaTime: number, grid: GridType): boolean {
+  private updateEnvironmentTiles(deltaTime: number): boolean {
+    const grid = this.ctx.map.grid
+
     let changed = false
     for (let y = 0; y < grid.length; y++) {
       for (let x = 0; x < grid[y].length; x++) {
