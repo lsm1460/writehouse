@@ -3,7 +3,6 @@ import { Tile } from '../Tile'
 import { PushTile } from './PushTile'
 
 export abstract class WalkableTile extends Tile {
-
   override get isWalkable(): boolean {
     return true
   }
@@ -19,11 +18,32 @@ export abstract class WalkableTile extends Tile {
 }
 
 export abstract class IElectricTile extends PushTile {
+  _hasEnergy: boolean = false
   isElectric = true
-  setPower(powered: boolean): boolean {
-    return false
+
+  override getData() {
+    return {
+      hasEnergy: this._hasEnergy,
+    }
   }
-  resetPower(): void {}
+
+  override setData(data: any) {
+    if (data && typeof data.hasEnergy === 'boolean') this._hasEnergy = data.hasEnergy
+  }
+
+  public get hasEnergy(): boolean {
+    return this._hasEnergy
+  }
+
+  public setPower(powered: boolean): boolean {
+    const previousState = this._hasEnergy
+    this._hasEnergy = powered
+    return previousState !== this._hasEnergy
+  }
+
+  public resetPower() {
+    this._hasEnergy = false
+  }
 }
 
 export interface IEnvironmentTile {
@@ -40,7 +60,7 @@ export interface IMonsterTile extends Tile {
   lastX: number
   lastY: number
   char: string
-  
+
   getNextPosition(grid: any[][], entities: any[][]): { nx: number; ny: number }
   updatePosition(nx: number, ny: number): void
   stayQuiet(): void
@@ -49,10 +69,10 @@ export interface IMonsterTile extends Tile {
 export function isMonsterTile(tile: any): tile is IMonsterTile {
   return (
     tile &&
-    (tile.char === 'm' || tile.char === 'M' || (
-      typeof (tile as any).getNextPosition === 'function' &&
-      typeof (tile as any).updatePosition === 'function' &&
-      typeof (tile as any).stayQuiet === 'function'
-    ))
+    (tile.char === 'm' ||
+      tile.char === 'M' ||
+      (typeof (tile as any).getNextPosition === 'function' &&
+        typeof (tile as any).updatePosition === 'function' &&
+        typeof (tile as any).stayQuiet === 'function'))
   )
 }

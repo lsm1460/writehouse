@@ -3,7 +3,8 @@ import type { EngineContext } from '~/core/engineContext'
 import type { GridType } from '~/core/types'
 import { createTile } from '.'
 import { Tile } from '../Tile'
-import type { EnergyTile } from './EnergyTile'
+import { EnergyTile } from './EnergyTile'
+import { Tile1 } from './Tile1'
 
 type SlideType = 'HORIZONTAL' | 'VERTICAL'
 
@@ -19,13 +20,25 @@ export class TileDoor extends Tile {
     this.slideType = char === '⎴' ? 'HORIZONTAL' : 'VERTICAL'
   }
 
+  override getData() {
+    return {
+      originX: this.originX,
+      originY: this.originY,
+    }
+  }
+
+  override setData(data: any) {
+    if (data && typeof data.originX === 'number') this.originX = data.originX
+    if (data && typeof data.originY === 'number') this.originY = data.originY
+  }
+
   override get lightRadius() {
     return 0
   }
 
   public updateDoorState(grid: GridType, ctx: EngineContext): boolean {
     const isMoved = this.x !== this.originX || this.y !== this.originY
-
+    
     if (isMoved) {
       return this.handleOpenState(grid, ctx)
     } else {
@@ -108,6 +121,7 @@ export class TileDoor extends Tile {
 
   private checkIsElectrified(tile: Tile): boolean {
     if (!tile) return false
+    
     return (tile as EnergyTile).hasEnergy
   }
 }
