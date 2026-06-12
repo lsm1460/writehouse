@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { useGame } from '~/context/GameContext'
 import { CELL_SIZE } from './consts'
 import { GridTile } from './GridTile'
+import { StageCamera } from './StageCamera'
 
 const VERTICAL_PAD = 50
 const VIEW_WIDTH = 1024
@@ -53,46 +54,44 @@ export function StageGrid() {
   }, [grid, startY, endY])
 
   return (
-    <div className="absolute flex flex-col p-4 bg-black select-none">
-      <div
-        style={{
-          transform: `translate(${offsetX}px, ${offsetY}px)`,
-          paddingTop: `${paddingTop}px`,
-          paddingLeft: `${paddingLeft}px`,
-        }}
-        className="flex flex-col transition-transform duration-200 ease-out"
-      >
-        {slicedGrid.map((row, relativeY) => {
-          const y = startY + relativeY
-          const slicedRow = row.slice(startX, endX + 1)
+    <StageCamera
+      offsetX={offsetX}
+      offsetY={offsetY}
+      paddingTop={paddingTop}
+      paddingLeft={paddingLeft}
+      mapWidth={mapWidth}
+      mapHeight={mapHeight}
+    >
+      {slicedGrid.map((row, relativeY) => {
+        const y = startY + relativeY
+        const slicedRow = row.slice(startX, endX + 1)
 
-          return (
-            <div key={y} className="flex">
-              {slicedRow.map((tile: any, relativeX: number) => {
-                const x = startX + relativeX
-                const lightState = fog.getLightState(x, y)
-                const lightLevel = fog.getLightLevel(x, y)
+        return (
+          <div key={y} className="flex">
+            {slicedRow.map((tile: any, relativeX: number) => {
+              const x = startX + relativeX
+              const lightState = fog.getLightState(x, y)
+              const lightLevel = fog.getLightLevel(x, y)
 
-                return (
-                  <GridTile
-                    key={x}
-                    x={x}
-                    y={y}
-                    tile={tile}
-                    lightState={lightState}
-                    lightLevel={lightLevel}
-                    entities={entities}
-                    deathEvents={deathEventsMap}
-                    playerPos={playerPos}
-                    targetPos={targetPos}
-                    stageClear={stageClear}
-                  />
-                )
-              })}
-            </div>
-          )
-        })}
-      </div>
-    </div>
+              return (
+                <GridTile
+                  key={x}
+                  x={x}
+                  y={y}
+                  tile={tile}
+                  lightState={lightState}
+                  lightLevel={lightLevel}
+                  entities={entities}
+                  deathEvents={deathEventsMap}
+                  playerPos={playerPos}
+                  targetPos={targetPos}
+                  stageClear={stageClear}
+                />
+              )
+            })}
+          </div>
+        )
+      })}
+    </StageCamera>
   )
 }
