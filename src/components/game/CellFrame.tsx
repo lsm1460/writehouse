@@ -1,6 +1,5 @@
 import { memo, useMemo, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useGame } from '~/context/GameContext'
 import type { Tile } from '~/core/map/Tile'
 import { ElectricOverlay } from './cell-frame/ElectricOverlay'
 import { Tooltip } from './cell-frame/Tooltip'
@@ -14,19 +13,23 @@ interface CellFrameProps {
   isTarget: boolean
   children: ReactNode
   tile: Tile
+  stageClear: boolean
+  isLightActive: boolean
 }
 
-export const CellFrame = memo(function CellFrame({ lightLevel, isPlayer, isTarget, children, tile }: CellFrameProps) {
+export const CellFrame = memo(function CellFrame({
+  lightLevel,
+  isPlayer,
+  isTarget,
+  children,
+  tile,
+  stageClear,
+  isLightActive,
+}: CellFrameProps) {
   const { t } = useTranslation()
-  const { stageClear, fog } = useGame()
 
   const charKey = tile.char.trim()
   const { isWet, isElectrified } = tile
-
-  const isLightActive = useMemo(() => {
-    if (charKey !== 'i') return false
-    return fog.getLightState(tile.x, tile.y).environmentIntensity > 0
-  }, [charKey, fog, tile.x, tile.y])
 
   const tileContext = useMemo(() => {
     if (!charKey) return undefined
@@ -44,7 +47,7 @@ export const CellFrame = memo(function CellFrame({ lightLevel, isPlayer, isTarge
 
   const frameClass = useMemo(() => {
     const baseClass =
-      'relative flex items-center justify-center text-base font-bold transition-all duration-150 select-none text-neutral-300 border border-transparent z-0 isolate'
+      'relative flex items-center justify-center text-base font-bold transition-colors duration-150 select-none text-neutral-300 border border-transparent z-0 isolate'
     const bgClass = tile.char === 'H' ? 'bg-black' : 'bg-neutral-900'
     const playerClass = isPlayer ? 'font-black z-10' : ''
     const targetClass = isTarget ? 'z-30' : ''
@@ -52,8 +55,17 @@ export const CellFrame = memo(function CellFrame({ lightLevel, isPlayer, isTarge
     return `${baseClass} ${bgClass} ${playerClass} ${targetClass}`
   }, [tile.char, isPlayer, isTarget])
 
+  const opacityStyle = useMemo(() => getOpacity(lightLevel), [lightLevel])
+
   return (
-    <span className={frameClass} style={{ opacity: getOpacity(lightLevel), width: CELL_SIZE, height: CELL_SIZE }}>
+    <span
+      className={frameClass}
+      style={{
+        opacity: opacityStyle,
+        width: CELL_SIZE,
+        height: CELL_SIZE,
+      }}
+    >
       {hasTooltip && <Tooltip label={label} example={example} />}
 
       {isWet && <WetOverlay />}

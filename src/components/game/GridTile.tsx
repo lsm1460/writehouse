@@ -1,3 +1,4 @@
+import React from 'react'
 import type { Tile } from '~/core/map/Tile'
 import type { EntitiesType } from '~/core/types'
 import { CELL_SIZE } from './consts'
@@ -9,22 +10,21 @@ interface GridTileProps {
   x: number
   y: number
   tile: Tile
-  fog: {
-    getLightState: (x: number, y: number) => any
-    getLightLevel: (x: number, y: number) => number
-  }
+  lightState: any
+  lightLevel: number
   entities: EntitiesType
-  deathEvents: any[] | null | undefined
+  deathEvents: Map<string, any> | null | undefined
   playerPos: { x: number; y: number }
   targetPos: { x: number; y: number }
   stageClear: boolean
 }
 
-export function GridTile({
+function GridTileComponent({
   x,
   y,
   tile,
-  fog,
+  lightState,
+  lightLevel,
   entities,
   deathEvents,
   playerPos,
@@ -33,12 +33,9 @@ export function GridTile({
 }: GridTileProps) {
   const isPlayer = playerPos.x === x && playerPos.y === y
   const isTarget = targetPos.x === x && targetPos.y === y
-  
-  const lightState = fog.getLightState(x, y)
-  const lightLevel = fog.getLightLevel(x, y)
 
   const entity = entities?.[y]?.[x]
-  const currentDeath = deathEvents?.find((e: any) => e.x === x && e.y === y)
+  const currentDeath = deathEvents?.get(`${x},${y}`)
 
   const renderable = {
     tile,
@@ -54,7 +51,33 @@ export function GridTile({
 
       {currentDeath && <DeathEffect reason={currentDeath.reason} />}
 
-      <GridCell cell={renderable} stageClear={stageClear} />
+      <GridCell cell={renderable} />
     </div>
   )
 }
+
+export const GridTile = React.memo(GridTileComponent, (prevProps, nextProps) => {
+  if (prevProps.x !== nextProps.x || prevProps.y !== nextProps.y) return false
+  if (prevProps.stageClear !== nextProps.stageClear) return false
+  if (prevProps.tile !== nextProps.tile || prevProps.tile.char !== nextProps.tile.char) return false
+  if (prevProps.lightState !== nextProps.lightState) return false
+  if (prevProps.lightLevel !== nextProps.lightLevel) return false
+
+  const prevIsPlayer = prevProps.playerPos.x === prevProps.x && prevProps.playerPos.y === prevProps.y
+  const nextIsPlayer = nextProps.playerPos.x === nextProps.x && nextProps.playerPos.y === nextProps.y
+  if (prevIsPlayer !== nextIsPlayer) return false
+
+  const prevIsTarget = prevProps.targetPos.x === prevProps.x && prevProps.targetPos.y === prevProps.y
+  const nextIsTarget = nextProps.targetPos.x === nextProps.x && nextProps.targetPos.y === nextProps.y
+  if (prevIsTarget !== nextIsTarget) return false
+
+  const prevEntity = prevProps.entities?.[prevProps.y]?.[prevProps.x]
+  const nextEntity = nextProps.entities?.[nextProps.y]?.[nextProps.x]
+  if (prevEntity !== nextEntity) return false
+
+  const prevDeath = prevProps.deathEvents?.get(`${prevProps.x},${prevProps.y}`)
+  const nextDeath = nextProps.deathEvents?.get(`${nextProps.x},${nextProps.y}`)
+  if (prevDeath !== nextDeath) return false
+
+  return true
+})

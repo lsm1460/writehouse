@@ -87,7 +87,7 @@ export class EngineContext {
     const entity = this.map.entities?.[y]?.[x]
     return entity !== null
   }
-  
+
   public getTileAt(x: number, y: number) {
     return this.map.grid[y]?.[x]
   }
