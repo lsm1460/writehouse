@@ -3,6 +3,8 @@ import type { GridType } from '~/core/types'
 import { IElectricTile } from './types'
 
 export class TileWPT extends IElectricTile {
+  radius = 4
+
   constructor(x: number, y: number) {
     super('Э', x, y)
   }
@@ -29,12 +31,11 @@ export class TileWPT extends IElectricTile {
 
   private propagateWireless(grid: GridType): boolean {
     let changed = false
-    const radius = 3
 
-    for (let dy = -radius; dy <= radius; dy++) {
-      for (let dx = -radius; dx <= radius; dx++) {
+    for (let dy = -this.radius; dy <= this.radius; dy++) {
+      for (let dx = -this.radius; dx <= this.radius; dx++) {
         if (dx === 0 && dy === 0) continue
-        if (Math.abs(dx) + Math.abs(dy) > radius) continue
+        if (Math.abs(dx) + Math.abs(dy) > this.radius) continue
 
         const nx = this.x + dx
         const ny = this.y + dy
@@ -78,8 +79,6 @@ export class TileWPT extends IElectricTile {
       visited.add(key)
 
       const targetTile = grid[current.y][current.x]
-
-      if (targetTile instanceof TileWPT) continue
 
       const isElectric = 'isElectric' in targetTile && (targetTile as any).isElectric
       const isWetTile = (targetTile as any).isWet
