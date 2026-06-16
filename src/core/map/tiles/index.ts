@@ -7,6 +7,8 @@ import { Tile8 } from './Tile8'
 import { Tilei } from './Tile_i'
 import { Tile_m } from './Tile_m'
 import { TileA } from './TileA'
+import { TileD } from './TileD'
+import { TileDoor } from './TileDoor'
 import { TileE } from './TileE'
 import { TileF } from './TileF'
 import { TileG } from './TileG'
@@ -15,8 +17,7 @@ import { TileM } from './TileM'
 import { TileS } from './TileS'
 import { TileW } from './TileW'
 import { TileWall } from './TileWall'
-import { TileD } from './TileD'
-import { TileDoor } from './TileDoor'
+import { TileWPT } from './TileWPT'
 
 export function createTile(char: string, x: number, y: number, meta?: any): Tile {
   let tile: Tile
@@ -73,6 +74,9 @@ export function createTile(char: string, x: number, y: number, meta?: any): Tile
       break
     case 'D':
       tile = new TileD(x, y)
+      break
+    case 'Э':
+      tile = new TileWPT(x, y)
       break
     case 'I':
     case '_':

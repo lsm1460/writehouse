@@ -11,6 +11,7 @@ import { CellO } from './CellO'
 import { CellSensor } from './CellSensor'
 import { CellT } from './CellT'
 import { CellW } from './CellW'
+import { CellWPT } from './CellWPT'
 
 export const CELL_COMPONENTS: Record<string, React.ComponentType<any>> = {
   L: CellL,
@@ -31,4 +32,5 @@ export const CELL_COMPONENTS: Record<string, React.ComponentType<any>> = {
   m: CellM,
   D: CellD,
   Ↄ: CellSensor,
+  Э: CellWPT
 }

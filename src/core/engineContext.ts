@@ -156,9 +156,10 @@ export class EngineContext {
     if (this.player.checkEnvironmentEffects()) return false
 
     const hasChanges = this.environment.update(TURN_DELTA)
+    
+    this.fog.update()
 
     if (hasChanges) {
-      this.fog.update()
       this.onChange()
     }
 
