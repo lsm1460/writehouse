@@ -150,7 +150,11 @@
       "label": "Monster"
     },
     "Ↄ": {
-      "label": "Sensor"
+      "label": "Sensor",
+      "example": "I + Ↄ → D"
+    },
+    "Э": {
+      "label": "Wireless Power Transmitter"
     }
   }
 }

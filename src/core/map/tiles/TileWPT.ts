@@ -3,7 +3,7 @@ import type { GridType } from '~/core/types'
 import { IElectricTile } from './types'
 
 export class TileWPT extends IElectricTile {
-  radius = 4
+  radius = 5
 
   constructor(x: number, y: number) {
     super('Э', x, y)
