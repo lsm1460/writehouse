@@ -34,7 +34,7 @@ function App() {
   }
 
   const handleTest = () => {
-    engine.load()
+    engine.start()
     setGameState('TEST')
   }
 
