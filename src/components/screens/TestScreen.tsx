@@ -58,7 +58,7 @@ export const TestScreen: React.FC<TestScreenProps> = ({ backToTitle }) => {
         player,
         fog,
         timestamp: now,
-        camera: cameraRef.current // 💡 카메라 주입
+        camera: cameraRef.current, // 💡 카메라 주입
       })
 
       animationFrameId = requestAnimationFrame(render)
@@ -72,8 +72,13 @@ export const TestScreen: React.FC<TestScreenProps> = ({ backToTitle }) => {
   }, [map, player, fog, gameState])
 
   return (
-    <div className="flex-1 w-full h-full flex items-center justify-center overflow-hidden relative">
-      <canvas ref={canvasRef} className="max-w-full max-h-full" style={{ width: VIEW_WIDTH, height: VIEW_HEIGHT }} />
+    <div className="flex-1 w-full h-full flex items-center justify-center overflow-hidden relative bg-[#0a0a0c]">
+      <canvas
+        ref={canvasRef}
+        className="max-w-full max-h-full aspect-[16/9] object-contain"
+        style={{ imageRendering: 'pixelated' }}
+      />
+
       <div className="absolute top-2 left-2 text-xs text-green-400 font-mono">FPS: {fps}</div>
     </div>
   )
