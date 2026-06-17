@@ -9,9 +9,10 @@ interface TitleScreenProps {
   onLoad?: () => void
   onConfig: () => void
   onExit: () => void
+  onTest: () => void
 }
 
-export const TitleScreen: React.FC<TitleScreenProps> = ({ onStart, onLoad, onConfig, onExit }) => {
+export const TitleScreen: React.FC<TitleScreenProps> = ({ onStart, onLoad, onConfig, onExit, onTest }) => {
   const { t } = useTranslation()
   const { engine } = useGame()
 
@@ -19,6 +20,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({ onStart, onLoad, onCon
     { label: t('ui.new_game'), action: onStart },
     ...(onLoad ? [{ label: t('ui.load'), action: onLoad }] : []),
     { label: t('ui.config'), action: onConfig },
+    { label: 'Canvas Test', action: onTest },
     { label: 'Exit', action: onExit },
   ]
 
