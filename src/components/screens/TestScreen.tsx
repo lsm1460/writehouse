@@ -17,16 +17,12 @@ export const TestScreen: React.FC<TestScreenProps> = ({ backToTitle }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const [fps, setFps] = useState<number>(0)
 
-  // 💡 고유한 카메라 인스턴스 생성 및 유지
   const cameraRef = useRef(new Camera(VIEW_WIDTH, VIEW_HEIGHT, VERTICAL_PAD))
 
   useGameInput({
     engine,
     disabled: false,
   })
-
-  // 예시: 필요 시 리액트 외부나 입력 이벤트를 통해 줌을 마음대로 변경 가능
-  // 예: 마우스 휠 이벤트 등으로 cameraRef.current.setZoom(1.5) 호출 시 즉시 줌 적용됨
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -72,7 +68,7 @@ export const TestScreen: React.FC<TestScreenProps> = ({ backToTitle }) => {
   }, [map, player, fog, gameState])
 
   return (
-    <div className="flex-1 w-full h-full flex items-center justify-center overflow-hidden relative bg-[#0a0a0c]">
+    <div className="absolute inset-0 flex items-center justify-center overflow-hidden bg-[#0a0a0c]">
       <canvas
         ref={canvasRef}
         className="max-w-full max-h-full aspect-[16/9] object-contain"
