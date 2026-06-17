@@ -18,7 +18,7 @@ export const MIX_RECIPES: Record<string, string> = {
   OO: '8',
   IↃ: 'D',
   '=_': '≡',
-  '-Ↄ': 'Э'
+  '_Ↄ': 'Э'
 }
 
 export function getMixedChar(charA: string, charB: string): string | null {
