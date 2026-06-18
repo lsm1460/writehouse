@@ -1,12 +1,6 @@
-import { CELL_SIZE } from '~/components/game/consts';
-import type { TileF } from '~/core/map/tiles/TileF';
-import { BaseTileEffect } from './DefaultTile';
-
-interface TileFire {
-  x: number;
-  y: number;
-  char: string;
-}
+import { CELL_SIZE } from '~/components/game/consts'
+import type { TileF } from '~/core/map/tiles/TileF'
+import { BaseTileEffect } from './DefaultTile'
 
 interface FireParticle {
   x: number
@@ -19,13 +13,17 @@ interface FireParticle {
   color: string
 }
 
-const particleCache = new WeakMap<TileFire, FireParticle[]>()
+const particleCache = new WeakMap<TileF, FireParticle[]>()
 
 function pColor(t: number, c1: string, c2: string) {
   return t < 0.5 ? c1 : c2
 }
 
 export class FireTile extends BaseTileEffect<TileF> {
+  private get isSlow() {
+    return this.tile.char === 'f'
+  }
+
   protected render() {
     this.renderParticles()
     this.renderFireText()
@@ -37,17 +35,20 @@ export class FireTile extends BaseTileEffect<TileF> {
     }
     const particles = particleCache.get(this.tile)!
 
-    if (particles.length < 6 && Math.random() < 0.15) {
-      const maxLife = 20 + Math.random() * 20
+    const spawnChance = this.isSlow ? 0.075 : 0.15
+    const speedMultiplier = this.isSlow ? 0.5 : 1.0
+
+    if (particles.length < 6 && Math.random() < spawnChance) {
+      const maxLife = (20 + Math.random() * 20) * (this.isSlow ? 1.5 : 1) // 수명 조금 더 길게
       particles.push({
         x: this.centerX + (Math.random() - 0.5) * (CELL_SIZE * 0.6),
         y: this.centerY + 2,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: -(0.4 + Math.random() * 0.6),
+        vx: (Math.random() - 0.5) * 0.4 * speedMultiplier,
+        vy: -(0.4 + Math.random() * 0.6) * speedMultiplier,
         life: 1.0,
         maxLife,
-        size: 1 + Math.random() * 2,
-        color: Math.random() > 0.4 ? '#f97316' : '#facc15'
+        size: (1 + Math.random() * 2) * (this.isSlow ? 0.8 : 1), // 약간 작게
+        color: Math.random() > 0.4 ? '#f97316' : '#facc15',
       })
     }
 
@@ -74,7 +75,7 @@ export class FireTile extends BaseTileEffect<TileF> {
 
   private renderFireText() {
     const { timestamp } = this.context
-    const duration = 400
+    const duration = this.isSlow ? 800 : 400
     const progress = (timestamp % duration) / duration
 
     let scale = 1
@@ -89,7 +90,7 @@ export class FireTile extends BaseTileEffect<TileF> {
         [-2 - t, 4 + 2 * t, '#facc15'],
         [-4 - 2 * t, 10 + 2 * t, '#f97316'],
         [-8 - 2 * t, 20 + 4 * t, pColor(t, '#ef4444', '#dc2626')],
-        [0, 4 + t, '#facc15']
+        [0, 4 + t, '#facc15'],
       ]
     } else if (progress < 0.5) {
       const t = (progress - 0.25) / 0.25
@@ -99,7 +100,7 @@ export class FireTile extends BaseTileEffect<TileF> {
         [-3 + 2 * t, 6 - 3 * t, '#facc15'],
         [-6 + 3 * t, 12 - 4 * t, '#f97316'],
         [-10 + 4 * t, 24 - 8 * t, pColor(t, '#dc2626', '#ef4444')],
-        [0, 5 - 2 * t, '#facc15']
+        [0, 5 - 2 * t, '#facc15'],
       ]
     } else if (progress < 0.75) {
       const t = (progress - 0.5) / 0.25
@@ -109,7 +110,7 @@ export class FireTile extends BaseTileEffect<TileF> {
         [-1 - 3 * t, 3 + 4 * t, '#facc15'],
         [-3 - 4 * t, 8 + 7 * t, pColor(t, '#f97316', '#ea580c')],
         [-6 - 6 * t, 16 + 12 * t, '#ef4444'],
-        [0, 3 + 3 * t, '#facc15']
+        [0, 3 + 3 * t, '#facc15'],
       ]
     } else {
       const t = (progress - 0.75) / 0.25
@@ -119,14 +120,13 @@ export class FireTile extends BaseTileEffect<TileF> {
         [-4 + 2 * t, 7 - 3 * t, '#facc15'],
         [-7 + 3 * t, 15 - 5 * t, pColor(t, '#ea580c', '#f97316')],
         [-12 + 4 * t, 28 - 8 * t, '#ef4444'],
-        [0, 6 - 2 * t, '#facc15']
+        [0, 6 - 2 * t, '#facc15'],
       ]
     }
 
     this.ctx.save()
-
     this.ctx.translate(this.centerX, this.centerY + CELL_SIZE / 2)
-    this.ctx.transform(scale, 0, Math.tan(skewX * Math.PI / 180), scale, 0, 0)
+    this.ctx.transform(scale, 0, Math.tan((skewX * Math.PI) / 180), scale, 0, 0)
     this.ctx.translate(-this.centerX, -(this.centerY + CELL_SIZE / 2))
 
     this.ctx.font = 'bold 13px monospace'
