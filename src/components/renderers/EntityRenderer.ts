@@ -109,18 +109,24 @@ const renderSmallM = (
 }
 
 export const EntityRenderer = {
-  render(ctx: CanvasRenderingContext2D, x: number, y: number, entity: any, timestamp: number) {
+  render(ctx: CanvasRenderingContext2D, x: number, y: number, entity: any, timestamp: number, currentChar: string) {
     if (!entity) return
 
+    
     const tilePixelX = x * CELL_SIZE
     const tilePixelY = y * CELL_SIZE
     const centerX = tilePixelX + CELL_SIZE / 2
     const centerY = tilePixelY + CELL_SIZE / 2
     const bottomY = centerY + CELL_SIZE * 0.15
-
+    
     const char = entity.char || 'M'
-
+    
     ctx.save()
+    
+    const isObscured = currentChar && currentChar.trim() !== ''
+    if (isObscured) {
+      ctx.globalAlpha = 0.6
+    }
 
     if (char === 'M') {
       renderBigM(ctx, centerX, bottomY, timestamp)

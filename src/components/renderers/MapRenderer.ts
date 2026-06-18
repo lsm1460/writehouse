@@ -61,7 +61,6 @@ export const MapRenderer = {
         }
 
         if (tile.isElectrified) {
-          // 컴포넌트 내부에서 사용하던 isWet 플래그를 그대로 넘겨서 색상 변화 감지
           EffectRenderer.drawElectricOverlay(ctx, x, y, timestamp, tile.isWet)
         }
 
@@ -69,13 +68,13 @@ export const MapRenderer = {
           TileRenderer.drawPlayer(ctx, playerPos.x, playerPos.y, tile.char)
         }
 
-        if (tile.char.trim() && tile.char !== ' ') {
-          tileMeta.renderer.draw(ctx, tile, { stageClear, timestamp, lightState })
-        }
-
         const entity = entities?.[y]?.[x]
         if (entity) {
-          EntityRenderer.render(ctx, x, y, entity, timestamp)
+          EntityRenderer.render(ctx, x, y, entity, timestamp, tile.char)
+        }
+
+        if (tile.char.trim() && tile.char !== ' ') {
+          tileMeta.renderer.draw(ctx, tile, { stageClear, timestamp, lightState })
         }
 
         TileRenderer.drawFog(ctx, x, y, lightLevel)
