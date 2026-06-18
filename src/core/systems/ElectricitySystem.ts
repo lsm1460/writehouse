@@ -1,6 +1,7 @@
 import type { GridType } from '~/core/types'
 import type { EngineContext } from '../engineContext'
 import { EnergyTile } from '../map/tiles/EnergyTile'
+import type { TileD } from '../map/tiles/TileD'
 import { TileWPT } from '../map/tiles/TileWPT'
 
 export class ElectricitySystem {
@@ -45,6 +46,7 @@ export class ElectricitySystem {
   }
 
   private calculatePropagation(grid: GridType): boolean {
+    const entities = this.ctx.map.entities
     let changed = false
 
     for (let y = 0; y < grid.length; y++) {
@@ -53,7 +55,7 @@ export class ElectricitySystem {
 
         // 1. 일반 발전 타일 전파
         if (tile instanceof EnergyTile) {
-          if (tile.propagatePower(grid)) {
+          if ((tile as TileD).propagatePower(grid, entities)) {
             changed = true
           }
         }
