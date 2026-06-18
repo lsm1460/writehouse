@@ -6,7 +6,7 @@ const shockwaveStartTimes = new WeakMap<Tilei, number>()
 
 export class BeaconTile extends BaseTileEffect<Tilei> {
   private get beaconY() {
-    return this.pixelY + CELL_SIZE * 0.22
+    return this.pixelY + CELL_SIZE * 0.27
   }
 
   protected render() {
@@ -60,7 +60,7 @@ export class BeaconTile extends BaseTileEffect<Tilei> {
         this.ctx.restore()
       }
 
-      this.ctx.font = '900 15px monospace'
+      this.ctx.font = '900 14px monospace'
       this.ctx.shadowColor = 'rgba(251, 146, 60, 0.6)'
       this.ctx.shadowBlur = 4
       this.ctx.fillStyle = '#fb923c'

@@ -3,6 +3,7 @@ import type { MapSystem } from '~/core/systems/mapSystem'
 import type { PlayerSystem } from '~/core/systems/playerSystem'
 import { Camera } from './Camera'
 import { EffectRenderer } from './EffectRenderer'
+import { EntityRenderer } from './EntityRenderer'
 import { TileRegistry } from './TileRegistry'
 import { TileRenderer } from './TileRenderer'
 
@@ -74,7 +75,7 @@ export const MapRenderer = {
 
         const entity = entities?.[y]?.[x]
         if (entity) {
-          TileRenderer.drawEntity(ctx, x, y, entity)
+          EntityRenderer.render(ctx, x, y, entity, timestamp)
         }
 
         TileRenderer.drawFog(ctx, x, y, lightLevel)

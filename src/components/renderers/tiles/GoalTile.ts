@@ -68,7 +68,7 @@ export class GoalTile extends BaseTileEffect {
         this.ctx.restore()
       }
 
-      this.ctx.font = '900 16px monospace'
+      this.ctx.font = '900 14px monospace'
       this.ctx.shadowColor = 'rgba(239, 68, 68, 0.9)'
       this.ctx.shadowBlur = 8
       this.ctx.fillStyle = '#ef4444'

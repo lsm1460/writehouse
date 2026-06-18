@@ -5,9 +5,8 @@ import { TitleScreen } from './screens/TitleScreen'
 import { ConfigScreen } from './screens/ConfigScreen'
 import { SaveIndicator } from '~/components/ui/SaveIndicator'
 import { MapEditorScreen } from './screens/MapEditorScreen'
-import { TestScreen } from './screens/TestScreen'
 
-type GameStateType = 'TITLE' | 'CONFIG' | 'PLAYING' | 'TEST'
+type GameStateType = 'TITLE' | 'CONFIG' | 'PLAYING'
 
 function App() {
   const isEditPath = window.location.pathname.startsWith('/edit')
@@ -33,24 +32,17 @@ function App() {
     setGameState('PLAYING')
   }
 
-  const handleTest = () => {
-    engine.load()
-    setGameState('TEST')
-  }
-
   const screens: Record<GameStateType, React.ReactNode> = {
     TITLE: (
       <TitleScreen
         onStart={handleStart}
         onConfig={() => setGameState('CONFIG')}
         onExit={() => {}}
-        onTest={handleTest}
         {...(save.hasSaveData() && { onLoad: handleLoad })}
       />
     ),
     CONFIG: <ConfigScreen backToTitle={backToTitle} />,
     PLAYING: <GameScreen backToTitle={backToTitle} />,
-    TEST: <TestScreen backToTitle={backToTitle} />,
   }
 
   return (

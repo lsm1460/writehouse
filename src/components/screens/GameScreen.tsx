@@ -7,8 +7,8 @@ import { GameOver } from '../game/GameOver'
 import { GameScreenWrapper } from '../game/GameScreenWrapper'
 import { GameUi } from '../game/GameUi'
 import { RoomTransition } from '../game/RoomTransition'
-import { StageGrid } from '../game/StageGrid'
 import { Tutorial } from '../game/Tutorial'
+import { StageRenderer } from '../renderers/StageRenderer'
 import { CheatInput } from '../ui/CheatInput'
 
 type GameScreenProps = {
@@ -23,7 +23,7 @@ export function GameScreen({ backToTitle }: GameScreenProps) {
 
   useGameInput({
     engine,
-    disabled: isTransitioning || cheatMode,
+    disabled: isTransitioning || cheatMode || gameState === 'MENU' || gameState === 'GAME_OVER',
     onAction: handleActionReport,
   })
 
@@ -35,20 +35,23 @@ export function GameScreen({ backToTitle }: GameScreenProps) {
     <>
       <GameScreenWrapper>
         <div
-          className={`flex-1 w-full relative flex items-center justify-center overflow-hidden font-sans transition-opacity ${
+          className={`flex-1 w-full h-full relative flex items-center justify-center overflow-hidden font-sans transition-opacity ${
             isTransitioning ? 'pointer-events-none opacity-0 duration-0' : 'opacity-100 duration-500'
           }`}
         >
-          <StageGrid />
+          <StageRenderer />
         </div>
 
         {!isTransitioning && <Tutorial />}
 
-        {isTransitioning && <RoomTransition roomId={currentRoomId} onTransitionEnd={() => setIsTransitioning(false)} />}
+        {isTransitioning && (
+          <RoomTransition roomId={currentRoomId} onTransitionEnd={() => setIsTransitioning(false)} />
+        )}
 
         {gameState === 'MENU' && (
           <GameMenu onResume={() => engine.toggleMenu()} onRestart={() => engine.retryStage()} onExit={backToTitle} />
         )}
+        
         {gameState === 'GAME_OVER' && <GameOver onRestart={() => engine.retryStage()} />}
 
         <CheatInput
@@ -57,6 +60,7 @@ export function GameScreen({ backToTitle }: GameScreenProps) {
           onExecuteCheat={(cmd) => engine.ctx.executeCheat(cmd)}
         />
       </GameScreenWrapper>
+      
       {gameState === 'PLAYING' && !isTransitioning && <GameUi />}
     </>
   )

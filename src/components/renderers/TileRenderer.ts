@@ -1,5 +1,7 @@
-import { getOpacity } from '../game/cell-frame/utils'
 import { CELL_SIZE } from '../game/consts'
+
+export const OPACITY_LEVELS = [0.15, 0.6, 0.75, 0.9, 1.0]
+export const getOpacity = (level: number) => OPACITY_LEVELS[level] ?? 1.0
 
 export const TileRenderer = {
   drawBackground(ctx: CanvasRenderingContext2D, x: number, y: number, char: string) {
@@ -51,7 +53,7 @@ export const TileRenderer = {
     const isObscured = currentChar && currentChar.trim() !== ''
 
     if (isObscured) {
-      ctx.globalAlpha = 0.5
+      ctx.globalAlpha = 0.8
     }
 
     const playerX = x * CELL_SIZE
