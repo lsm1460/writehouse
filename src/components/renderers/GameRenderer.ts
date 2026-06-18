@@ -26,59 +26,57 @@ export const GameRenderer = {
 
     camera.update(playerPos.x, playerPos.y)
 
-    ctx.fillStyle = '#0a0a0c'
+    ctx.fillStyle = '#000000' // 배경색
     ctx.fillRect(0, 0, camera.viewWidth, camera.viewHeight)
 
     ctx.save()
     camera.apply(ctx)
 
-    const playerGridX = Math.floor(playerPos.x)
-    const playerGridY = Math.floor(playerPos.y)
-
     for (let y = 0; y < grid.length; y++) {
-      const row = grid[y]
-      for (let x = 0; x < row.length; x++) {
-        const tile = row[x]
+      for (let x = 0; x < grid[y].length; x++) {
+        if (!camera.isVisible(x, y)) continue
+        const tile = grid[y][x]
         if (!tile) continue
-
-        if (!camera.isVisible(x, y)) {
-          continue
-        }
-
+        
         const tileMeta = TileRegistry.getMetadata(tile.char)
-
-        if (tileMeta.skipRender) {
-          continue
-        }
-
-        const lightState = fog.getLightState(x, y)
-
-        const lightLevel =
-          tileMeta.lightLevelOverride !== undefined ? tileMeta.lightLevelOverride : fog.getLightLevel(x, y)
+        if (tileMeta.skipRender) continue
 
         TileRenderer.drawBackground(ctx, x, y, tile.char)
+      }
+    }
 
-        if (tile.isWet) {
-          EffectRenderer.drawWetOverlay(ctx, x, y, timestamp)
+    for (let y = 0; y < grid.length; y++) {
+      for (let x = 0; x < grid[y].length; x++) {
+        const entity = entities?.[y]?.[x]
+        if (entity) {
+          EntityRenderer.render(ctx, x, y, entity, timestamp, grid[y][x]?.char || '')
         }
+      }
+    }
 
-        if (tile.isElectrified) {
-          EffectRenderer.drawElectricOverlay(ctx, x, y, timestamp, tile.isWet)
-        }
+    for (let y = 0; y < grid.length; y++) {
+      for (let x = 0; x < grid[y].length; x++) {
+        if (!camera.isVisible(x, y)) continue
+        const tile = grid[y][x]
+        if (!tile) continue
 
-        if (x === playerGridX && y === playerGridY) {
+        if (tile.isWet) EffectRenderer.drawWetOverlay(ctx, x, y, timestamp)
+        if (tile.isElectrified) EffectRenderer.drawElectricOverlay(ctx, x, y, timestamp, tile.isWet)
+
+        if (x === Math.floor(playerPos.x) && y === Math.floor(playerPos.y)) {
           TileRenderer.drawPlayer(ctx, playerPos.x, playerPos.y, tile.char)
         }
 
-        const entity = entities?.[y]?.[x]
-        if (entity) {
-          EntityRenderer.render(ctx, x, y, entity, timestamp, tile.char)
-        }
-
         if (tile.char.trim() && tile.char !== ' ') {
-          tileMeta.renderer.draw(ctx, tile, { stageClear, timestamp, lightState })
+          const tileMeta = TileRegistry.getMetadata(tile.char)
+          tileMeta.renderer.draw(ctx, tile, { 
+            stageClear, 
+            timestamp, 
+            lightState: fog.getLightState(x, y) 
+          })
         }
 
+        const lightLevel = TileRegistry.getMetadata(tile.char).lightLevelOverride ?? fog.getLightLevel(x, y)
         TileRenderer.drawFog(ctx, x, y, lightLevel)
       }
     }
