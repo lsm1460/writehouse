@@ -1,3 +1,4 @@
+import type { DeathEvent } from '~/core/systems/EffectSystem'
 import type { FogSystem } from '~/core/systems/fogSystem'
 import type { MapSystem } from '~/core/systems/mapSystem'
 import type { PlayerSystem } from '~/core/systems/playerSystem'
@@ -12,13 +13,14 @@ interface RenderMapOptions {
   map: MapSystem
   player: PlayerSystem
   fog: FogSystem
+  deathEvents: DeathEvent[]
   stageClear: boolean
   timestamp: number
   camera: Camera
 }
 
-export const MapRenderer = {
-  render({ ctx, map, player, fog, timestamp, stageClear, camera }: RenderMapOptions) {
+export const GameRenderer = {
+  render({ ctx, map, player, fog, timestamp, stageClear, camera, deathEvents }: RenderMapOptions) {
     const { grid, entities } = map
     const { pos: playerPos } = player
 
@@ -80,6 +82,12 @@ export const MapRenderer = {
         TileRenderer.drawFog(ctx, x, y, lightLevel)
       }
     }
+    
+    deathEvents.forEach((event) => {
+      if (camera.isVisible(event.x, event.y)) {
+        EffectRenderer.drawMonsterDeath(ctx, event.x, event.y, timestamp)
+      }
+    })
 
     ctx.restore()
   },

@@ -1,15 +1,20 @@
 import { CELL_SIZE } from '../game/consts'
 
+const activeCache = new Map<string, { startTime: number, particles: any[] }>()
+const finishedSet = new Set<string>()
+
 export const EffectRenderer = {
+  reset() {
+    activeCache.clear()
+    finishedSet.clear()
+  },
+
   drawWetOverlay(ctx: CanvasRenderingContext2D, gridX: number, gridY: number, timestamp: number, size: number = CELL_SIZE) {
     ctx.save()
 
     const lx = gridX * size
     const ty = gridY * size
 
-    // ==========================================
-    // 1. 기존 잔잔한 파문(Ripple) 이펙트
-    // ==========================================
     const xOffset = 0
     const yOffset = 5
 
@@ -120,4 +125,53 @@ export const EffectRenderer = {
 
     ctx.restore()
   },
+
+  drawMonsterDeath(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    timestamp: number,
+    size: number = CELL_SIZE
+  ) {
+    const key = `${x},${y}`
+
+    if (finishedSet.has(key)) return
+
+    if (!activeCache.has(key)) {
+      const cx = x * size + size / 2
+      const cy = y * size + size / 2
+      const particles = Array.from({ length: 8 }, () => ({
+        x: cx,
+        y: cy,
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: -Math.random() * 0.4 - 0.2,
+        alpha: 1,
+        size: 2 + Math.random() * 2
+      }))
+      
+      activeCache.set(key, { startTime: timestamp, particles })
+    }
+
+    const state = activeCache.get(key)!
+    const elapsed = timestamp - state.startTime
+    const duration = 600
+
+    ctx.save()
+    state.particles.forEach((p) => {
+      p.x += p.vx
+      p.y += p.vy + 0.05
+      p.alpha = 1 - (elapsed / duration)
+      
+      if (p.alpha > 0) {
+        ctx.fillStyle = `rgba(239, 68, 68, ${p.alpha})`
+        ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size)
+      }
+    })
+    ctx.restore()
+
+    if (elapsed > duration) {
+      activeCache.delete(key)
+      finishedSet.add(key)
+    }
+  }
 }
