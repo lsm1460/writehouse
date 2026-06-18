@@ -1,19 +1,25 @@
 import type { Tile } from '~/core/map/Tile'
 import { BaseTileEffect } from './DefaultTile'
 
-const sparkStartTimes = new WeakMap<Tile, number>()
+// 객체 참조 대신 좌표(string)를 키로 사용하여 Undo 시에도 상태가 유지되도록 합니다.
+const sparkStartTimes = new Map<string, number>()
 
 export class GoalTile extends BaseTileEffect {
+  // 좌표 기반 키 생성
+  private get tileKey() {
+    return `${this.tile.x},${this.tile.y}`
+  }
+
   protected render() {
     const { stageClear, timestamp } = this.context
+    const key = this.tileKey
 
     this.ctx.textAlign = 'center'
     this.ctx.textBaseline = 'middle'
 
     if (!stageClear) {
-      if (sparkStartTimes.has(this.tile)) {
-        sparkStartTimes.delete(this.tile)
-      }
+      // 클리어 상태가 아니면 해당 좌표의 애니메이션 기록 삭제
+      sparkStartTimes.delete(key)
 
       this.ctx.globalAlpha = 0.4
       this.ctx.font = 'bold 14px monospace'
@@ -21,11 +27,12 @@ export class GoalTile extends BaseTileEffect {
 
       this.ctx.fillText('⚑', this.centerX, this.centerY)
     } else {
-      if (!sparkStartTimes.has(this.tile)) {
-        sparkStartTimes.set(this.tile, timestamp)
+      // 클리어 상태일 때: 기록이 없으면 현재 시간으로 기록 (최초 달성 시점)
+      if (!sparkStartTimes.has(key)) {
+        sparkStartTimes.set(key, timestamp)
       }
 
-      const startTime = sparkStartTimes.get(this.tile)!
+      const startTime = sparkStartTimes.get(key)!
       const elapsed = timestamp - startTime
       const animationDuration = 500
 

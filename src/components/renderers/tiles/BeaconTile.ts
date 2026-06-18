@@ -2,34 +2,37 @@ import { CELL_SIZE } from '~/components/game/consts'
 import type { Tilei } from '~/core/map/tiles/Tile_i'
 import { BaseTileEffect } from './DefaultTile'
 
-const shockwaveStartTimes = new WeakMap<Tilei, number>()
+const shockwaveStartTimes = new Map<string, number>()
 
 export class BeaconTile extends BaseTileEffect<Tilei> {
   private get beaconY() {
     return this.pixelY + CELL_SIZE * 0.27
   }
 
+  private get tileKey() {
+    return `${this.tile.x},${this.tile.y}`
+  }
+
   protected render() {
     const { lightState, timestamp } = this.context
     const isActive = lightState.environmentIntensity > 0
+    const key = this.tileKey
 
     this.ctx.textAlign = 'center'
     this.ctx.textBaseline = 'middle'
 
     if (!isActive) {
-      if (shockwaveStartTimes.has(this.tile)) {
-        shockwaveStartTimes.delete(this.tile)
-      }
+      shockwaveStartTimes.delete(key)
 
       this.ctx.font = '500 14px monospace'
       this.ctx.fillStyle = '#737373'
       this.ctx.fillText('i', this.centerX, this.centerY)
     } else {
-      if (!shockwaveStartTimes.has(this.tile)) {
-        shockwaveStartTimes.set(this.tile, timestamp)
+      if (!shockwaveStartTimes.has(key)) {
+        shockwaveStartTimes.set(key, timestamp)
       }
 
-      const startTime = shockwaveStartTimes.get(this.tile)!
+      const startTime = shockwaveStartTimes.get(key)!
       const elapsed = timestamp - startTime
       const animationDuration = 600
 
