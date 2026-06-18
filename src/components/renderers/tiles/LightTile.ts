@@ -1,21 +1,18 @@
-import { CELL_SIZE } from "~/components/game/consts"
-import type { TileEffect } from "./DefaultTile"
+import type { TileL } from "~/core/map/tiles/TileL"
+import { BaseTileEffect } from "./DefaultTile"
 
-export const LightTile: TileEffect = {
-  render(ctx, x, y, char, timestamp) {
-    const tilePixelX = x * CELL_SIZE
-    const tilePixelY = y * CELL_SIZE
-    const centerX = tilePixelX + CELL_SIZE / 2
-    const centerY = tilePixelY + CELL_SIZE / 2
+export class LightTile extends BaseTileEffect<TileL> {
+  protected render() {
+    const { timestamp } = this.context
 
     const pulse = 0.75 + Math.sin(timestamp * 0.003) * 0.25
+    
+    this.ctx.save()
+    this.ctx.globalAlpha = pulse
 
-    ctx.save()
-    ctx.globalAlpha = pulse
-
-    ctx.font = '900 14px monospace'
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
+    this.ctx.font = '900 14px monospace'
+    this.ctx.textAlign = 'center'
+    this.ctx.textBaseline = 'middle'
 
     const glowLayers: [number, string][] = [
       [20, 'rgba(234, 179, 8, 0.4)'], 
@@ -24,19 +21,19 @@ export const LightTile: TileEffect = {
     ]
 
     for (const [blur, color] of glowLayers) {
-      ctx.shadowColor = color
-      ctx.shadowBlur = blur
-      ctx.shadowOffsetX = 0
-      ctx.shadowOffsetY = 0
+      this.ctx.shadowColor = color
+      this.ctx.shadowBlur = blur
+      this.ctx.shadowOffsetX = 0
+      this.ctx.shadowOffsetY = 0
       
-      ctx.fillStyle = '#facc15'
-      ctx.fillText(char, centerX, centerY)
+      this.ctx.fillStyle = '#facc15'
+      this.ctx.fillText(this.tile.char, this.centerX, this.centerY)
     }
 
-    ctx.shadowBlur = 0
-    ctx.fillStyle = '#facc15'
-    ctx.fillText(char, centerX, centerY)
+    this.ctx.shadowBlur = 0
+    this.ctx.fillStyle = '#facc15'
+    this.ctx.fillText(this.tile.char, this.centerX, this.centerY)
 
-    ctx.restore()
+    this.ctx.restore()
   }
 }

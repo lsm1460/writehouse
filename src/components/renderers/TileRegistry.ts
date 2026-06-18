@@ -1,35 +1,53 @@
-import { DefaultTile, type TileEffect } from './tiles/DefaultTile'
+import { BeaconTile } from './tiles/BeaconTile'
+import { BaseTileEffect, DefaultTile } from './tiles/DefaultTile'
 import { FireTile } from './tiles/FireTile'
+import { GoalTile } from './tiles/GoalTile'
+import { GrassTile } from './tiles/GrassTile'
 import { LightTile } from './tiles/LightTile'
+import { WaterTile } from './tiles/WaterTile'
 
 interface TileMetadata {
-  renderer: TileEffect
+  renderer: BaseTileEffect
   skipRender?: boolean
   lightLevelOverride?: number
 }
 
-// 아무것도 그리지 않는 더미 렌더러 (skipRender용 백업)
-const NullRenderer: TileEffect = { render() {} }
+class NullTile extends BaseTileEffect {
+  protected render() {}
+}
+
+const fireTile = new FireTile()
+const lightTile = new LightTile()
+const beaconTile = new BeaconTile()
+const goalTile = new GoalTile()
+const defaultTile = new DefaultTile()
+const grassTile = new GrassTile()
+const waterTile = new WaterTile()
+
+const nullTile = new NullTile()
 
 const registry: Record<string, TileMetadata> = {
-  F: { renderer: FireTile},
-  f: { renderer: FireTile},
-  L: { renderer: LightTile},
+  F: { renderer: fireTile },
+  f: { renderer: fireTile },
+  L: { renderer: lightTile },
 
-  'i': { renderer: DefaultTile, lightLevelOverride: 9 },
-  'G': { renderer: DefaultTile, lightLevelOverride: 9 },
-  
-  'O': { renderer: DefaultTile },
-  
-  'H': { renderer: NullRenderer, skipRender: true },
+  i: { renderer: beaconTile, lightLevelOverride: 9 },
+  G: { renderer: goalTile, lightLevelOverride: 9 },
+  g: { renderer: grassTile },
+  w: { renderer: waterTile },
+  W: { renderer: waterTile },
+
+  O: { renderer: defaultTile },
+
+  H: { renderer: nullTile, skipRender: true },
 }
 
 const defaultMetadata: TileMetadata = {
-  renderer: DefaultTile,
+  renderer: defaultTile,
 }
 
 export const TileRegistry = {
   getMetadata(char: string): TileMetadata {
     return registry[char] || defaultMetadata
-  }
+  },
 }

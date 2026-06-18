@@ -1,33 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useGame } from '~/context/GameContext'
-import { useGameInput } from '~/hooks/input/useGameInput'
-import { useCheatMode } from '~/hooks/useCheatMode'
 import { Camera } from '../renderers/Camera'
 import { MapRenderer } from '../renderers/MapRenderer'
-import { CheatInput } from '../ui/CheatInput'
-
-interface TestScreenProps {
-  backToTitle: () => void
-}
 
 const VERTICAL_PAD = 50
 const VIEW_WIDTH = 1024
 const VIEW_HEIGHT = 576
 
-export const TestScreen: React.FC<TestScreenProps> = ({ backToTitle }) => {
-  const { engine, gameState, fog, map, player, stageClear } = useGame()
+export function StageRenderer() {
+  const { map, player, fog, stageClear } = useGame()
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const [fps, setFps] = useState<number>(0)
 
   const cameraRef = useRef(new Camera(VIEW_WIDTH, VIEW_HEIGHT, VERTICAL_PAD))
-
-  const { cheatMode, handleActionReport, closeCheatMode } = useCheatMode()
-
-  useGameInput({
-    engine,
-    disabled: cheatMode,
-    onAction: handleActionReport,
-  })
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -70,20 +55,19 @@ export const TestScreen: React.FC<TestScreenProps> = ({ backToTitle }) => {
     return () => {
       cancelAnimationFrame(animationFrameId)
     }
-  }, [map, player, fog, gameState, stageClear])
+  }, [map, player, fog, stageClear])
 
   return (
-    <>
-      <div className="absolute inset-0 flex items-center justify-center overflow-hidden bg-[#0a0a0c]">
-        <canvas
-          ref={canvasRef}
-          className="max-w-full max-h-full aspect-[16/9] object-contain"
-          style={{ imageRendering: 'pixelated' }}
-        />
+    <div className="w-full h-full relative flex items-center justify-center">
+      <canvas
+        ref={canvasRef}
+        className="max-w-full max-h-full aspect-[16/9] object-contain"
+        style={{ imageRendering: 'pixelated' }}
+      />
 
-        <div className="absolute top-2 left-2 text-xs text-green-400 font-mono">FPS: {fps}</div>
+      <div className="absolute top-4 left-4 text-xs text-green-400 font-mono pointer-events-none opacity-70">
+        FPS: {fps}
       </div>
-      <CheatInput isOpen={cheatMode} onClose={closeCheatMode} onExecuteCheat={(cmd) => engine.ctx.executeCheat(cmd)} />
-    </>
+    </div>
   )
 }

@@ -4,7 +4,7 @@ export class Camera {
   public viewWidth: number
   public viewHeight: number
   public verticalPad: number
-  public zoom: number = 1.0
+  public zoom: number = 1.5
 
   private currentX: number = 0
   private currentY: number = 0

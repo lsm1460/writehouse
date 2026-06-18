@@ -3,11 +3,11 @@ import type { MapData } from '../gameEngine'
 import { createTile } from '../map/tiles'
 import { FloorTile } from '../map/tiles/FloorTile'
 import type { IMonsterTile } from '../map/tiles/types'
-import type { GridType } from '../types'
+import type { EntitiesType, GridType } from '../types'
 
 export class MapSystem {
   public grid: GridType = []
-  public entities: (IMonsterTile | null)[][] = []
+  public entities: EntitiesType = []
   public floorNumber: number = 0
   public currentRoomId: string = ''
 

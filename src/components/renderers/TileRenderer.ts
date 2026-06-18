@@ -11,9 +11,7 @@ export const TileRenderer = {
     ctx.fillStyle = tileBgColor
     ctx.fillRect(tilePixelX, tilePixelY, CELL_SIZE, CELL_SIZE)
 
-    ctx.strokeStyle = '#27272a'
-    ctx.lineWidth = 1
-    ctx.strokeRect(tilePixelX, tilePixelY, CELL_SIZE, CELL_SIZE)
+    ctx.rect(tilePixelX, tilePixelY, CELL_SIZE, CELL_SIZE)
   },
 
   drawEntity(ctx: CanvasRenderingContext2D, x: number, y: number, entity: any) {
@@ -38,7 +36,7 @@ export const TileRenderer = {
     const tilePixelY = y * CELL_SIZE
 
     const tileVisibility = getOpacity(lightLevel)
-    
+
     const shadowOpacity = 1 - tileVisibility
 
     if (shadowOpacity <= 0) return
@@ -47,7 +45,15 @@ export const TileRenderer = {
     ctx.fillRect(tilePixelX, tilePixelY, CELL_SIZE, CELL_SIZE)
   },
 
-  drawPlayer(ctx: CanvasRenderingContext2D, x: number, y: number) {
+  drawPlayer(ctx: CanvasRenderingContext2D, x: number, y: number, currentChar?: string) {
+    ctx.save()
+
+    const isObscured = currentChar && currentChar.trim() !== ''
+
+    if (isObscured) {
+      ctx.globalAlpha = 0.5
+    }
+
     const playerX = x * CELL_SIZE
     const playerY = y * CELL_SIZE
     const centerX = playerX + CELL_SIZE / 2
@@ -58,5 +64,7 @@ export const TileRenderer = {
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
     ctx.fillText('@', centerX, centerY)
+
+    ctx.restore()
   },
 }

@@ -34,7 +34,7 @@ function App() {
   }
 
   const handleTest = () => {
-    engine.start()
+    engine.load()
     setGameState('TEST')
   }
 
@@ -54,7 +54,7 @@ function App() {
   }
 
   return (
-    <div className="relative w-full h-full min-h-screen bg-black overflow-hidden select-none">
+    <div className="relative w-full h-full min-h-screen bg-[#0a0a0c] overflow-hidden select-none">
       {screens[gameState]}
       <SaveIndicator />
     </div>
