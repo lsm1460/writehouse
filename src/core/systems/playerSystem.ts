@@ -48,6 +48,8 @@ export class PlayerSystem {
   public move(dir: Direction): boolean {
     if (this.dir !== dir) {
       this.dir = dir
+
+      this.updateTargetPosition()
     }
 
     this.lastX = this.pos.x
