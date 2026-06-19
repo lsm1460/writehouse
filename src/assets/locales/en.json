@@ -9,7 +9,12 @@
     "lang": "Language",
     "back": "Back",
     "undo": "Undo",
-    "turn": "Turn: {{count}}"
+    "turn": "Turn: {{count}}",
+    "resume": "Resume",
+    "backToTitle": "Back to Title",
+    "tooltip": "Tooltip",
+    "on": "ON",
+    "off": "OFF"
   },
   "floors": {
     "title": "Floor {{ floor }}",

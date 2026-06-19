@@ -12,7 +12,6 @@ const BOUNCE_HEIGHT = 1
 
 const OPACITY = 0.65
 const BG_COLOR = `rgba(255, 255, 255, ${OPACITY})`
-const BORDER_COLOR = '#1c1917'
 const MAIN_TEXT_COLOR = '#1c1917'
 const SUB_TEXT_COLOR = '#4b5563'
 
@@ -128,9 +127,7 @@ function calculateLayout(
 
 function drawBubbleBody(ctx: CanvasRenderingContext2D, layout: TooltipLayout) {
   ctx.fillStyle = BG_COLOR
-  ctx.strokeStyle = BORDER_COLOR
-  ctx.lineWidth = 1.2
-
+  
   ctx.beginPath()
   if (typeof ctx.roundRect === 'function') {
     ctx.roundRect(layout.bubbleX, layout.bubbleY, layout.bubbleWidth, layout.bubbleHeight, 4)
@@ -138,7 +135,6 @@ function drawBubbleBody(ctx: CanvasRenderingContext2D, layout: TooltipLayout) {
     ctx.rect(layout.bubbleX, layout.bubbleY, layout.bubbleWidth, layout.bubbleHeight)
   }
   ctx.fill()
-  ctx.stroke()
 }
 
 function drawBubbleText(ctx: CanvasRenderingContext2D, layout: TooltipLayout, label: string, example: string) {
@@ -181,12 +177,10 @@ function drawBubbleTail(ctx: CanvasRenderingContext2D, layout: TooltipLayout, ti
   ctx.beginPath()
   ctx.arc(tail1X, tail1Y + layout.tailOffsetY + 1, 2.0, 0, Math.PI * 2)
   ctx.fill()
-  ctx.stroke()
 
   ctx.beginPath()
   ctx.arc(tail2X, tail2Y + layout.tailOffsetY, 1.0, 0, Math.PI * 2)
   ctx.fill()
-  ctx.stroke()
 }
 
 export const TooltipRenderer = {

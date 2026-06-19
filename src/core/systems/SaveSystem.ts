@@ -1,6 +1,7 @@
 export interface SaveData {
   roomId: string
   language: string
+  tooltipEnabled: boolean
   savedAt: string
 }
 
@@ -13,14 +14,14 @@ export class SaveSystem {
     this.onStateChange = onStateChange
   }
 
-  public save(roomId: string, language: string): boolean {
+  public save(roomId: string, config: {language: string, tooltipEnabled: boolean}): boolean {
     try {
       this.isSaving = true
       this.onStateChange?.()
 
       const saveData: SaveData = {
         roomId,
-        language,
+        ...config,
         savedAt: new Date().toISOString(),
       }
       localStorage.setItem(this.SAVE_KEY, JSON.stringify(saveData))

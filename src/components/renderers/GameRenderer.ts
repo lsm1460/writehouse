@@ -1,3 +1,4 @@
+import type { EntitiesType, GridType } from '~/core/types'
 import { Camera } from './Camera'
 import { EffectRenderer } from './EffectRenderer'
 import { EntityRenderer } from './EntityRenderer'
@@ -8,12 +9,14 @@ import type { DeathEvent } from '~/core/systems/EffectSystem'
 import type { FogSystem } from '~/core/systems/fogSystem'
 import type { MapSystem } from '~/core/systems/mapSystem'
 import type { PlayerSystem } from '~/core/systems/playerSystem'
+import type { ConfigSystem } from '~/core/systems/ConfigSystem'
 
 interface RenderMapOptions {
   ctx: CanvasRenderingContext2D
   map: MapSystem
   player: PlayerSystem
   fog: FogSystem
+  config: ConfigSystem
   deathEvents: DeathEvent[]
   stageClear: boolean
   timestamp: number
@@ -28,7 +31,7 @@ function clearAndPrepareScreen(ctx: CanvasRenderingContext2D, camera: Camera, pl
   camera.apply(ctx)
 }
 
-function drawBackgroundTiles(ctx: CanvasRenderingContext2D, grid: any[][], camera: Camera) {
+function drawBackgroundTiles(ctx: CanvasRenderingContext2D, grid: GridType, camera: Camera) {
   for (let y = 0; y < grid.length; y++) {
     for (let x = 0; x < grid[y].length; x++) {
       if (!camera.isVisible(x, y)) continue
@@ -43,7 +46,7 @@ function drawBackgroundTiles(ctx: CanvasRenderingContext2D, grid: any[][], camer
   }
 }
 
-function drawEntities(ctx: CanvasRenderingContext2D, grid: any[][], entities: any[][], timestamp: number) {
+function drawEntities(ctx: CanvasRenderingContext2D, grid: GridType, entities: EntitiesType, timestamp: number) {
   for (let y = 0; y < grid.length; y++) {
     for (let x = 0; x < grid[y].length; x++) {
       const entity = entities?.[y]?.[x]
@@ -56,7 +59,7 @@ function drawEntities(ctx: CanvasRenderingContext2D, grid: any[][], entities: an
 
 function drawTileLayers(
   ctx: CanvasRenderingContext2D,
-  grid: any[][],
+  grid: GridType,
   camera: Camera,
   playerPos: { x: number; y: number },
   fog: FogSystem,
@@ -93,7 +96,7 @@ function drawTileLayers(
 
 function drawTargetTooltip(
   ctx: CanvasRenderingContext2D,
-  grid: any[][],
+  grid: GridType,
   targetPos: { x: number; y: number },
   playerPos: { x: number; y: number },
   camera: Camera,
@@ -116,7 +119,7 @@ function drawDeathEvents(ctx: CanvasRenderingContext2D, deathEvents: DeathEvent[
 }
 
 export const GameRenderer = {
-  render({ ctx, map, player, fog, timestamp, stageClear, camera, deathEvents }: RenderMapOptions) {
+  render({ ctx, map, player, fog, config, timestamp, stageClear, camera, deathEvents }: RenderMapOptions) {
     const { grid, entities } = map
     const { pos: playerPos, targetPos } = player
 
@@ -124,7 +127,7 @@ export const GameRenderer = {
     drawBackgroundTiles(ctx, grid, camera)
     drawEntities(ctx, grid, entities, timestamp)
     drawTileLayers(ctx, grid, camera, playerPos, fog, stageClear, timestamp)
-    drawTargetTooltip(ctx, grid, targetPos, playerPos, camera, fog, stageClear, timestamp)
+    config.tooltipEnabled && drawTargetTooltip(ctx, grid, targetPos, playerPos, camera, fog, stageClear, timestamp)
     drawDeathEvents(ctx, deathEvents, camera, timestamp)
 
     ctx.restore()

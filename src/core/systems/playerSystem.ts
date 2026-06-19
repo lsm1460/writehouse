@@ -71,7 +71,7 @@ export class PlayerSystem {
   }
 
   private tryPushObject(nextX: number, nextY: number, dir: Direction): boolean {
-    const targetTile = this.ctx.getTileAt(nextX, nextY)
+    const targetTile = this.ctx.map.getTileAt(nextX, nextY)
 
     if (!targetTile || !targetTile.isPushable) {
       return true
@@ -79,25 +79,29 @@ export class PlayerSystem {
 
     const { x: pushToX, y: pushToY } = this.calculateNextPosition(nextX, nextY, dir)
 
-    if (this.ctx.getMonsterAt(pushToX, pushToY)) {
+    if (this.ctx.map.getMonsterAt(pushToX, pushToY)) {
       return false
     }
 
-    const behindTile = this.ctx.getTileAt(pushToX, pushToY)
+    const behindTile = this.ctx.map.getTileAt(pushToX, pushToY)
     if (!behindTile) {
       return false
     }
 
     if (behindTile.char === ' ') {
-      this.ctx.setTileAt(pushToX, pushToY, createTile(targetTile.char, pushToX, pushToY, { ...targetTile.getData() }))
-      this.ctx.setTileAt(nextX, nextY, createTile(' ', nextX, nextY))
+      this.ctx.map.setTileAt(
+        pushToX,
+        pushToY,
+        createTile(targetTile.char, pushToX, pushToY, { ...targetTile.getData() })
+      )
+      this.ctx.map.setTileAt(nextX, nextY, createTile(' ', nextX, nextY))
       return true
     }
 
     const mixedChar = targetTile.getMixedResult(behindTile.char)
     if (mixedChar) {
-      this.ctx.setTileAt(pushToX, pushToY, createTile(mixedChar, pushToX, pushToY))
-      this.ctx.setTileAt(nextX, nextY, createTile(' ', nextX, nextY))
+      this.ctx.map.setTileAt(pushToX, pushToY, createTile(mixedChar, pushToX, pushToY))
+      this.ctx.map.setTileAt(nextX, nextY, createTile(' ', nextX, nextY))
       return true
     }
 
@@ -105,13 +109,13 @@ export class PlayerSystem {
   }
 
   private tryWalkTo(nextX: number, nextY: number): boolean {
-    if (!this.ctx.isWalkable(nextX, nextY)) {
+    if (!this.ctx.map.isWalkable(nextX, nextY)) {
       return false
     }
 
     this.pos = { x: nextX, y: nextY }
 
-    const finalTile = this.ctx.getTileAt(nextX, nextY)
+    const finalTile = this.ctx.map.getTileAt(nextX, nextY)
     if (finalTile?.char === 'G' && this.ctx.stageClear) {
       this.ctx.nextStage()
     }
@@ -122,14 +126,14 @@ export class PlayerSystem {
   public checkEnvironmentEffects(): boolean {
     const { x: newX, y: newY } = this.pos
 
-    const tile = this.ctx.getTileAt(newX, newY)
+    const tile = this.ctx.map.getTileAt(newX, newY)
     if (!tile) return false
 
     if (tile.char === 'f' || tile.isElectrified) return true
-    if (this.ctx.getMonsterAt(newX, newY)) return true
+    if (this.ctx.map.getMonsterAt(newX, newY)) return true
 
     if (this.lastX !== newX || this.lastY !== newY) {
-      const entityAtOldPos = this.ctx.getMonsterAt(this.lastX, this.lastY)
+      const entityAtOldPos = this.ctx.map.getMonsterAt(this.lastX, this.lastY)
       if (entityAtOldPos) {
         const monsterLastX = entityAtOldPos.lastX ?? entityAtOldPos.x
         const monsterLastY = entityAtOldPos.lastY ?? entityAtOldPos.y

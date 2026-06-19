@@ -19,23 +19,16 @@ export function GameMenu({ onResume, onRestart, onExit }: MenuProps) {
   if (showConfig) {
     return (
       <FadeOverlay delayMS={0} durationMS={200} midDelayMS={999999}>
-        <div className="flex flex-col items-center justify-center relative w-full h-full">
-          <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold text-neutral-400 uppercase tracking-tighter">
-              {t('ui.config')}
-            </h2>
-          </div>
-          <ConfigScreen backToTitle={() => setShowConfig(false)} />
-        </div>
+        <ConfigScreen backToTitle={() => setShowConfig(false)} />
       </FadeOverlay>
     )
   }
 
   const menuItems = [
-    { label: 'Resume', action: onResume },
-    { label: 'Retry', action: onRestart },
-    { label: 'Config', action: () => setShowConfig(true) },
-    { label: 'Back to Title', action: onExit },
+    { label: t('ui.resume'), action: onResume },
+    { label: t('ui.retry'), action: onRestart },
+    { label: t('ui.config'), action: () => setShowConfig(true) },
+    { label: t('ui.backToTitle'), action: onExit },
   ]
 
   return (
