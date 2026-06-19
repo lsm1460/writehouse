@@ -1,13 +1,14 @@
 import { EngineContext } from '../engineContext'
 import type { MapData } from '../gameEngine'
+import type { Tile } from '../map/Tile'
 import { createTile } from '../map/tiles'
 import { FloorTile } from '../map/tiles/FloorTile'
 import type { IMonsterTile } from '../map/tiles/types'
-import type { GridType } from '../types'
+import type { EntitiesType, GridType } from '../types'
 
 export class MapSystem {
   public grid: GridType = []
-  public entities: (IMonsterTile | null)[][] = []
+  public entities: EntitiesType = []
   public floorNumber: number = 0
   public currentRoomId: string = ''
 
@@ -110,5 +111,33 @@ export class MapSystem {
     if (!this.isValid(x, y)) return
 
     return this.entities[y][x] || this.grid[y][x]
+  }
+
+  /* ─── EngineContext에서 이관된 공간 쿼리 메서드들 ─── */
+
+  public isPlayerAt(x: number, y: number): boolean {
+    return this.ctx.player.pos.x === x && this.ctx.player.pos.y === y
+  }
+
+  public isTileOccupiedByEntity(x: number, y: number): boolean {
+    if (!this.isValid(x, y)) return false
+    return this.entities[y]?.[x] !== null
+  }
+
+  public getTileAt(x: number, y: number): Tile | undefined {
+    if (!this.isValid(x, y)) return undefined
+    return this.grid[y]?.[x]
+  }
+
+  public setTileAt(x: number, y: number, tile: Tile): void {
+    if (!this.isValid(x, y)) return
+    this.grid[y][x] = tile
+  }
+
+  public getMonsterAt(x: number, y: number): IMonsterTile | null {
+    if (!this.isValid(x, y)) return null
+    const entity = this.entities[y]?.[x]
+    if (entity && ['M', 'm'].includes(entity.char)) return entity as IMonsterTile
+    return null
   }
 }

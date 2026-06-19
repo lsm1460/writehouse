@@ -24,16 +24,11 @@ export class TileD extends EnergyTile {
 
   override propagatePower(grid: GridType, entities?: EntitiesType): boolean {
     let monsterDetected = false
-
+    
     for (const [dx, dy] of CARDINAL_DIRECTIONS) {
       const nx = this.x + dx
       const ny = this.y + dy
       if (ny >= 0 && ny < grid.length && nx >= 0 && nx < grid[ny].length) {
-        const tile = grid[ny][nx]
-        if (isMonsterTile(tile)) {
-          monsterDetected = true
-          break
-        }
         if (entities && entities[ny]) {
           const entity = entities[ny][nx]
           if (isMonsterTile(entity)) {

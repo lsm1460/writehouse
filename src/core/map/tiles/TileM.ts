@@ -7,6 +7,10 @@ export class TileM extends Tile implements IMonsterTile {
   public lastX = 0
   public lastY = 0
 
+  renderX = 0
+  renderY = 0
+  moveStartTime = 0
+  
   constructor(x: number, y: number) {
     super('M', x, y)
     this.lastX = x

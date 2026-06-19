@@ -55,11 +55,16 @@ export function isEnvironmentTile(tile: any): tile is IEnvironmentTile {
 }
 
 export interface IMonsterTile extends Tile {
+  direction: string
   x: number
   y: number
   lastX: number
   lastY: number
   char: string
+
+  renderX: number
+  renderY: number
+  moveStartTime: number
 
   getNextPosition(grid: any[][], entities: any[][]): { nx: number; ny: number }
   updatePosition(nx: number, ny: number): void

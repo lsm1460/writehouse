@@ -15,6 +15,10 @@ export const ConfigScreen: React.FC<ConfigScreenProps> = ({ backToTitle }) => {
   const { engine } = useGame()
 
   const [currentMenu, setCurrentMenu] = useState<MenuState>('MAIN')
+  const [tooltipEnabled, setTooltipEnabled] = useState<boolean>(() => {
+    return engine.ctx.tooltipEnabled !== false
+  })
+
   const currentLanguage = i18n.language.startsWith('ko') ? 'ko' : 'en'
   const langLabel = currentLanguage === 'ko' ? 'Ko' : 'En'
 
@@ -24,9 +28,16 @@ export const ConfigScreen: React.FC<ConfigScreenProps> = ({ backToTitle }) => {
     setCurrentMenu('MAIN')
   }
 
+  const toggleTooltip = () => {
+    const nextValue = !tooltipEnabled
+    setTooltipEnabled(nextValue)
+    engine.ctx.setTooltipEnabled(nextValue)
+  }
+
   const menuConfig = {
     MAIN: [
       { label: t('ui.lang'), value: langLabel, action: () => setCurrentMenu('LANG') },
+      { label: t('ui.tooltip'), value: tooltipEnabled ? t('ui.on') : t('ui.off'), action: toggleTooltip },
       { label: t('ui.back'), action: () => backToTitle() },
     ],
     LANG: [

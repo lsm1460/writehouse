@@ -25,6 +25,10 @@ export function GameProvider({ children, customEngine }: { children: ReactNode; 
     if (saveData && saveData.language) {
       i18n.changeLanguage(saveData.language)
     }
+
+    if (saveData && typeof saveData.tooltipEnabled === 'boolean') {
+      engine.ctx.setTooltipEnabled(saveData.tooltipEnabled)
+    }
   }, [engine])
 
   return <GameContext.Provider value={{ engine }}>{children}</GameContext.Provider>
@@ -41,6 +45,7 @@ export function useGame() {
     player: context.engine.ctx.player,
     map: context.engine.ctx.map,
     fog: context.engine.ctx.fog,
+    config: context.engine.ctx.config,
     stageClear: context.engine.ctx.stageClear,
     deathEvents: context.engine.ctx.effects.deathEvents,
     // inventory: context.engine.ctx.inventory,

@@ -7,9 +7,14 @@
     "retry": "재시도",
     "menu": "메뉴",
     "lang": "언어",
-    "back": "뒤로",
+    "back": "뒤로가기",
     "undo": "되감기",
-    "turn": "턴: {{count}}"
+    "turn": "턴: {{count}}",
+    "resume": "이어하기",
+    "backToTitle": "타이틀로 이동",
+    "tooltip": "툴팁",
+    "on": "켜짐",
+    "off": "꺼짐"
   },
   "floors": {
     "title": "{{ floor }} 층",

@@ -91,16 +91,16 @@ export class TileDoor extends Tile {
     return (
       this.isValidCoords(grid, destX, destY) &&
       grid[destY][destX].char === ' ' &&
-      !ctx.isPlayerAt(destX, destY) &&
-      !ctx.isTileOccupiedByEntity(destX, destY)
+      !ctx.map.isPlayerAt(destX, destY) &&
+      !ctx.map.isTileOccupiedByEntity(destX, destY)
     )
   }
 
   private tryReturnToOrigin(grid: GridType, ctx: EngineContext): boolean {
     if (
       grid[this.originY][this.originX].char === ' ' &&
-      !ctx.isPlayerAt(this.originX, this.originY) &&
-      !ctx.isTileOccupiedByEntity(this.originX, this.originY)
+      !ctx.map.isPlayerAt(this.originX, this.originY) &&
+      !ctx.map.isTileOccupiedByEntity(this.originX, this.originY)
     ) {
       this.moveTile(grid, this.originX, this.originY)
       return true

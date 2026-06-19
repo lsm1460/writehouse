@@ -36,23 +36,22 @@ interface UseGameInputProps {
   passive?: boolean
 }
 
-export function useGameInput({ 
-  engine, 
-  onMenuUp, 
-  onMenuDown, 
-  onMenuSelect, 
+export function useGameInput({
+  engine,
+  onMenuUp,
+  onMenuDown,
+  onMenuSelect,
   onAction,
   disabled = false,
-  passive = false
+  passive = false,
 }: UseGameInputProps) {
   const lastGamepadTime = useRef<number>(0)
-  const lastKeyboardTime = useRef<number>(0)
   const activeCodes = useRef<Record<string, boolean>>({})
+
+  const lastExecutedTimes = useRef<Record<string, number>>({})
 
   const gamepadCooldownMS = 200
   const keyboardCooldownMS = 150
-  const fpsLimit = 30
-  const frameInterval = 1000 / fpsLimit
 
   const executeAction = (action: GameAction) => {
     if (onAction) {
@@ -93,22 +92,16 @@ export function useGameInput({
   }
 
   const checkKeyboard = (now: number) => {
-    let hasActiveKey = false
     for (const code in activeCodes.current) {
       if (activeCodes.current[code]) {
-        hasActiveKey = true
-        break
-      }
-    }
+        const lastTime = lastExecutedTimes.current[code] || 0
 
-    if (hasActiveKey && now - lastKeyboardTime.current >= keyboardCooldownMS) {
-      for (const code in activeCodes.current) {
-        if (activeCodes.current[code]) {
+        if (now - lastTime >= keyboardCooldownMS) {
           const fakeEvent = { code } as KeyboardEvent
           const action = mapKeyboardToResponse(fakeEvent)
           if (action) {
             executeAction(action)
-            lastKeyboardTime.current = now
+            lastExecutedTimes.current[code] = now
           }
         }
       }
@@ -135,11 +128,24 @@ export function useGameInput({
 
     const handleKeyDown = (e: KeyboardEvent) => {
       setGamepadActive(false)
-      
+
       if (['ArrowUp', 'ArrowDown', 'Space', 'Enter'].includes(e.code) && engine.gameStatus === 'TITLE') {
         e.preventDefault()
       }
-      activeCodes.current[e.code] = true
+
+      if (!activeCodes.current[e.code]) {
+        activeCodes.current[e.code] = true
+        const now = performance.now()
+        const lastTime = lastExecutedTimes.current[e.code] || 0
+
+        if (now - lastTime >= keyboardCooldownMS) {
+          const action = mapKeyboardToResponse(e)
+          if (action) {
+            executeAction(action)
+            lastExecutedTimes.current[e.code] = now
+          }
+        }
+      }
     }
 
     const handleKeyUp = (e: KeyboardEvent) => {
@@ -155,18 +161,11 @@ export function useGameInput({
     window.addEventListener('blur', handleBlur)
 
     let frameId: number
-    let lastFrameTime = performance.now()
 
     const loop = () => {
       const now = performance.now()
-      const elapsed = now - lastFrameTime
-
-      if (elapsed >= frameInterval) {
-        lastFrameTime = now - (elapsed % frameInterval)
-        checkKeyboard(now)
-        checkGamepad(now)
-      }
-
+      checkKeyboard(now)
+      checkGamepad(now)
       frameId = requestAnimationFrame(loop)
     }
 
@@ -179,5 +178,5 @@ export function useGameInput({
       cancelAnimationFrame(frameId)
       activeCodes.current = {}
     }
-  }, [engine, onMenuUp, onMenuDown, onMenuSelect, disabled, frameInterval])
+  }, [engine, onMenuUp, onMenuDown, onMenuSelect, disabled])
 }

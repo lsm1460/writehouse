@@ -49,8 +49,8 @@ export class CheatSystem {
   }
 
   private handleSave(): string {
-    const { save, map, lang } = this.ctx
-    save.save(map.currentRoomId, lang)
+    const { save, map, config } = this.ctx
+    save.save(map.currentRoomId, config.saveData)
 
     return `📞
      "Got it. We need a upload. Holding the line while writing the matrix grid to disk..."`

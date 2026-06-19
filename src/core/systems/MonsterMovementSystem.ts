@@ -71,7 +71,7 @@ export class MonsterMovementSystem {
       return false
     }
 
-    if (this.ctx.isTileOccupiedByEntity(nx, ny)) {
+    if (this.ctx.map.isTileOccupiedByEntity(nx, ny)) {
       monster.stayQuiet()
       return false
     }

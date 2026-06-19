@@ -6,6 +6,10 @@ export class Tile_m extends Tile implements IMonsterTile {
   public direction: 'UP' | 'DOWN' = 'DOWN'
   public lastX = 0
   public lastY = 0
+  
+  renderX = 0
+  renderY = 0
+  moveStartTime = 0
 
   constructor(x: number, y: number) {
     super('m', x, y)

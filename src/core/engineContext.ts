@@ -1,7 +1,7 @@
 import type { MapData } from './gameEngine'
 import { EnvironmentManager } from './managers/EnvironmentManager'
-import type { Tile } from './map/Tile'
 import { CheatSystem } from './systems/CheatSystem'
+import { ConfigSystem } from './systems/ConfigSystem'
 import { EffectSystem } from './systems/EffectSystem'
 import { FogSystem } from './systems/fogSystem'
 import { HistorySystem } from './systems/historySystem'
@@ -21,7 +21,8 @@ export class EngineContext {
   public environment: EnvironmentManager
   public save: SaveSystem
   public effects: EffectSystem
-  public lang: string
+  public config: ConfigSystem
+  
   public turn: number = 0
   private history: HistorySystem
   private cheat: CheatSystem
@@ -38,11 +39,10 @@ export class EngineContext {
     this.environment = new EnvironmentManager(this)
     this.save = new SaveSystem(notifyEngine)
     this.effects = new EffectSystem(this)
+    this.config = new ConfigSystem(this, lang)
 
     this.history = new HistorySystem(this)
     this.cheat = new CheatSystem(this)
-
-    this.lang = lang
   }
 
   public get grid() {
@@ -55,6 +55,14 @@ export class EngineContext {
 
   public get stageClear(): boolean {
     return this.stage.isClear
+  }
+
+  public get lang(): string {
+    return this.config.lang
+  }
+
+  public get tooltipEnabled(): boolean {
+    return this.config.tooltipEnabled
   }
 
   public init(roomId?: string): boolean {
@@ -77,33 +85,6 @@ export class EngineContext {
 
     this.tickTurn()
     return true
-  }
-
-  public isPlayerAt(x: number, y: number): boolean {
-    return this.player.pos.x === x && this.player.pos.y === y
-  }
-
-  public isTileOccupiedByEntity(x: number, y: number): boolean {
-    const entity = this.map.entities?.[y]?.[x]
-    return entity !== null
-  }
-
-  public getTileAt(x: number, y: number) {
-    return this.map.grid[y]?.[x]
-  }
-
-  public setTileAt(x: number, y: number, tile: Tile): void {
-    this.map.grid[y][x] = tile
-  }
-
-  public getMonsterAt(x: number, y: number) {
-    const entity = this.map.entities?.[y]?.[x]
-    if (entity && ['M', 'm'].includes(entity.char)) return entity
-    return null
-  }
-
-  public isWalkable(x: number, y: number): boolean {
-    return this.map.isWalkable(x, y)
   }
 
   public getPlayerMovementState() {
@@ -156,7 +137,6 @@ export class EngineContext {
     if (this.player.checkEnvironmentEffects()) return false
 
     const hasChanges = this.environment.update(TURN_DELTA)
-    
     this.fog.update()
 
     if (hasChanges) {
@@ -170,7 +150,7 @@ export class EngineContext {
     const id = this.map.getNextRoomId()
 
     if (id) {
-      this.save.save(id, this.lang)
+      this.save.save(id, this.config.saveData)
       this.map.currentRoomId = id
       await delay()
       this.init(id)
@@ -182,10 +162,11 @@ export class EngineContext {
   }
 
   public setLang(lang: string) {
-    this.lang = lang
+    this.config.setLang(lang)
+  }
 
-    const roomId = this.save.load()?.roomId || ''
-    this.save.save(roomId, lang)
+  public setTooltipEnabled(val: boolean) {
+    this.config.setTooltipEnabled(val)
   }
 
   public executeCheat(command: string): string | null {
