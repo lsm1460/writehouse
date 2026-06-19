@@ -25,7 +25,7 @@ interface RenderMapOptions {
 
 function clearAndPrepareScreen(ctx: CanvasRenderingContext2D, camera: Camera, playerPos: { x: number; y: number }) {
   camera.update(playerPos.x, playerPos.y)
-  ctx.fillStyle = '#000000'
+  ctx.fillStyle = '#0a0a0b'
   ctx.fillRect(0, 0, camera.viewWidth, camera.viewHeight)
   ctx.save()
   camera.apply(ctx)
