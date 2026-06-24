@@ -9,7 +9,7 @@ import { WaterSpreadingSystem } from '../systems/WaterSpreadingSystem'
 export class EnvironmentManager {
   private ctx: EngineContext
   private electricitySystem: ElectricitySystem
-  private fireSystem: FireSpreadingSystem
+  // private fireSystem: FireSpreadingSystem
   private monsterSystem: MonsterMovementSystem
   private waterSystem: WaterSpreadingSystem
   private doorSystem: DoorSystem
@@ -17,7 +17,7 @@ export class EnvironmentManager {
   constructor(ctx: EngineContext) {
     this.ctx = ctx
     this.electricitySystem = new ElectricitySystem(ctx)
-    this.fireSystem = new FireSpreadingSystem(ctx)
+    // this.fireSystem = new FireSpreadingSystem(ctx)
     this.monsterSystem = new MonsterMovementSystem(ctx)
     this.waterSystem = new WaterSpreadingSystem(ctx)
     this.doorSystem = new DoorSystem(ctx)

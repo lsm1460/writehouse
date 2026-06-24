@@ -14,7 +14,11 @@
     "backToTitle": "타이틀로 이동",
     "tooltip": "툴팁",
     "on": "켜짐",
-    "off": "꺼짐"
+    "off": "꺼짐",
+    "sound": "음향",
+    "bgm": "배경음",
+    "ambient": "환경음",
+    "sfx": "효과음"
   },
   "floors": {
     "title": "{{ floor }} 층",

@@ -8,6 +8,8 @@ export class PlayerSystem {
   public lastY: number = 0
   public dir: Direction = 'UP'
   public targetPos: Position = { x: 0, y: 0 }
+
+  private wasBlocked: boolean = false
   private ctx: EngineContext
 
   constructor(ctx: EngineContext) {
@@ -46,10 +48,12 @@ export class PlayerSystem {
   }
 
   public move(dir: Direction): boolean {
+    this.ctx.sound.resumeContext().catch((err) => console.warn('오디오 컨텍스트 기동 실패:', err))
+
     if (this.dir !== dir) {
       this.dir = dir
-
       this.updateTargetPosition()
+      this.wasBlocked = false
     }
 
     this.lastX = this.pos.x
@@ -57,35 +61,55 @@ export class PlayerSystem {
 
     const { x: nextX, y: nextY } = this.calculateNextPosition(this.pos.x, this.pos.y, dir)
 
-    if (!this.tryPushObject(nextX, nextY, dir)) {
+    const pushResult = this.tryPushObject(nextX, nextY, dir)
+
+    if (pushResult === 'fail') {
+      this.triggerBumpOnce()
       return false
     }
 
     if (!this.tryWalkTo(nextX, nextY)) {
+      this.triggerBumpOnce()
       return false
     }
 
+    this.wasBlocked = false
+
     this.updateTargetPosition()
     this.ctx.updateFogAndNotify()
+
+    if (pushResult === 'mix') {
+      this.ctx.sound.playSfx('mix')
+    } else {
+      this.ctx.sound.playSfx('move')
+    }
+
     return true
   }
 
-  private tryPushObject(nextX: number, nextY: number, dir: Direction): boolean {
+  private triggerBumpOnce(): void {
+    if (!this.wasBlocked) {
+      this.ctx.sound.playSfx('bump')
+      this.wasBlocked = true
+    }
+  }
+
+  private tryPushObject(nextX: number, nextY: number, dir: Direction): 'fail' | 'push' | 'mix' | 'none' {
     const targetTile = this.ctx.map.getTileAt(nextX, nextY)
 
     if (!targetTile || !targetTile.isPushable) {
-      return true
+      return 'none'
     }
 
     const { x: pushToX, y: pushToY } = this.calculateNextPosition(nextX, nextY, dir)
 
     if (this.ctx.map.getMonsterAt(pushToX, pushToY)) {
-      return false
+      return 'fail'
     }
 
     const behindTile = this.ctx.map.getTileAt(pushToX, pushToY)
     if (!behindTile) {
-      return false
+      return 'fail'
     }
 
     if (behindTile.char === ' ') {
@@ -95,17 +119,17 @@ export class PlayerSystem {
         createTile(targetTile.char, pushToX, pushToY, { ...targetTile.getData() })
       )
       this.ctx.map.setTileAt(nextX, nextY, createTile(' ', nextX, nextY))
-      return true
+      return 'push'
     }
 
     const mixedChar = targetTile.getMixedResult(behindTile.char)
     if (mixedChar) {
       this.ctx.map.setTileAt(pushToX, pushToY, createTile(mixedChar, pushToX, pushToY))
       this.ctx.map.setTileAt(nextX, nextY, createTile(' ', nextX, nextY))
-      return true
+      return 'mix'
     }
 
-    return false
+    return 'fail'
   }
 
   private tryWalkTo(nextX: number, nextY: number): boolean {

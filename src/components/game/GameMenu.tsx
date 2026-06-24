@@ -19,7 +19,7 @@ export function GameMenu({ onResume, onRestart, onExit }: MenuProps) {
   if (showConfig) {
     return (
       <FadeOverlay delayMS={0} durationMS={200} midDelayMS={999999}>
-        <ConfigScreen backToTitle={() => setShowConfig(false)} />
+        <ConfigScreen back={() => setShowConfig(false)} />
       </FadeOverlay>
     )
   }

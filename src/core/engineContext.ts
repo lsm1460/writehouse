@@ -1,4 +1,4 @@
-import type { MapData } from './gameEngine'
+import type { AssetsType } from '~/assets'
 import { EnvironmentManager } from './managers/EnvironmentManager'
 import { CheatSystem } from './systems/CheatSystem'
 import { ConfigSystem } from './systems/ConfigSystem'
@@ -11,6 +11,7 @@ import { PlayerSystem } from './systems/playerSystem'
 import { SaveSystem } from './systems/SaveSystem'
 import { StageSystem } from './systems/StageSystem'
 import { delay } from './utils'
+import { SoundSystem } from './systems/SoundSystem'
 
 export class EngineContext {
   public map: MapSystem
@@ -22,16 +23,18 @@ export class EngineContext {
   public save: SaveSystem
   public effects: EffectSystem
   public config: ConfigSystem
-  
+  public sound: SoundSystem
+
   public turn: number = 0
+  private _isLoading: boolean = false
   private history: HistorySystem
   private cheat: CheatSystem
   private notifyEngine: () => void
 
-  constructor(mapData: MapData, lang: string, notifyEngine: () => void) {
+  constructor(assets: AssetsType, lang: string, notifyEngine: () => void) {
     this.notifyEngine = notifyEngine
 
-    this.map = new MapSystem(this, mapData)
+    this.map = new MapSystem(this, assets.map)
     this.player = new PlayerSystem(this)
     this.inventory = new InventorySystem(this)
     this.fog = new FogSystem(this)
@@ -40,6 +43,13 @@ export class EngineContext {
     this.save = new SaveSystem(notifyEngine)
     this.effects = new EffectSystem(this)
     this.config = new ConfigSystem(this, lang)
+    this.sound = new SoundSystem(assets.sound || {}, this)
+    
+    this.sound.setBgmVolume(this.config.bgmVolume)
+    this.sound.setAmbientVolume(this.config.ambientVolume)
+    this.sound.setSfxVolume(this.config.sfxVolume)
+
+    this.sound.playBgm('title_theme', { loop: true, fadeIn: 2 })
 
     this.history = new HistorySystem(this)
     this.cheat = new CheatSystem(this)
@@ -65,12 +75,50 @@ export class EngineContext {
     return this.config.tooltipEnabled
   }
 
-  public init(roomId?: string): boolean {
-    const spawn = this.map.loadRoom(roomId || '0-1')
+  public get isLoading(): boolean {
+    return this._isLoading
+  }
+
+  public async init(roomId?: string, forceImmediate = false): Promise<boolean> {
+    const targetRoomId = roomId || '0-1'
+    const isSameRoom = this.map.currentRoomId === targetRoomId
+
+    this.prepareLoading(forceImmediate, isSameRoom)
+
+    const startTime = Date.now()
+
+    const spawn = this.map.loadRoom(targetRoomId)
     if (!spawn) {
+      this.handleLoadFailure(forceImmediate)
       return false
     }
 
+    this.resetSystemStates(spawn)
+
+    await this.finalizeLoading(startTime, forceImmediate, isSameRoom)
+
+    return true
+  }
+
+  private prepareLoading(forceImmediate: boolean, isSameRoom: boolean): void {
+    if (!forceImmediate) {
+      this._isLoading = true
+      this.onChange()
+    }
+
+    if (!isSameRoom) {
+      this.sound.stopBgm()
+    }
+  }
+
+  private handleLoadFailure(forceImmediate: boolean): void {
+    if (!forceImmediate) {
+      this._isLoading = false
+      this.onChange()
+    }
+  }
+
+  private resetSystemStates(spawn: { x: number; y: number }): void {
     this.turn = 0
     this.history.clear()
     this.effects.clear()
@@ -82,9 +130,25 @@ export class EngineContext {
 
     this.fog.update()
     this.onChange()
-
     this.tickTurn()
-    return true
+  }
+
+  private async finalizeLoading(startTime: number, forceImmediate: boolean, isSameRoom: boolean): Promise<void> {
+    if (!forceImmediate) {
+      const elapsedTime = Date.now() - startTime
+      const MIN_DELAY = 3500
+
+      if (elapsedTime < MIN_DELAY) {
+        await delay(MIN_DELAY - elapsedTime)
+      }
+
+      this._isLoading = false
+      this.onChange()
+    }
+
+    if (!isSameRoom) {
+      this.sound.playBgm('main_theme')
+    }
   }
 
   public getPlayerMovementState() {
@@ -138,7 +202,7 @@ export class EngineContext {
 
     const hasChanges = this.environment.update(TURN_DELTA)
     this.fog.update()
-
+    
     if (hasChanges) {
       this.onChange()
     }
@@ -151,22 +215,15 @@ export class EngineContext {
 
     if (id) {
       this.save.save(id, this.config.saveData)
-      this.map.currentRoomId = id
-      await delay()
+
       this.init(id)
     }
   }
 
   public retryStage() {
-    this.init(this.map.currentRoomId)
-  }
-
-  public setLang(lang: string) {
-    this.config.setLang(lang)
-  }
-
-  public setTooltipEnabled(val: boolean) {
-    this.config.setTooltipEnabled(val)
+    this.sound.stopAmbient()
+    
+    this.init(this.map.currentRoomId, true).catch((err) => console.error('재시작 중 오류 발생:', err))
   }
 
   public executeCheat(command: string): string | null {

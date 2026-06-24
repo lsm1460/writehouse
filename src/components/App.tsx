@@ -1,10 +1,10 @@
-import { useState } from 'react'
-import { useGame } from '~/context/GameContext'
-import { GameScreen } from './screens/GameScreen'
-import { TitleScreen } from './screens/TitleScreen'
-import { ConfigScreen } from './screens/ConfigScreen'
+import { useEffect, useState } from 'react'
 import { SaveIndicator } from '~/components/ui/SaveIndicator'
+import { useGame } from '~/context/GameContext'
+import { ConfigScreen } from './screens/ConfigScreen'
+import { GameScreen } from './screens/GameScreen'
 import { MapEditorScreen } from './screens/MapEditorScreen'
+import { TitleScreen } from './screens/TitleScreen'
 
 type GameStateType = 'TITLE' | 'CONFIG' | 'PLAYING'
 
@@ -41,7 +41,7 @@ function App() {
         {...(save.hasSaveData() && { onLoad: handleLoad })}
       />
     ),
-    CONFIG: <ConfigScreen backToTitle={backToTitle} />,
+    CONFIG: <ConfigScreen back={backToTitle} />,
     PLAYING: <GameScreen backToTitle={backToTitle} />,
   }
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useGame } from '~/context/GameContext'
 import { GameMenuLayout } from '../ui/GameMenuLayout'
@@ -26,7 +26,9 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({ onStart, onLoad, onCon
     <ScreenWrapper className="pt-10 pb-5">
       <div className="mb-12 text-center">
         <h1 className="text-6xl font-black text-white tracking-tighter animate-pulse">
-          WRITE<br />HOUSE
+          WRITE
+          <br />
+          HOUSE
         </h1>
       </div>
 

@@ -14,7 +14,11 @@
     "backToTitle": "Back to Title",
     "tooltip": "Tooltip",
     "on": "ON",
-    "off": "OFF"
+    "off": "OFF",
+    "sound": "Sound",
+    "bgm": "BGM Volume",
+    "ambient": "Ambient Volume",
+    "sfx": "SFX Volume"
   },
   "floors": {
     "title": "Floor {{ floor }}",

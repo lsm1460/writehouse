@@ -30,6 +30,8 @@ interface UseGameInputProps {
   engine: GameEngine
   onMenuUp?: () => void
   onMenuDown?: () => void
+  onMenuLeft?: () => void
+  onMenuRight?: () => void
   onMenuSelect?: () => void
   onAction?: (action: GameAction) => void
   disabled?: boolean
@@ -40,6 +42,8 @@ export function useGameInput({
   engine,
   onMenuUp,
   onMenuDown,
+  onMenuLeft,
+  onMenuRight,
   onMenuSelect,
   onAction,
   disabled = false,
@@ -67,6 +71,8 @@ export function useGameInput({
         case 'MOVE':
           if (action.direction === 'UP' && onMenuUp) onMenuUp()
           if (action.direction === 'DOWN' && onMenuDown) onMenuDown()
+          if (action.direction === 'LEFT' && onMenuLeft) onMenuLeft()
+          if (action.direction === 'RIGHT' && onMenuRight) onMenuRight()
           break
         case 'SPACE_ACTION':
         case 'ENTER_ACTION':

@@ -1,0 +1,139 @@
+{
+  "bgm": {
+    "title_theme": [
+      [
+        { "note": "A4", "duration": "1m", "time": 0.5 },
+        { "note": "B4", "duration": "1m", "time": 2.5 },
+        { "note": "C5", "duration": "2n", "time": 4.5 },
+        { "note": "B4", "duration": "2n", "time": 5.5 },
+        { "note": "G#4", "duration": "1m", "time": 6.5 },
+
+        { "note": "C5", "duration": "1m", "time": 8.5 },
+        { "note": "D5", "duration": "1m", "time": 10.5 },
+        { "note": "E5", "duration": "2n", "time": 12.5 },
+        { "note": "D5", "duration": "2n", "time": 13.5 },
+        { "note": "B4", "duration": "2n", "time": 14.5 },
+        { "note": "G#4", "duration": "2n", "time": 15.0 }
+      ],
+      [
+        { "note": "E3", "duration": "2n", "time": 0.5 },
+        { "note": "A3", "duration": "2n", "time": 1.0 },
+        { "note": "C4", "duration": "2n", "time": 1.5 },
+
+        { "note": "D3", "duration": "2n", "time": 2.5 },
+        { "note": "G3", "duration": "2n", "time": 3.0 },
+        { "note": "B3", "duration": "2n", "time": 3.5 },
+
+        { "note": "C3", "duration": "2n", "time": 4.5 },
+        { "note": "F3", "duration": "2n", "time": 5.0 },
+        { "note": "A3", "duration": "2n", "time": 5.5 },
+
+        { "note": "B2", "duration": "2n", "time": 6.5 },
+        { "note": "E3", "duration": "2n", "time": 7.0 },
+        { "note": "G#3", "duration": "2n", "time": 7.5 },
+
+        { "note": "E3", "duration": "2n", "time": 8.5 },
+        { "note": "A3", "duration": "2n", "time": 9.0 },
+        { "note": "C4", "duration": "2n", "time": 9.5 },
+
+        { "note": "D3", "duration": "2n", "time": 10.5 },
+        { "note": "G3", "duration": "2n", "time": 11.0 },
+        { "note": "B3", "duration": "2n", "time": 11.5 },
+
+        { "note": "C3", "duration": "2n", "time": 12.5 },
+        { "note": "F3", "duration": "2n", "time": 13.0 },
+        { "note": "A3", "duration": "2n", "time": 13.5 },
+
+        { "note": "B2", "duration": "2n", "time": 14.5 },
+        { "note": "E3", "duration": "2n", "time": 15.0 },
+        { "note": "G#3", "duration": "2n", "time": 15.5 }
+      ]
+    ],
+    "main_theme": [
+      [],
+      [
+        { "note": "E3", "duration": "2n", "time": 0.5 },
+        { "note": "A3", "duration": "2n", "time": 1.0 },
+        { "note": "C4", "duration": "2n", "time": 1.5 },
+
+        { "note": "D3", "duration": "2n", "time": 2.5 },
+        { "note": "G3", "duration": "2n", "time": 3.0 },
+        { "note": "B3", "duration": "2n", "time": 3.5 },
+
+        { "note": "C3", "duration": "2n", "time": 4.5 },
+        { "note": "F3", "duration": "2n", "time": 5.0 },
+        { "note": "A3", "duration": "2n", "time": 5.5 },
+
+        { "note": "B2", "duration": "2n", "time": 6.5 },
+        { "note": "E3", "duration": "2n", "time": 7.0 },
+        { "note": "G#3", "duration": "2n", "time": 7.5 },
+
+        { "note": "E3", "duration": "2n", "time": 8.5 },
+        { "note": "A3", "duration": "2n", "time": 9.0 },
+        { "note": "C4", "duration": "2n", "time": 9.5 },
+
+        { "note": "D3", "duration": "2n", "time": 10.5 },
+        { "note": "G3", "duration": "2n", "time": 11.0 },
+        { "note": "B3", "duration": "2n", "time": 11.5 },
+
+        { "note": "C3", "duration": "2n", "time": 12.5 },
+        { "note": "F3", "duration": "2n", "time": 13.0 },
+        { "note": "A3", "duration": "2n", "time": 13.5 },
+
+        { "note": "B2", "duration": "2n", "time": 14.5 },
+        { "note": "E3", "duration": "2n", "time": 15.0 },
+        { "note": "G#3", "duration": "2n", "time": 15.5 }
+      ]
+    ]
+  },
+  "ambient": {
+    "fire": [
+      [
+        { "note": "noise", "duration": "64n", "time": 0.08 },
+        { "note": "noise", "duration": "32n", "time": 0.25 },
+        { "note": "noise", "duration": "64n", "time": 0.52 },
+        { "note": "noise", "duration": "64n", "time": 0.78 },
+        { "note": "noise", "duration": "32n", "time": 1.05 },
+        { "note": "noise", "duration": "64n", "time": 1.31 },
+        { "note": "noise", "duration": "64n", "time": 1.67 },
+        { "note": "noise", "duration": "32n", "time": 1.88 }
+      ],
+      [
+        { "note": "F1", "duration": "2n", "time": 0.0 },
+        { "note": "F#1", "duration": "2n", "time": 0.5 },
+        { "note": "F1", "duration": "2n", "time": 1.0 },
+        { "note": "E1", "duration": "2n", "time": 1.5 }
+      ]
+    ]
+  },
+  "sfx": {
+    "move": [[{ "note": "G3", "duration": "64n", "time": 0 }]],
+    "bump": [
+      [],
+      [
+        { "note": "F2", "duration": "32n", "time": 0 },
+        { "note": "E2", "duration": "16n", "time": 0.03 }
+      ]
+    ],
+    "mix": [
+      [
+        { "note": "C4", "duration": "16n", "time": 0 },
+        { "note": "G4", "duration": "8n", "time": 0.06 }
+      ]
+    ],
+    "beacon_on": [
+      [
+        { "note": "E4", "duration": "16n", "time": 0 },
+        { "note": "B4", "duration": "8n", "time": 0.05 }
+      ]
+    ],
+    "stage_clear": [
+      [
+        { "note": "C4", "duration": "16n", "time": 0 },
+        { "note": "E4", "duration": "16n", "time": 0.08 },
+        { "note": "G4", "duration": "16n", "time": 0.16 },
+        { "note": "C5", "duration": "4n", "time": 0.24 }
+      ]
+    ]
+  }
+}

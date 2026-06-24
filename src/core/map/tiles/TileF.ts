@@ -19,7 +19,7 @@ export class TileF extends Tile implements IEnvironmentTile {
     return {
       fireStage: this.fireStage,
       age: this.age,
-      isInitialTurn: this.isInitialTurn
+      isInitialTurn: this.isInitialTurn,
     }
   }
 

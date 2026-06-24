@@ -1,3 +1,4 @@
+import type { AssetsType } from '~/assets'
 import { EngineContext } from './engineContext'
 
 export type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT'
@@ -11,7 +12,10 @@ export interface Position {
 export interface MapData {
   floors: {
     floor_number: number
-    rooms: { room_id: string; grid: (string | null)[][] }[]
+    rooms: { 
+      room_id: string
+      grid: string[][]
+    }[]
   }[]
 }
 
@@ -21,8 +25,8 @@ export class GameEngine {
   private onUpdateCallback?: () => void
   private status: GameStatus = 'TITLE'
 
-  constructor(mapData: MapData, lang: string) {
-    this.ctx = new EngineContext(mapData, lang, () => this.notify())
+  constructor(assets: AssetsType, lang: string) {
+    this.ctx = new EngineContext(assets, lang, () => this.notify())
   }
 
   public getSnapshot() {
@@ -63,6 +67,8 @@ export class GameEngine {
     const beforeState = this.ctx.captureState()
     const isMoved = this.ctx.player.move(dir)
 
+    this.ctx.sound.ambient.update()
+    
     if (!isMoved) return
     
     this.ctx.player.updateTargetPosition()

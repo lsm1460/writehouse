@@ -252,7 +252,7 @@ export function useMapEditor() {
 
     // 임시 엔진 생성
     try {
-      const engine = new GameEngine(mapData, 'ko')
+      const engine = new GameEngine({map: mapData}, 'ko')
       engine.start()
       setTestEngine(engine)
       setIsTesting(true)

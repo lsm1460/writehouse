@@ -16,42 +16,35 @@ type GameScreenProps = {
 }
 
 export function GameScreen({ backToTitle }: GameScreenProps) {
-  const { engine, gameState, currentRoomId } = useGame()
-  const [isTransitioning, setIsTransitioning] = useState(true)
+  const { engine, gameState, currentRoomId, isLoading } = useGame()
 
   const { cheatMode, handleActionReport, closeCheatMode } = useCheatMode()
 
   useGameInput({
     engine,
-    disabled: isTransitioning || cheatMode || gameState === 'MENU' || gameState === 'GAME_OVER',
+    disabled: isLoading || cheatMode || gameState === 'MENU' || gameState === 'GAME_OVER',
     onAction: handleActionReport,
   })
-
-  useEffect(() => {
-    setIsTransitioning(true)
-  }, [currentRoomId])
 
   return (
     <>
       <GameScreenWrapper>
         <div
           className={`flex-1 w-full h-full relative flex items-center justify-center overflow-hidden font-sans transition-opacity ${
-            isTransitioning ? 'pointer-events-none opacity-0 duration-0' : 'opacity-100 duration-500'
+            isLoading ? 'pointer-events-none opacity-0 duration-0' : 'opacity-100 duration-500'
           }`}
         >
           <StageRenderer />
         </div>
 
-        {!isTransitioning && <Tutorial />}
+        {!isLoading && <Tutorial />}
 
-        {isTransitioning && (
-          <RoomTransition roomId={currentRoomId} onTransitionEnd={() => setIsTransitioning(false)} />
-        )}
+        {isLoading && <RoomTransition roomId={currentRoomId} />}
 
         {gameState === 'MENU' && (
           <GameMenu onResume={() => engine.toggleMenu()} onRestart={() => engine.retryStage()} onExit={backToTitle} />
         )}
-        
+
         {gameState === 'GAME_OVER' && <GameOver onRestart={() => engine.retryStage()} />}
 
         <CheatInput
@@ -60,8 +53,8 @@ export function GameScreen({ backToTitle }: GameScreenProps) {
           onExecuteCheat={(cmd) => engine.ctx.executeCheat(cmd)}
         />
       </GameScreenWrapper>
-      
-      {gameState === 'PLAYING' && !isTransitioning && <GameUi />}
+
+      {gameState === 'PLAYING' && !isLoading && <GameUi />}
     </>
   )
 }

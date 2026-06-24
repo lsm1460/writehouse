@@ -7,6 +7,8 @@ export abstract class Tile {
   public x: number
   public y: number
 
+  public ambientSoundKey?: string
+
   public isWet = false
   public isElectrified = false
 

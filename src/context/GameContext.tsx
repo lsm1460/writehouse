@@ -10,7 +10,7 @@ interface GameContextType {
 const GameContext = createContext<GameContextType | null>(null)
 
 export function GameProvider({ children, customEngine }: { children: ReactNode; customEngine?: GameEngine }) {
-  const engine = useMemo(() => customEngine || new GameEngine(assets.map, i18n.language), [customEngine])
+  const engine = useMemo(() => customEngine || new GameEngine(assets, i18n.language), [customEngine])
 
   useSyncExternalStore(
     (callback) => {
@@ -27,7 +27,7 @@ export function GameProvider({ children, customEngine }: { children: ReactNode; 
     }
 
     if (saveData && typeof saveData.tooltipEnabled === 'boolean') {
-      engine.ctx.setTooltipEnabled(saveData.tooltipEnabled)
+      engine.ctx.config.setTooltipEnabled(saveData.tooltipEnabled)
     }
   }, [engine])
 
@@ -42,6 +42,7 @@ export function useGame() {
   return {
     engine: context.engine,
     ctx: context.engine.ctx,
+    isLoading: context.engine.ctx.isLoading,
     player: context.engine.ctx.player,
     map: context.engine.ctx.map,
     fog: context.engine.ctx.fog,

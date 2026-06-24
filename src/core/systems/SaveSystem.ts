@@ -2,6 +2,9 @@ export interface SaveData {
   roomId: string
   language: string
   tooltipEnabled: boolean
+  bgmVolume?: number
+  ambientVolume?: number
+  sfxVolume?: number
   savedAt: string
 }
 
@@ -14,7 +17,7 @@ export class SaveSystem {
     this.onStateChange = onStateChange
   }
 
-  public save(roomId: string, config: {language: string, tooltipEnabled: boolean}): boolean {
+  public save(roomId: string, config: { language: string; tooltipEnabled: boolean; bgmVolume?: number; ambientVolume?: number; sfxVolume?: number }): boolean {
     try {
       this.isSaving = true
       this.onStateChange?.()
