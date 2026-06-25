@@ -1,16 +1,32 @@
 import { CELL_SIZE } from '../game/consts'
 
+interface ZoomOptions {
+  animate?: boolean
+  lerpFactor?: number
+}
+
+interface OffsetOptions {
+  duration?: number
+}
+
 export class Camera {
   public viewWidth: number
   public viewHeight: number
   public verticalPad: number
   public zoom: number = 1.5
 
+  private targetZoom: number = 1.5
+
   private currentX: number = 0
   private currentY: number = 0
-
   private targetX: number = 0
   private targetY: number = 0
+
+  private offsetY: number = 0
+  private targetOffsetY: number = 0
+  private startOffsetY: number = 0
+  private offsetStartTime: number | null = null
+  private offsetDuration: number = 0
 
   constructor(viewWidth: number, viewHeight: number, verticalPad: number) {
     this.viewWidth = viewWidth
@@ -32,9 +48,27 @@ export class Camera {
     this.targetX = playerX * CELL_SIZE + CELL_SIZE / 2
     this.targetY = playerY * CELL_SIZE + CELL_SIZE / 2
 
-    // 현재 위치를 목표 위치 쪽으로 매 프레임 조금씩 가깝게 이동시킵니다.
     this.currentX += (this.targetX - this.currentX) * lerpFactor
     this.currentY += (this.targetY - this.currentY) * lerpFactor
+
+    if (this.offsetStartTime !== null && this.offsetDuration > 0) {
+      const elapsed = performance.now() - this.offsetStartTime
+      const progress = Math.min(elapsed / this.offsetDuration, 1)
+
+      this.offsetY = this.startOffsetY + (this.targetOffsetY - this.startOffsetY) * progress
+
+      if (progress >= 1) {
+        this.offsetStartTime = null
+      }
+    } else {
+      this.offsetY += (this.targetOffsetY - this.offsetY) * 0.03
+    }
+
+    if (Math.abs(this.targetZoom - this.zoom) > 0.001) {
+      this.zoom += (this.targetZoom - this.zoom) * 0.08
+    } else {
+      this.zoom = this.targetZoom
+    }
   }
 
   public apply(ctx: CanvasRenderingContext2D) {
@@ -42,7 +76,7 @@ export class Camera {
     ctx.scale(this.zoom, this.zoom)
 
     const snappedX = Math.round(this.currentX)
-    const snappedY = Math.round(this.currentY)
+    const snappedY = Math.round(this.currentY + this.offsetY)
 
     ctx.translate(-snappedX, -snappedY)
   }
@@ -64,7 +98,37 @@ export class Camera {
     )
   }
 
-  public setZoom(value: number) {
-    this.zoom = Math.max(0.5, Math.min(value, 3.0))
+  public setCameraOffset(y: number, options?: OffsetOptions) {
+    this.targetOffsetY = y
+    this.startOffsetY = this.offsetY
+
+    if (options?.duration && options.duration > 0) {
+      this.offsetStartTime = performance.now()
+      this.offsetDuration = options.duration
+    } else {
+      this.offsetStartTime = null
+      this.offsetDuration = 0
+    }
+  }
+
+  public resetOffset() {
+    this.offsetY = 0
+    this.targetOffsetY = 0
+    this.startOffsetY = 0
+    this.offsetStartTime = null
+    this.offsetDuration = 0
+  }
+
+  public setZoom(value: number | ((prevZoom: number) => number), options?: ZoomOptions) {
+    const nextZoom = typeof value === 'function' ? value(this.targetZoom) : value
+
+    const clampedZoom = Math.max(0.5, Math.min(nextZoom, 3.0))
+
+    if (options?.animate) {
+      this.targetZoom = clampedZoom
+    } else {
+      this.targetZoom = clampedZoom
+      this.zoom = clampedZoom
+    }
   }
 }

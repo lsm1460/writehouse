@@ -1,22 +1,21 @@
+import type { GameEngine } from '~/core/gameEngine'
+import type { DeathEvent } from '~/core/systems/EffectSystem'
+import type { FogSystem } from '~/core/systems/fogSystem'
 import type { EntitiesType, GridType } from '~/core/types'
 import { Camera } from './Camera'
 import { EffectRenderer } from './EffectRenderer'
 import { EntityRenderer } from './EntityRenderer'
 import { TileRegistry } from './TileRegistry'
+import { roomScripts } from './roomScripts'
+
 import { TileRenderer } from './TileRenderer'
 import { TooltipRenderer } from './TooltipRenderer'
-import type { DeathEvent } from '~/core/systems/EffectSystem'
-import type { FogSystem } from '~/core/systems/fogSystem'
-import type { MapSystem } from '~/core/systems/mapSystem'
-import type { PlayerSystem } from '~/core/systems/playerSystem'
-import type { ConfigSystem } from '~/core/systems/ConfigSystem'
+
+let lastActiveRoomId: string | null = null
 
 interface RenderMapOptions {
   ctx: CanvasRenderingContext2D
-  map: MapSystem
-  player: PlayerSystem
-  fog: FogSystem
-  config: ConfigSystem
+  engine: GameEngine
   deathEvents: DeathEvent[]
   stageClear: boolean
   timestamp: number
@@ -119,7 +118,8 @@ function drawDeathEvents(ctx: CanvasRenderingContext2D, deathEvents: DeathEvent[
 }
 
 export const GameRenderer = {
-  render({ ctx, map, player, fog, config, timestamp, stageClear, camera, deathEvents }: RenderMapOptions) {
+  render({ ctx, engine, timestamp, stageClear, camera, deathEvents }: RenderMapOptions) {
+    const { map, player, fog, config } = engine.ctx
     const { grid, entities } = map
     const { pos: playerPos, targetPos } = player
 
@@ -129,6 +129,22 @@ export const GameRenderer = {
     drawTileLayers(ctx, grid, camera, playerPos, fog, stageClear, timestamp)
     config.tooltipEnabled && drawTargetTooltip(ctx, grid, targetPos, playerPos, camera, fog, stageClear, timestamp)
     drawDeathEvents(ctx, deathEvents, camera, timestamp)
+
+    const currentRoomId = map.currentRoomId
+    if (lastActiveRoomId !== currentRoomId) {
+      if (lastActiveRoomId) {
+        const prevScript = roomScripts[lastActiveRoomId]
+        if (prevScript?.cleanup) {
+          prevScript.cleanup(camera)
+        }
+      }
+      lastActiveRoomId = currentRoomId
+    }
+
+    const currentScript = roomScripts[currentRoomId]
+    if (currentScript) {
+      currentScript.run(engine, camera)
+    }
 
     ctx.restore()
   },

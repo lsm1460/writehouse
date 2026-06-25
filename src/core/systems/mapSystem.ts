@@ -89,7 +89,6 @@ export class MapSystem {
           return this.mapData.floors[f + 1].rooms[0].room_id
         }
 
-        console.log('🎉 마지막 방입니다! 던전의 끝에 도달했습니다.')
         return undefined
       }
     }

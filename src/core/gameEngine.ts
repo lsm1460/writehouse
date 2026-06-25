@@ -2,7 +2,7 @@ import type { AssetsType } from '~/assets'
 import { EngineContext } from './engineContext'
 
 export type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT'
-export type GameStatus = 'TITLE' | 'MENU' | 'PLAYING' | 'GAME_OVER'
+export type GameStatus = 'TITLE' | 'PLAYING' | 'GAME_OVER' | 'PAUSE' | 'ENDING'
 
 export interface Position {
   x: number
@@ -12,7 +12,7 @@ export interface Position {
 export interface MapData {
   floors: {
     floor_number: number
-    rooms: { 
+    rooms: {
       room_id: string
       grid: string[][]
     }[]
@@ -26,7 +26,12 @@ export class GameEngine {
   private status: GameStatus = 'TITLE'
 
   constructor(assets: AssetsType, lang: string) {
-    this.ctx = new EngineContext(assets, lang, () => this.notify())
+    this.ctx = new EngineContext(
+      assets,
+      lang,
+      () => this.notify(),
+      () => this.setGameStatus('ENDING')
+    )
   }
 
   public getSnapshot() {
@@ -35,6 +40,10 @@ export class GameEngine {
 
   get gameStatus(): GameStatus {
     return this.status
+  }
+
+  private setGameStatus(val: GameStatus) {
+    this.status = val
   }
 
   public subscribe(callback: () => void) {
@@ -68,9 +77,9 @@ export class GameEngine {
     const isMoved = this.ctx.player.move(dir)
 
     this.ctx.sound.ambient.update()
-    
+
     if (!isMoved) return
-    
+
     this.ctx.player.updateTargetPosition()
 
     const afterState = this.ctx.captureState()
@@ -95,8 +104,8 @@ export class GameEngine {
     this.ctx.retryStage()
   }
 
-  public toggleMenu() {
-    this.status = this.status === 'MENU' ? 'PLAYING' : 'MENU'
+  public togglePause() {
+    this.status = this.status === 'PAUSE' ? 'PLAYING' : 'PAUSE'
     this.notify()
   }
 

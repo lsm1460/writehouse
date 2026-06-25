@@ -13,18 +13,45 @@ import { CheatInput } from '../ui/CheatInput'
 
 type GameScreenProps = {
   backToTitle: () => void
+  onEnding: () => void
 }
 
-export function GameScreen({ backToTitle }: GameScreenProps) {
+export function GameScreen({ backToTitle, onEnding }: GameScreenProps) {
   const { engine, gameState, currentRoomId, isLoading } = useGame()
 
+  const [isMenuOpened, setIsMenuOpened] = useState(false)
   const { cheatMode, handleActionReport, closeCheatMode } = useCheatMode()
+
+  const openMenu = () => {
+    setIsMenuOpened((prev) => !prev)
+
+    engine.togglePause()
+  }
 
   useGameInput({
     engine,
-    disabled: isLoading || cheatMode || gameState === 'MENU' || gameState === 'GAME_OVER',
+    disabled: isLoading || cheatMode || gameState === 'PAUSE' || gameState === 'GAME_OVER',
     onAction: handleActionReport,
+    openMenu,
   })
+
+  useEffect(() => {
+    if (gameState === 'ENDING') {
+      onEnding()
+    }
+  }, [gameState])
+
+  const onResume = () => {
+    setIsMenuOpened(false)
+
+    engine.togglePause()
+  }
+
+  const onRestart = () => {
+    setIsMenuOpened(false)
+
+    engine.retryStage()
+  }
 
   return (
     <>
@@ -41,9 +68,7 @@ export function GameScreen({ backToTitle }: GameScreenProps) {
 
         {isLoading && <RoomTransition roomId={currentRoomId} />}
 
-        {gameState === 'MENU' && (
-          <GameMenu onResume={() => engine.toggleMenu()} onRestart={() => engine.retryStage()} onExit={backToTitle} />
-        )}
+        {isMenuOpened && <GameMenu onResume={onResume} onRestart={onRestart} onExit={backToTitle} />}
 
         {gameState === 'GAME_OVER' && <GameOver onRestart={() => engine.retryStage()} />}
 

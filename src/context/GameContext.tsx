@@ -52,7 +52,7 @@ export function useGame() {
     // inventory: context.engine.ctx.inventory,
     turn: context.engine.ctx.turn,
     gameState: context.engine.gameStatus,
-    toggleMenu: context.engine.toggleMenu,
+    togglePause: context.engine.togglePause,
     save: context.engine.ctx.save,
     currentRoomId: context.engine.ctx.map.currentRoomId,
     isSaving: context.engine.ctx.save.isSaving,

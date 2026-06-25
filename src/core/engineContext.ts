@@ -1,4 +1,5 @@
 import type { AssetsType } from '~/assets'
+import type { GameStatus } from './gameEngine'
 import { EnvironmentManager } from './managers/EnvironmentManager'
 import { CheatSystem } from './systems/CheatSystem'
 import { ConfigSystem } from './systems/ConfigSystem'
@@ -9,9 +10,9 @@ import { InventorySystem } from './systems/inventorySystem'
 import { MapSystem } from './systems/mapSystem'
 import { PlayerSystem } from './systems/playerSystem'
 import { SaveSystem } from './systems/SaveSystem'
+import { SoundSystem } from './systems/SoundSystem'
 import { StageSystem } from './systems/StageSystem'
 import { delay } from './utils'
-import { SoundSystem } from './systems/SoundSystem'
 
 export class EngineContext {
   public map: MapSystem
@@ -30,9 +31,11 @@ export class EngineContext {
   private history: HistorySystem
   private cheat: CheatSystem
   private notifyEngine: () => void
+  private setEndingState: () => void
 
-  constructor(assets: AssetsType, lang: string, notifyEngine: () => void) {
+  constructor(assets: AssetsType, lang: string, notifyEngine: () => void, setEndingState: () => void) {
     this.notifyEngine = notifyEngine
+    this.setEndingState = setEndingState
 
     this.map = new MapSystem(this, assets.map)
     this.player = new PlayerSystem(this)
@@ -212,11 +215,12 @@ export class EngineContext {
 
   public async nextStage() {
     const id = this.map.getNextRoomId()
-
     if (id) {
       this.save.save(id, this.config.saveData)
 
       this.init(id)
+    } else {
+      this.setEndingState()
     }
   }
 

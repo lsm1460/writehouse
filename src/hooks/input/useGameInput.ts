@@ -36,6 +36,7 @@ interface UseGameInputProps {
   onAction?: (action: GameAction) => void
   disabled?: boolean
   passive?: boolean
+  openMenu?: () => void
 }
 
 export function useGameInput({
@@ -46,6 +47,7 @@ export function useGameInput({
   onMenuRight,
   onMenuSelect,
   onAction,
+  openMenu,
   disabled = false,
   passive = false,
 }: UseGameInputProps) {
@@ -66,7 +68,7 @@ export function useGameInput({
       return
     }
 
-    if (['TITLE', 'MENU', 'GAME_OVER'].includes(engine.gameStatus)) {
+    if (['TITLE', 'PAUSE', 'GAME_OVER'].includes(engine.gameStatus)) {
       switch (action.type) {
         case 'MOVE':
           if (action.direction === 'UP' && onMenuUp) onMenuUp()
@@ -89,7 +91,8 @@ export function useGameInput({
         }
         break
       case 'MENU':
-        return engine.toggleMenu()
+        openMenu && openMenu()
+        break
       case 'SPACE_ACTION':
         return engine.undo()
       case 'RETRY_ACTION':

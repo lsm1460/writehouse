@@ -9,17 +9,17 @@ const VIEW_WIDTH = 1024
 const VIEW_HEIGHT = 576
 
 export function StageRenderer() {
-  const { map, player, fog, config, stageClear, deathEvents, turn } = useGame()
+  const { engine, stageClear, deathEvents, turn } = useGame()
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const [fps, setFps] = useState<number>(0)
 
   const cameraRef = useRef(new Camera(VIEW_WIDTH, VIEW_HEIGHT, VERTICAL_PAD))
 
-  const gameDataRef = useRef({ map, player, fog, config, stageClear, deathEvents })
+  const gameDataRef = useRef({ engine, stageClear, deathEvents })
 
   useEffect(() => {
-    gameDataRef.current = { map, player, fog, config, stageClear, deathEvents }
-  }, [map, player, fog, config, stageClear, deathEvents])
+    gameDataRef.current = { engine, stageClear, deathEvents }
+  }, [engine, stageClear, deathEvents])
 
   useEffect(() => {
     EffectRenderer.reset()
@@ -47,14 +47,11 @@ export function StageRenderer() {
         fpsIntervalTime = now
       }
 
-      const { map, player, fog, config, stageClear, deathEvents } = gameDataRef.current
+      const { engine, stageClear, deathEvents } = gameDataRef.current
 
       GameRenderer.render({
         ctx,
-        map,
-        player,
-        fog,
-        config,
+        engine,
         deathEvents,
         stageClear,
         timestamp: now,
