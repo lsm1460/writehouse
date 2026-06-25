@@ -13,7 +13,7 @@ export class OilTile extends BaseTileEffect {
     const offset = oilOffsets.get(this.tile)!
 
     this.ctx.save()
-    this.ctx.font = '900 14px monospace'
+    this.ctx.font = '900 14px D2Coding'
     this.ctx.textAlign = 'center'
     this.ctx.textBaseline = 'middle'
     this.ctx.fillStyle = '#0a0a0a'

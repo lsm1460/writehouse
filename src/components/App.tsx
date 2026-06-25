@@ -11,10 +11,27 @@ type GameStateType = 'TITLE' | 'CONFIG' | 'PLAYING' | 'ENDING'
 
 function App() {
   const { save, engine } = useGame()
+  const [isFontReady, setIsFontReady] = useState(false)
+  const [shouldRenderOverlay, setShouldRenderOverlay] = useState(true) // 페이드 효과용 오버레이 유지 상태
   const [gameState, setGameState] = useState<GameStateType>('TITLE')
 
   useEffect(() => {
-    tauriService.showWindow()
+    async function initGame() {
+      try {
+        await document.fonts.ready
+
+        setIsFontReady(true)
+
+        if (tauriService && typeof tauriService.showWindow === 'function') {
+          await tauriService.showWindow()
+        }
+      } catch (error) {
+        console.error('Initialization failed:', error)
+        setIsFontReady(true)
+      }
+    }
+
+    initGame()
 
     const preventContextMenu = (e: MouseEvent) => {
       e.preventDefault()
@@ -26,7 +43,16 @@ function App() {
       document.removeEventListener('contextmenu', preventContextMenu)
     }
   }, [])
-  
+
+  useEffect(() => {
+    if (isFontReady) {
+      const timer = setTimeout(() => {
+        setShouldRenderOverlay(false)
+      }, 700) // 아래 Tailwind의 duration-700과 일치시킵니다.
+      return () => clearTimeout(timer)
+    }
+  }, [isFontReady])
+
   const backToTitle = () => {
     setGameState('TITLE')
   }
@@ -54,7 +80,10 @@ function App() {
 
   return (
     <div className="relative w-full h-full min-h-screen bg-black overflow-hidden select-none">
-      {screens[gameState]}
+      <div className="w-full h-full min-h-screen">{screens[gameState]}</div>
+
+      {shouldRenderOverlay && <div className={`absolute inset-0 z-50 bg-black transition-opacity duration-700 ease-in-out ${isFontReady ? 'opacity-0 pointer-events-none' : 'opacity-100'}`} />}
+
       <SaveIndicator />
     </div>
   )

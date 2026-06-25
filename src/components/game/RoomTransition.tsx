@@ -11,7 +11,7 @@ export function RoomTransition({ roomId }: RoomTransitionProps) {
 
   return (
     <FadeOverlay mode="fadeInOut" delayMS={500} durationMS={1000} midDelayMS={1200}>
-      <div className="text-center font-mono">
+      <div className="text-center">
         <div className="text-xs font-bold text-neutral-500 uppercase tracking-wider">
           {t(`floors.title`, { floor: floorNumber })} - {t(`floors.${floorNumber}`)}
         </div>

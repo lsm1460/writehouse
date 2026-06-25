@@ -24,7 +24,7 @@ export class BeaconTile extends BaseTileEffect<Tilei> {
     if (!isActive) {
       shockwaveStartTimes.delete(key)
 
-      this.ctx.font = '500 14px monospace'
+      this.ctx.font = '500 14px D2Coding'
       this.ctx.fillStyle = '#737373'
       this.ctx.fillText('i', this.centerX, this.centerY)
     } else {
@@ -63,7 +63,7 @@ export class BeaconTile extends BaseTileEffect<Tilei> {
         this.ctx.restore()
       }
 
-      this.ctx.font = '900 14px monospace'
+      this.ctx.font = '900 14px D2Coding'
       this.ctx.shadowColor = 'rgba(251, 146, 60, 0.6)'
       this.ctx.shadowBlur = 4
       this.ctx.fillStyle = '#fb923c'

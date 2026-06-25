@@ -145,7 +145,7 @@ function drawBubbleText(ctx: CanvasRenderingContext2D, layout: TooltipLayout, la
     ctx.font = 'bold 9px sans-serif'
     ctx.fillStyle = MAIN_TEXT_COLOR
     ctx.fillText(label, layout.bubbleCenterX, layout.bubbleY + 8)
-    ctx.font = '8px monospace'
+    ctx.font = '8px D2Coding'
     ctx.fillStyle = SUB_TEXT_COLOR
     ctx.fillText(example, layout.bubbleCenterX, layout.bubbleY + layout.bubbleHeight - 5)
   } else {
@@ -220,7 +220,7 @@ export const TooltipRenderer = {
 
     ctx.font = 'bold 9px sans-serif'
     const labelWidth = ctx.measureText(label).width
-    ctx.font = '8px monospace'
+    ctx.font = '8px D2Coding'
     const exampleWidth = example.trim() ? ctx.measureText(example).width : 0
 
     const layout = calculateLayout(positions, timestamp, labelWidth, exampleWidth, !!example.trim())

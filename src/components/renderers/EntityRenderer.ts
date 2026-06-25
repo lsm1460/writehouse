@@ -56,7 +56,7 @@ export const EntityRenderer = {
     } else if (entity.char === 'm') {
       SmallMRenderer.render(ctx, centerX, centerY, bottomY, timestamp, isMoving, entity.direction)
     } else {
-      ctx.font = '900 12px monospace'
+      ctx.font = '900 12px D2Coding'
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
       ctx.fillStyle = '#a855f7'

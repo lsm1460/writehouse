@@ -24,7 +24,7 @@ export class WaterTile extends BaseTileEffect<TileW> {
 
     this.ctx.globalAlpha = alphaPulse
 
-    this.ctx.font = '700 14px monospace'
+    this.ctx.font = '700 14px D2Coding'
     this.ctx.textAlign = 'center'
     this.ctx.textBaseline = 'middle'
 

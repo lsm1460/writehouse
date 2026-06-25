@@ -6,7 +6,7 @@ export class GrassTile extends NatureTile {
     const offset = this.getGrassOffset()
 
     this.ctx.save()
-    this.ctx.font = '500 14px monospace'
+    this.ctx.font = '500 14px D2Coding'
     this.ctx.textAlign = 'center'
     this.ctx.textBaseline = 'middle'
     this.ctx.fillStyle = '#4ade80'

@@ -22,7 +22,7 @@ export class GoalTile extends BaseTileEffect {
       sparkStartTimes.delete(key)
 
       this.ctx.globalAlpha = 0.4
-      this.ctx.font = 'bold 14px monospace'
+      this.ctx.font = 'bold 14px D2Coding'
       this.ctx.fillStyle = '#737373'
 
       this.ctx.fillText('⚑', this.centerX, this.centerY)
@@ -75,7 +75,7 @@ export class GoalTile extends BaseTileEffect {
         this.ctx.restore()
       }
 
-      this.ctx.font = '900 14px monospace'
+      this.ctx.font = '900 14px D2Coding'
       this.ctx.shadowColor = 'rgba(239, 68, 68, 0.9)'
       this.ctx.shadowBlur = 8
       this.ctx.fillStyle = '#ef4444'

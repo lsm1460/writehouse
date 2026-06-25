@@ -16,7 +16,7 @@ export class EnergyTile extends BaseTileEffect<TileE> {
       this.ctx.save()
       this.ctx.globalAlpha = pulseAlpha
 
-      this.ctx.font = '800 14px monospace'
+      this.ctx.font = '800 14px D2Coding'
       this.ctx.fillStyle = '#22d3ee'
 
       this.ctx.shadowColor = 'rgba(59, 130, 246, 0.4)'
@@ -30,7 +30,7 @@ export class EnergyTile extends BaseTileEffect<TileE> {
 
       this.drawEnergyFlow(timestamp)
     } else {
-      this.ctx.font = '400 14px monospace'
+      this.ctx.font = '400 14px D2Coding'
       this.ctx.fillStyle = '#52525b'
       this.ctx.shadowBlur = 0
       this.ctx.fillText(this.tile.char, this.centerX, this.centerY)

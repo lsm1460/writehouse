@@ -34,7 +34,7 @@ export abstract class BaseTileEffect<T extends Tile = Tile> {
 export class DefaultTile extends BaseTileEffect<any> {
   protected render() {
     this.ctx.fillStyle = '#a1a1aa'
-    this.ctx.font = 'bold 14px monospace'
+    this.ctx.font = 'bold 14px D2Coding'
     this.ctx.textAlign = 'center'
     this.ctx.textBaseline = 'middle'
     

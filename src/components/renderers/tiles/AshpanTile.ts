@@ -68,7 +68,7 @@ export class AshpanTile extends BaseTileEffect {
 
     this.ctx.save()
     this.ctx.globalAlpha = pulseAlpha
-    this.ctx.font = '900 14px monospace'
+    this.ctx.font = '900 14px D2Coding'
     this.ctx.textAlign = 'center'
     this.ctx.textBaseline = 'middle'
 

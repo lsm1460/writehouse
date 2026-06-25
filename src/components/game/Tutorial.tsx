@@ -26,7 +26,7 @@ export function Tutorial() {
   if (!activeText) return null
 
   return (
-    <div className="fixed top-1/4 left-1/2 -translate-x-1/2 whitespace-pre text-center font-mono text-sm font-medium text-neutral-100 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] tracking-wide select-none z-30 animate-fade-in animate-pulse">
+    <div className="fixed top-1/4 left-1/2 -translate-x-1/2 whitespace-pre text-center text-sm font-medium text-neutral-100 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] tracking-wide select-none z-30 animate-fade-in animate-pulse">
       {activeText}
     </div>
   )

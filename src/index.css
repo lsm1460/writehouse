@@ -1,6 +1,16 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'D2Coding';
+  /* public 폴더 기준 경로 */
+  src: url('/fonts/D2Coding.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block; /* 👈 중요: 폰트가 로드되기 전까지 글자가 깜빡이는 걸 방지 */
+}
+
 html, body {
+  font-family: 'D2Coding';
   background-color: #171717;
 }
 

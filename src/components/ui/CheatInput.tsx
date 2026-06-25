@@ -58,7 +58,7 @@ export function CheatInput({ isOpen, onClose, onExecuteCheat }: CheatInputProps)
     <>
       <div className="fixed inset-0 z-40 cursor-default" onClick={onClose} />
 
-      <div className="fixed bottom-16 left-1/2 -translate-x-1/2 w-84 max-w-[92vw] flex flex-col font-mono z-50 isolate shadow-[0_10px_30px_rgba(0,0,0,0.7)] rounded-sm overflow-hidden">
+      <div className="fixed bottom-16 left-1/2 -translate-x-1/2 w-84 max-w-[92vw] flex flex-col z-50 isolate shadow-[0_10px_30px_rgba(0,0,0,0.7)] rounded-sm overflow-hidden">
         {logs.length > 0 && (
           <div
             className="

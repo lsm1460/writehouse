@@ -45,7 +45,7 @@ export const TileRenderer = {
     const centerY = playerY + CELL_SIZE / 2
 
     ctx.fillStyle = '#ffffff'
-    ctx.font = 'bold 14px monospace'
+    ctx.font = 'bold 14px D2Coding'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
     ctx.fillText('@', centerX, centerY)

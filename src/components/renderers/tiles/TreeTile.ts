@@ -21,7 +21,7 @@ export class TreeTile extends NatureTile {
     this.drawSwayingGrass(timestamp, grassOffset)
 
     this.ctx.save()
-    this.ctx.font = '800 14px monospace'
+    this.ctx.font = '800 14px D2Coding'
     this.ctx.textAlign = 'center'
     this.ctx.textBaseline = 'middle'
     this.ctx.fillStyle = '#16a34a'

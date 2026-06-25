@@ -34,7 +34,7 @@ export class WPTTile extends BaseTileEffect<TileWPT> {
       }
 
       this.ctx.save()
-      this.ctx.font = '800 14px monospace'
+      this.ctx.font = '800 14px D2Coding'
 
       this.ctx.shadowColor = 'rgba(59, 130, 246, 0.5)'
       this.ctx.shadowBlur = 10
@@ -47,7 +47,7 @@ export class WPTTile extends BaseTileEffect<TileWPT> {
       this.ctx.restore()
     } else {
       this.ctx.save()
-      this.ctx.font = '400 14px monospace'
+      this.ctx.font = '400 14px D2Coding'
       this.ctx.fillStyle = '#52525b'
       this.ctx.shadowBlur = 0
       this.ctx.fillText(this.tile.char, this.centerX, this.centerY)

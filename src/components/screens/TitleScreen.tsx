@@ -34,7 +34,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({ onStart, onLoad, onCon
 
       <GameMenuLayout engine={engine} menuItems={menuItems} />
 
-      <div className="mt-10 pb-4 text-neutral-600 font-mono text-xs">
+      <div className="mt-10 pb-4 text-neutral-600 text-xs">
         © 2026 WriteHouse Studio. All rights reserved.
       </div>
     </ScreenWrapper>

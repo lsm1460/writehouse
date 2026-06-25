@@ -129,7 +129,7 @@ export class FireTile extends BaseTileEffect<TileF> {
     this.ctx.transform(scale, 0, Math.tan((skewX * Math.PI) / 180), scale, 0, 0)
     this.ctx.translate(-this.centerX, -(this.centerY + CELL_SIZE / 2))
 
-    this.ctx.font = 'bold 13px monospace'
+    this.ctx.font = 'bold 13px D2Coding'
     this.ctx.textAlign = 'center'
     this.ctx.textBaseline = 'middle'
 

@@ -25,7 +25,7 @@ export class SmallMRenderer {
     ctx.scale(scaleX, scaleY)
     ctx.translate(-centerX, -bottomY + idleBob + hopY)
 
-    ctx.font = '900 12px monospace'
+    ctx.font = '900 12px D2Coding'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
 

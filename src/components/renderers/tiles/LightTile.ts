@@ -10,7 +10,7 @@ export class LightTile extends BaseTileEffect<TileL> {
     this.ctx.save()
     this.ctx.globalAlpha = pulse
 
-    this.ctx.font = '900 14px monospace'
+    this.ctx.font = '900 14px D2Coding'
     this.ctx.textAlign = 'center'
     this.ctx.textBaseline = 'middle'
 

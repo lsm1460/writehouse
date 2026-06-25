@@ -21,7 +21,7 @@ export function GameUi() {
     >
       {/* <QuickSlots inventorySystem={inventory} /> */}
 
-      <p className="flex items-center justify-center gap-x-3 font-mono text-xs text-neutral-500">
+      <p className="flex items-center justify-center gap-x-3 text-xs text-neutral-500">
         <span>
           ({player.pos.x}.{player.pos.y})
         </span>
@@ -31,7 +31,7 @@ export function GameUi() {
         </span>
       </p>
 
-      <div className="w-full text-center text-xs text-neutral-500 font-mono">
+      <div className="w-full text-center text-xs text-neutral-500">
         {isGamepadActive ? (
           <>
             [DPAD/STICK]: {t('ui.move')} | [A/B]: {t('ui.undo')} | [START]: {t('ui.menu')}
