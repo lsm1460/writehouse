@@ -1,8 +1,8 @@
 [package]
-name = "app"
-version = "0.1.0"
-description = "A Tauri App"
-authors = ["you"]
+name = "writehouse"
+version = "1.0.0"
+description = "A word-combination Sokoban puzzle game"
+authors = ["lsm"]
 license = ""
 repository = ""
 edition = "2021"
