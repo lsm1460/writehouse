@@ -68,7 +68,7 @@ export function useGameInput({
       return
     }
 
-    if (['TITLE', 'PAUSE', 'GAME_OVER'].includes(engine.gameStatus)) {
+    if (['TITLE', 'PAUSE', 'GAME_OVER', 'ENDING'].includes(engine.gameStatus)) {
       switch (action.type) {
         case 'MOVE':
           if (action.direction === 'UP' && onMenuUp) onMenuUp()
