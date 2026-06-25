@@ -20,6 +20,7 @@
     "ambient": "Ambient Volume",
     "sfx": "SFX Volume",
     "mute": "Mute",
+    "exit": "Exit",
     "modal": {
       "backToTitle": "Return to the title screen.",
       "confirm": "Confirm"

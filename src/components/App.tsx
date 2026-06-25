@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SaveIndicator } from '~/components/ui/SaveIndicator'
 import { useGame } from '~/context/GameContext'
+import { tauriService } from '~/services/tauriService'
 import { ConfigScreen } from './screens/ConfigScreen'
 import { EndingScreen } from './screens/EndingScreen'
 import { GameScreen } from './screens/GameScreen'
@@ -12,6 +13,10 @@ function App() {
   const { save, engine } = useGame()
   const [gameState, setGameState] = useState<GameStateType>('TITLE')
 
+  useEffect(() => {
+    tauriService.showWindow()
+  }, [])
+  
   const backToTitle = () => {
     setGameState('TITLE')
   }
@@ -31,14 +36,7 @@ function App() {
   }
 
   const screens: Record<GameStateType, React.ReactNode> = {
-    TITLE: (
-      <TitleScreen
-        onStart={handleStart}
-        onConfig={() => setGameState('CONFIG')}
-        onExit={() => {}}
-        {...(save.hasSaveData() && { onLoad: handleLoad })}
-      />
-    ),
+    TITLE: <TitleScreen onStart={handleStart} onConfig={() => setGameState('CONFIG')} onExit={() => tauriService.exitGame()} {...(save.hasSaveData() && { onLoad: handleLoad })} />,
     CONFIG: <ConfigScreen back={backToTitle} />,
     PLAYING: <GameScreen backToTitle={backToTitle} onEnding={handleEnding} />,
     ENDING: <EndingScreen back={backToTitle} />,

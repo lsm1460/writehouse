@@ -19,7 +19,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({ onStart, onLoad, onCon
     { label: t('ui.new_game'), action: onStart },
     ...(onLoad ? [{ label: t('ui.load'), action: onLoad }] : []),
     { label: t('ui.config'), action: onConfig },
-    { label: 'Exit', action: onExit },
+    { label: t('ui.exit'), action: onExit },
   ]
 
   return (

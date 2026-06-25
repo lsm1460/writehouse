@@ -20,6 +20,7 @@
     "ambient": "환경음",
     "sfx": "효과음",
     "mute": "음소거",
+    "exit": "종료",
     "modal": {
       "backToTitle": "타이틀 화면으로 이동합니다.",
       "confirm": "확인"
