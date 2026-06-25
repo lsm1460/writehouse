@@ -4,18 +4,11 @@ import { useGame } from '~/context/GameContext'
 import { ConfigScreen } from './screens/ConfigScreen'
 import { EndingScreen } from './screens/EndingScreen'
 import { GameScreen } from './screens/GameScreen'
-import { MapEditorScreen } from './screens/MapEditorScreen'
 import { TitleScreen } from './screens/TitleScreen'
 
 type GameStateType = 'TITLE' | 'CONFIG' | 'PLAYING' | 'ENDING'
 
 function App() {
-  const isEditPath = window.location.pathname.startsWith('/edit')
-
-  if (isEditPath) {
-    return <MapEditorScreen />
-  }
-
   const { save, engine } = useGame()
   const [gameState, setGameState] = useState<GameStateType>('TITLE')
 
