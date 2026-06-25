@@ -13,6 +13,7 @@ export class SoundSystem {
   private bgmCategory: SoundCategory
   private ambientCategory: SoundCategory
   private sfxCategory: SoundCategory
+  private isMuted: boolean = false
 
   constructor(config: SoundConfig, ctx: EngineContext) {
     this.bgmVolumeNode = new Tone.Volume(0).toDestination()
@@ -70,6 +71,15 @@ export class SoundSystem {
 
   public setMasterVolume(value: number): void {
     Tone.getDestination().volume.value = Tone.gainToDb(value)
+  }
+
+  public setMute(mute: boolean): void {
+    this.isMuted = mute
+    Tone.getDestination().mute = mute
+  }
+
+  public getMute(): boolean {
+    return this.isMuted
   }
 
   public stopAll(): void {

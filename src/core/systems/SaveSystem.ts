@@ -5,6 +5,7 @@ export interface SaveData {
   bgmVolume?: number
   ambientVolume?: number
   sfxVolume?: number
+  isMuted?: boolean
   savedAt: string
 }
 
@@ -17,7 +18,7 @@ export class SaveSystem {
     this.onStateChange = onStateChange
   }
 
-  public save(roomId: string, config: { language: string; tooltipEnabled: boolean; bgmVolume?: number; ambientVolume?: number; sfxVolume?: number }): boolean {
+  public save(roomId: string, config: { language: string; tooltipEnabled: boolean; bgmVolume?: number; ambientVolume?: number; sfxVolume?: number; isMuted?: boolean }): boolean {
     try {
       this.isSaving = true
       this.onStateChange?.()

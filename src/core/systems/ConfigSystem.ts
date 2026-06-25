@@ -8,6 +8,7 @@ export class ConfigSystem {
   public bgmVolume: number = 0.5
   public ambientVolume: number = 0.5
   public sfxVolume: number = 0.5
+  public isMuted: boolean = false
 
   constructor(context: EngineContext, initialLang: string) {
     this.context = context
@@ -19,6 +20,7 @@ export class ConfigSystem {
       this.bgmVolume = saved.bgmVolume ?? 0.5
       this.ambientVolume = saved.ambientVolume ?? 0.5
       this.sfxVolume = saved.sfxVolume ?? 0.5
+      this.isMuted = saved.isMuted ?? false
     }
   }
 
@@ -29,6 +31,7 @@ export class ConfigSystem {
       bgmVolume: this.bgmVolume,
       ambientVolume: this.ambientVolume,
       sfxVolume: this.sfxVolume,
+      isMuted: this.isMuted,
     }
   }
 
@@ -61,6 +64,13 @@ export class ConfigSystem {
   public setSfxVolume(val: number) {
     this.sfxVolume = val
     this.context.sound.setSfxVolume(val)
+    const roomId = this.context.save.load()?.roomId || ''
+    this.context.save.save(roomId, this.saveData)
+  }
+
+  public setIsMuted(val: boolean) {
+    this.isMuted = val
+    this.context.sound.setMute(val)
     const roomId = this.context.save.load()?.roomId || ''
     this.context.save.save(roomId, this.saveData)
   }

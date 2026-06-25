@@ -18,7 +18,12 @@
     "sound": "Sound",
     "bgm": "BGM Volume",
     "ambient": "Ambient Volume",
-    "sfx": "SFX Volume"
+    "sfx": "SFX Volume",
+    "mute": "Mute",
+    "modal": {
+      "backToTitle": "Return to the title screen.",
+      "confirm": "Confirm"
+    }
   },
   "floors": {
     "title": "Floor {{ floor }}",

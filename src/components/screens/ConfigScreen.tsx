@@ -1,4 +1,3 @@
-// src/components/screens/ConfigScreen.tsx
 import React, { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useGame } from '~/context/GameContext'
@@ -16,9 +15,8 @@ export const ConfigScreen: React.FC<ConfigScreenProps> = ({ back }) => {
   const { engine } = useGame()
 
   const [currentMenu, setCurrentMenu] = useState<MenuState>('MAIN')
-  const [tooltipEnabled, setTooltipEnabled] = useState<boolean>(() => {
-    return engine.ctx.tooltipEnabled !== false
-  })
+  const [tooltipEnabled, setTooltipEnabled] = useState<boolean>(() => engine.ctx.tooltipEnabled !== false)
+  const [isMute, setIsMute] = useState<boolean>(() => engine.ctx.sound.getMute())
 
   const [bgmVolume, setBgmVolume] = useState<number>(() => engine.ctx.config.bgmVolume * 100)
   const [ambientVolume, setAmbientVolume] = useState<number>(() => engine.ctx.config.ambientVolume * 100)
@@ -60,6 +58,12 @@ export const ConfigScreen: React.FC<ConfigScreenProps> = ({ back }) => {
     engine.ctx.config.setTooltipEnabled(nextValue)
   }
 
+  const toggleMute = () => {
+    const nextValue = !isMute
+    setIsMute(nextValue)
+    engine.ctx.config.setIsMuted(nextValue)
+  }
+
   const menuConfig: Record<MenuState, MenuItem[]> = {
     MAIN: [
       { label: t('ui.lang'), value: langLabel, action: () => setCurrentMenu('LANG') },
@@ -68,6 +72,7 @@ export const ConfigScreen: React.FC<ConfigScreenProps> = ({ back }) => {
       { label: t('ui.back'), action: () => back() },
     ],
     SOUND: [
+      { label: t('ui.mute'), value: isMute ? t('ui.on') : t('ui.off'), action: toggleMute },
       {
         label: t('ui.bgm'),
         type: 'slider',

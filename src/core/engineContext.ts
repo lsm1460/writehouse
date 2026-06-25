@@ -51,6 +51,7 @@ export class EngineContext {
     this.sound.setBgmVolume(this.config.bgmVolume)
     this.sound.setAmbientVolume(this.config.ambientVolume)
     this.sound.setSfxVolume(this.config.sfxVolume)
+    this.sound.setMute(this.config.isMuted)
 
     this.sound.playBgm('title_theme', { loop: true, fadeIn: 2 })
 
