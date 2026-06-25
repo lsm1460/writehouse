@@ -215,12 +215,15 @@ export class EngineContext {
 
   public async nextStage() {
     const id = this.map.getNextRoomId()
+
     if (id) {
       this.save.save(id, this.config.saveData)
 
       this.init(id)
     } else {
       this.setEndingState()
+      
+      this.notifyEngine()
     }
   }
 

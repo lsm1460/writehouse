@@ -133,18 +133,20 @@ export const GameRenderer = {
     const currentRoomId = map.currentRoomId
     if (lastActiveRoomId !== currentRoomId) {
       if (lastActiveRoomId) {
-        const prevScript = roomScripts[lastActiveRoomId]
-        if (prevScript?.cleanup) {
-          prevScript.cleanup(camera)
-        }
+        const prevScripts = roomScripts[lastActiveRoomId] || []
+        prevScripts.forEach((script) => {
+          if (script.cleanup) {
+            script.cleanup(camera)
+          }
+        })
       }
       lastActiveRoomId = currentRoomId
     }
 
-    const currentScript = roomScripts[currentRoomId]
-    if (currentScript) {
-      currentScript.run(engine, camera)
-    }
+    const currentScripts = roomScripts[currentRoomId] || []
+    currentScripts.forEach((script) => {
+      script.run(engine, camera)
+    })
 
     ctx.restore()
   },

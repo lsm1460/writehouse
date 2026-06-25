@@ -98,7 +98,7 @@ export class Camera {
     )
   }
 
-  public setCameraOffset(y: number, options?: OffsetOptions) {
+  public setCameraYOffset(y: number, options?: OffsetOptions) {
     this.targetOffsetY = y
     this.startOffsetY = this.offsetY
 
@@ -122,7 +122,7 @@ export class Camera {
   public setZoom(value: number | ((prevZoom: number) => number), options?: ZoomOptions) {
     const nextZoom = typeof value === 'function' ? value(this.targetZoom) : value
 
-    const clampedZoom = Math.max(0.5, Math.min(nextZoom, 3.0))
+    const clampedZoom = Math.max(0.5, Math.min(nextZoom, 6.0))
 
     if (options?.animate) {
       this.targetZoom = clampedZoom

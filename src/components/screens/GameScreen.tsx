@@ -36,6 +36,7 @@ export function GameScreen({ backToTitle, onEnding }: GameScreenProps) {
   })
 
   useEffect(() => {
+    console.log('gameState',gameState)
     if (gameState === 'ENDING') {
       onEnding()
     }
