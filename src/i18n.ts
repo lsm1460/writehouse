@@ -8,8 +8,7 @@ i18n
   .use(initReactI18next)
   .init({
     resources: initialResources, // 초기화 시점에는 가벼운 데이터만 사용
-    lng: 'ko',
-    fallbackLng: 'ko',
+    fallbackLng: 'en',
     interpolation: {
       escapeValue: false,
     },
