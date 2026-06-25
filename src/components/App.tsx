@@ -15,6 +15,16 @@ function App() {
 
   useEffect(() => {
     tauriService.showWindow()
+
+    const preventContextMenu = (e: MouseEvent) => {
+      e.preventDefault()
+    }
+
+    document.addEventListener('contextmenu', preventContextMenu)
+
+    return () => {
+      document.removeEventListener('contextmenu', preventContextMenu)
+    }
   }, [])
   
   const backToTitle = () => {
