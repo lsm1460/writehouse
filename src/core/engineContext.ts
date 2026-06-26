@@ -1,5 +1,4 @@
 import type { AssetsType } from '~/assets'
-import type { GameStatus } from './gameEngine'
 import { EnvironmentManager } from './managers/EnvironmentManager'
 import { CheatSystem } from './systems/CheatSystem'
 import { ConfigSystem } from './systems/ConfigSystem'
@@ -222,6 +221,7 @@ export class EngineContext {
 
       this.init(id)
     } else {
+      this.save.save(this.map.currentRoomId, this.config.saveData, true)
       this.setEndingState()
       
       this.notifyEngine()

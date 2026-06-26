@@ -13,8 +13,8 @@ interface TitleScreenProps {
 
 export const TitleScreen: React.FC<TitleScreenProps> = ({ onStart, onLoad, onConfig, onExit }) => {
   const { t } = useTranslation()
-  const { engine } = useGame()
-
+  const { engine, isGameClear } = useGame()
+  
   const menuItems = [
     { label: t('ui.new_game'), action: onStart },
     ...(onLoad ? [{ label: t('ui.load'), action: onLoad }] : []),
