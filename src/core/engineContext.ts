@@ -47,13 +47,11 @@ export class EngineContext {
     this.effects = new EffectSystem(this)
     this.config = new ConfigSystem(this, lang)
     this.sound = new SoundSystem(assets.sound || {}, this)
-    
+
     this.sound.setBgmVolume(this.config.bgmVolume)
     this.sound.setAmbientVolume(this.config.ambientVolume)
     this.sound.setSfxVolume(this.config.sfxVolume)
     this.sound.setMute(this.config.isMuted)
-
-    this.sound.playBgm('title_theme', { loop: true, fadeIn: 2 })
 
     this.history = new HistorySystem(this)
     this.cheat = new CheatSystem(this)
@@ -206,7 +204,7 @@ export class EngineContext {
 
     const hasChanges = this.environment.update(TURN_DELTA)
     this.fog.update()
-    
+
     if (hasChanges) {
       this.onChange()
     }
@@ -223,14 +221,14 @@ export class EngineContext {
       this.init(id)
     } else {
       this.setEndingState()
-      
+
       this.notifyEngine()
     }
   }
 
   public retryStage() {
     this.sound.stopAmbient()
-    
+
     this.init(this.map.currentRoomId, true).catch((err) => console.error('재시작 중 오류 발생:', err))
   }
 

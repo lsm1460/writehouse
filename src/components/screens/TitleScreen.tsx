@@ -22,6 +22,10 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({ onStart, onLoad, onCon
     { label: t('ui.exit'), action: onExit },
   ]
 
+  useEffect(() => {
+    engine.ctx.sound.playBgm('main_theme', { loop: true, fadeIn: 2 })
+  }, [])
+
   return (
     <ScreenWrapper className="pt-10 pb-5">
       <div className="mb-12 text-center">
@@ -34,9 +38,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({ onStart, onLoad, onCon
 
       <GameMenuLayout engine={engine} menuItems={menuItems} />
 
-      <div className="mt-10 pb-4 text-neutral-600 text-xs">
-        © 2026 WriteHouse Studio. All rights reserved.
-      </div>
+      <div className="mt-10 pb-4 text-neutral-600 text-xs">v 1.0.0</div>
     </ScreenWrapper>
   )
 }

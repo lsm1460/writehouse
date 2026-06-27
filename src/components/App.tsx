@@ -34,7 +34,7 @@ function App() {
     initGame()
 
     const preventContextMenu = (e: MouseEvent) => {
-      e.preventDefault()
+      // e.preventDefault()
     }
 
     document.addEventListener('contextmenu', preventContextMenu)

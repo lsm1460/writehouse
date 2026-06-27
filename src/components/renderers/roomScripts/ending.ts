@@ -10,6 +10,7 @@ class EndingScript extends BaseRoomScript {
 
   protected async playScenario(engine: GameEngine, camera: Camera, wait: (ms: number) => Promise<void>): Promise<void> {
     engine.togglePause()
+    engine.ctx.sound.stopBgm()
 
     await wait(1500)
     engine.ctx.tickTurn()
