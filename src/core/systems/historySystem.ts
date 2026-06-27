@@ -2,7 +2,6 @@ import type { EngineContext } from '../engineContext'
 import type { Direction, Position } from '../gameEngine'
 import { createTile } from '../map/tiles'
 import type { EntitiesType, GridType } from '../types'
-import type { InventoryItem } from './inventorySystem'
 
 export interface HistoryState {
   roomId: string
@@ -11,7 +10,6 @@ export interface HistoryState {
   playerPos: Position
   playerDir: Direction
   playerTargetPos: Position
-  currentItem: InventoryItem | null
   turn: number
 }
 
@@ -53,7 +51,6 @@ export class HistorySystem {
       playerPos: { ...this.engine.player.pos },
       playerDir: this.engine.player.dir,
       playerTargetPos: { ...this.engine.player.targetPos },
-      currentItem: this.engine.inventory.currentItem ? { ...this.engine.inventory.currentItem } : null,
       turn: this.engine.turn,
     }
   }
