@@ -5,6 +5,7 @@ import type { EntitiesType, GridType } from '../types'
 import type { InventoryItem } from './inventorySystem'
 
 export interface HistoryState {
+  roomId: string
   grid: GridType
   entities: EntitiesType
   playerPos: Position
@@ -46,6 +47,7 @@ export class HistorySystem {
     )
 
     return {
+      roomId: this.engine.map.currentRoomId,
       grid: gridCopy,
       entities: entitiesCopy, // 💡 캡처 데이터에 추가
       playerPos: { ...this.engine.player.pos },
@@ -71,16 +73,16 @@ export class HistorySystem {
     this.engine.player.pos = previousState.playerPos
     this.engine.player.dir = previousState.playerDir
     this.engine.player.targetPos = previousState.playerTargetPos
-    this.engine.inventory.currentItem = previousState.currentItem
     this.engine.turn = previousState.turn
 
     return true
   }
 
   public isStateChanged(s1: HistoryState, s2: HistoryState): boolean {
+    if (s1.roomId !== s2.roomId) return false
+
     if (s1.playerPos.x !== s2.playerPos.x || s1.playerPos.y !== s2.playerPos.y) return true
     if (s1.playerDir !== s2.playerDir) return true
-    if (s1.currentItem?.char !== s2.currentItem?.char) return true
 
     // 타일 변경 사항 체크
     if (s1.grid.length !== s2.grid.length) return true
