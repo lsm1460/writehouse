@@ -75,7 +75,6 @@ export class GameEngine {
 
     const beforeState = this.ctx.captureState()
     const isMoved = this.ctx.player.move(dir)
-
     this.ctx.sound.ambient.update()
 
     if (!isMoved) return

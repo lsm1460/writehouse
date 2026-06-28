@@ -5,7 +5,6 @@ import { ConfigSystem } from './systems/ConfigSystem'
 import { EffectSystem } from './systems/EffectSystem'
 import { FogSystem } from './systems/fogSystem'
 import { HistorySystem } from './systems/historySystem'
-import { InventorySystem } from './systems/inventorySystem'
 import { MapSystem } from './systems/mapSystem'
 import { PlayerSystem } from './systems/playerSystem'
 import { SaveSystem } from './systems/SaveSystem'
@@ -16,7 +15,6 @@ import { delay } from './utils'
 export class EngineContext {
   public map: MapSystem
   public player: PlayerSystem
-  public inventory: InventorySystem
   public fog: FogSystem
   public stage: StageSystem
   public environment: EnvironmentManager
@@ -38,7 +36,6 @@ export class EngineContext {
 
     this.map = new MapSystem(this, assets.map)
     this.player = new PlayerSystem(this)
-    this.inventory = new InventorySystem(this)
     this.fog = new FogSystem(this)
     this.stage = new StageSystem(this)
     this.environment = new EnvironmentManager(this)
@@ -46,13 +43,11 @@ export class EngineContext {
     this.effects = new EffectSystem(this)
     this.config = new ConfigSystem(this, lang)
     this.sound = new SoundSystem(assets.sound || {}, this)
-    
+
     this.sound.setBgmVolume(this.config.bgmVolume)
     this.sound.setAmbientVolume(this.config.ambientVolume)
     this.sound.setSfxVolume(this.config.sfxVolume)
     this.sound.setMute(this.config.isMuted)
-
-    this.sound.playBgm('title_theme', { loop: true, fadeIn: 2 })
 
     this.history = new HistorySystem(this)
     this.cheat = new CheatSystem(this)
@@ -127,7 +122,6 @@ export class EngineContext {
     this.effects.clear()
 
     this.stage.reset()
-    this.inventory.reset()
 
     this.player.spawn(spawn)
 
@@ -205,7 +199,7 @@ export class EngineContext {
 
     const hasChanges = this.environment.update(TURN_DELTA)
     this.fog.update()
-    
+
     if (hasChanges) {
       this.onChange()
     }
@@ -216,6 +210,8 @@ export class EngineContext {
   public async nextStage() {
     const id = this.map.getNextRoomId()
 
+    this.history.clear()
+
     if (id) {
       this.save.save(id, this.config.saveData)
 
@@ -223,14 +219,14 @@ export class EngineContext {
     } else {
       this.save.save(this.map.currentRoomId, this.config.saveData, true)
       this.setEndingState()
-      
+
       this.notifyEngine()
     }
   }
 
   public retryStage() {
     this.sound.stopAmbient()
-    
+
     this.init(this.map.currentRoomId, true).catch((err) => console.error('재시작 중 오류 발생:', err))
   }
 
