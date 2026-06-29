@@ -30,7 +30,7 @@ export class GameEngine {
       assets,
       lang,
       () => this.notify(),
-      () => this.setGameStatus('ENDING')
+      (status) => this.setGameStatus(status)
     )
   }
 
@@ -55,9 +55,10 @@ export class GameEngine {
     if (this.onUpdateCallback) this.onUpdateCallback()
   }
 
-  public start() {
+  public start(roomId?: string) {
+    this.ctx.isStageSelectPlay = !!roomId
     this.status = 'PLAYING'
-    this.ctx.init()
+    this.ctx.init(roomId)
   }
 
   public load(): boolean {

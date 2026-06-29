@@ -5,19 +5,21 @@ import { GameMenuLayout } from '../ui/GameMenuLayout'
 import { ScreenWrapper } from './ScreenWrapper'
 
 interface TitleScreenProps {
-  onStart: () => void
+  onStart: (roomId?: string) => void
+  onStageSelect: () => void
   onLoad?: () => void
   onConfig: () => void
   onExit: () => void
 }
 
-export const TitleScreen: React.FC<TitleScreenProps> = ({ onStart, onLoad, onConfig, onExit }) => {
+export const TitleScreen: React.FC<TitleScreenProps> = ({ onStart, onStageSelect, onLoad, onConfig, onExit }) => {
   const { t } = useTranslation()
   const { engine, isGameClear } = useGame()
-  
+
   const menuItems = [
-    { label: t('ui.new_game'), action: onStart },
+    { label: t('ui.new_game'), action: () => onStart() },
     ...(onLoad ? [{ label: t('ui.load'), action: onLoad }] : []),
+    ...(isGameClear ? [{ label: t('ui.stage_select'), action: onStageSelect }] : []),
     { label: t('ui.config'), action: onConfig },
     { label: t('ui.exit'), action: onExit },
   ]
