@@ -28,11 +28,13 @@ export class EngineContext {
   private history: HistorySystem
   private cheat: CheatSystem
   private notifyEngine: () => void
-  private setEndingState: () => void
+  private setGameStatus: (status: any) => void
+  public isStageSelectPlay: boolean = false
+  public wasStageSelectPlay: boolean = false
 
-  constructor(assets: AssetsType, lang: string, notifyEngine: () => void, setEndingState: () => void) {
+  constructor(assets: AssetsType, lang: string, notifyEngine: () => void, setGameStatus: (status: any) => void) {
     this.notifyEngine = notifyEngine
-    this.setEndingState = setEndingState
+    this.setGameStatus = setGameStatus
 
     this.map = new MapSystem(this, assets.map)
     this.player = new PlayerSystem(this)
@@ -208,6 +210,16 @@ export class EngineContext {
   }
 
   public async nextStage() {
+    if (this.isStageSelectPlay) {
+      this.isStageSelectPlay = false
+      this.wasStageSelectPlay = true
+      this.sound.stopBgm()
+      this.sound.playBgm('main_theme', { loop: true, fadeIn: 2 })
+      this.setGameStatus('TITLE')
+      this.onChange()
+      return
+    }
+
     const id = this.map.getNextRoomId()
 
     this.history.clear()
@@ -217,7 +229,8 @@ export class EngineContext {
 
       this.init(id)
     } else {
-      this.setEndingState()
+      this.save.save(this.map.currentRoomId, this.config.saveData, true)
+      this.setGameStatus('ENDING')
 
       this.notifyEngine()
     }

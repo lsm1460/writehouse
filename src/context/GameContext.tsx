@@ -1,10 +1,11 @@
-import { createContext, useContext, useEffect, useMemo, useSyncExternalStore, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react'
 import { assets } from '~/assets'
 import { GameEngine } from '~/core/gameEngine'
 import i18n from '~/i18n'
 
 interface GameContextType {
   engine: GameEngine
+  isGameClear: boolean
 }
 
 const GameContext = createContext<GameContextType | null>(null)
@@ -12,9 +13,19 @@ const GameContext = createContext<GameContextType | null>(null)
 export function GameProvider({ children, customEngine }: { children: ReactNode; customEngine?: GameEngine }) {
   const engine = useMemo(() => customEngine || new GameEngine(assets, i18n.language), [customEngine])
 
+  const [isGameClear, setIsGameClear] = useState(false)
+  
   useSyncExternalStore(
     (callback) => {
-      engine.subscribe(callback)
+      engine.subscribe(() => {
+        const isEngineEnding = engine.gameStatus === 'ENDING'
+        
+        if (isEngineEnding) {
+          setIsGameClear(true)
+        }
+        callback()
+      })
+
       return () => {}
     },
     () => engine.getSnapshot()
@@ -29,9 +40,13 @@ export function GameProvider({ children, customEngine }: { children: ReactNode; 
     if (saveData && typeof saveData.tooltipEnabled === 'boolean') {
       engine.ctx.config.setTooltipEnabled(saveData.tooltipEnabled)
     }
+
+    if (saveData?.isClear) {
+        setIsGameClear(true)
+      }
   }, [engine])
 
-  return <GameContext.Provider value={{ engine }}>{children}</GameContext.Provider>
+  return <GameContext.Provider value={{ engine, isGameClear }}>{children}</GameContext.Provider>
 }
 
 export function useGame() {
@@ -56,5 +71,6 @@ export function useGame() {
     save: context.engine.ctx.save,
     currentRoomId: context.engine.ctx.map.currentRoomId,
     isSaving: context.engine.ctx.save.isSaving,
+    isGameClear: context.isGameClear
   }
 }
