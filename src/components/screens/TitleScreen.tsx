@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useGame } from '~/context/GameContext'
 import { GameMenuLayout } from '../ui/GameMenuLayout'
+import { TitleBackground } from '../ui/TitleBackground'
 import { ScreenWrapper } from './ScreenWrapper'
 
 interface TitleScreenProps {
@@ -29,18 +30,19 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({ onStart, onStageSelect
   }, [])
 
   return (
-    <ScreenWrapper className="pt-10 pb-5">
-      <div className="mb-12 text-center">
-        <h1 className="text-6xl font-black text-white tracking-tighter animate-pulse">
-          WRITE
-          <br />
-          HOUSE
-        </h1>
-      </div>
+    <>
+      <TitleBackground />
+      <ScreenWrapper className="relative">
+        <div className="w-full h-full flex flex-col justify-center items-start pl-24 pt-10 pb-5">
+          <div className="mb-8">
+            <h1 className="text-4xl px-2 font-black text-white tracking-tighter animate-pulse leading-none">WRITE HOUSE</h1>
+          </div>
 
-      <GameMenuLayout engine={engine} menuItems={menuItems} />
+          <GameMenuLayout engine={engine} menuItems={menuItems} className="w-48" buttonClassName="py-1.5 text-xs justify-start" />
 
-      <div className="mt-10 pb-4 text-neutral-600 text-xs">v 1.0.0</div>
-    </ScreenWrapper>
+          <div className="absolute bottom-6 left-24 text-neutral-600 text-xs">v 1.0.0</div>
+        </div>
+      </ScreenWrapper>
+    </>
   )
 }

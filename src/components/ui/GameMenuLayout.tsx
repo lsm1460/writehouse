@@ -18,9 +18,11 @@ export interface MenuItem {
 interface GameMenuLayoutProps {
   engine: GameEngine
   menuItems: MenuItem[]
+  className?: string
+  buttonClassName?: string
 }
 
-export function GameMenuLayout({ engine, menuItems }: GameMenuLayoutProps) {
+export function GameMenuLayout({ engine, menuItems, className = 'w-64', buttonClassName = '' }: GameMenuLayoutProps) {
   const [activeIndex, setActiveIndex] = useState(0)
 
   const handleAdjustSlider = (direction: 'left' | 'right') => {
@@ -30,11 +32,9 @@ export function GameMenuLayout({ engine, menuItems }: GameMenuLayoutProps) {
       const max = currentItem.max ?? 100
       const step = currentItem.step ?? 5
       const currentVal = Number(currentItem.value ?? 50)
-      
-      const nextVal = direction === 'left'
-        ? Math.max(min, currentVal - step)
-        : Math.min(max, currentVal + step)
-        
+
+      const nextVal = direction === 'left' ? Math.max(min, currentVal - step) : Math.min(max, currentVal + step)
+
       currentItem.onChange(nextVal)
     }
   }
@@ -62,7 +62,7 @@ export function GameMenuLayout({ engine, menuItems }: GameMenuLayoutProps) {
   })
 
   return (
-    <div className="w-64 flex flex-col gap-3 items-center">
+    <div className={`${className} flex flex-col gap-3 items-center`}>
       {menuItems.map((item, index) => {
         const isSelected = index === activeIndex
 
@@ -89,6 +89,7 @@ export function GameMenuLayout({ engine, menuItems }: GameMenuLayoutProps) {
             isActive={isSelected}
             onMouseEnter={() => setActiveIndex(index)}
             value={item.value as string}
+            className={buttonClassName}
           >
             {item.label}
           </MenuButton>

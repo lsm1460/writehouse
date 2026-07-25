@@ -12,7 +12,7 @@ export function ScreenWrapper({ children, className = 'py-5' }: ScreenWrapperPro
   if (!isReady) return <></>
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black z-50">
+    <div className="fixed inset-0 flex items-center justify-center z-50">
       <div
         className={`flex flex-col items-center justify-center ${className}`}
         style={{
