@@ -9,12 +9,7 @@ export class SoundCategory {
   private activeParts: Map<string, Tone.Part[]> = new Map()
   private loopDefault: boolean
 
-  constructor(
-    config: Record<string, NoteData[][]>,
-    volumeNode: Tone.Volume,
-    loopDefault: boolean,
-    defaultSynthVolume: number = 0
-  ) {
+  constructor(config: Record<string, NoteData[][]>, volumeNode: Tone.Volume, loopDefault: boolean, defaultSynthVolume: number = 0) {
     this.volumeNode = volumeNode
     this.loopDefault = loopDefault
 
@@ -109,6 +104,18 @@ export class SoundCategory {
   private playLoopingTracks(key: string, tracks: NoteData[][]): void {
     const parts: Tone.Part[] = []
 
+    // 트랙 내 가장 마지막 음이 끝나는 시간 계산
+    let overallMaxTime = 0
+    tracks.forEach((notes) => {
+      if (!notes) return
+      notes.forEach((n) => {
+        const endTime = Tone.Time(n.time).toSeconds() + Tone.Time(n.duration).toSeconds()
+        if (endTime > overallMaxTime) {
+          overallMaxTime = endTime
+        }
+      })
+    })
+
     tracks.forEach((notes, trackIdx) => {
       if (!notes || notes.length === 0) return
 
@@ -122,12 +129,7 @@ export class SoundCategory {
       }, notes)
 
       part.loop = true
-
-      const maxTime = notes.reduce((max, n) => {
-        const t = Tone.Time(n.time).toSeconds()
-        return t > max ? t : max
-      }, 0)
-      part.loopEnd = maxTime + 0.4
+      part.loopEnd = overallMaxTime
 
       part.start(Tone.getTransport().seconds)
       parts.push(part)

@@ -26,7 +26,7 @@ export const TitleScreen: React.FC<TitleScreenProps> = ({ onStart, onStageSelect
   ]
 
   useEffect(() => {
-    engine.ctx.sound.playBgm('main_theme', { loop: true, fadeIn: 2 })
+    engine.ctx.sound.playBgm('title_theme', { loop: true, fadeIn: 2 })
   }, [])
 
   return (
