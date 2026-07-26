@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useGame } from '~/context/GameContext'
 import { FadeOverlay } from '../ui/FadeOverlay'
+import { ConfigMenu } from '../ui/ConfigMenu'
 import { GameMenuLayout } from '../ui/GameMenuLayout'
-import { ConfigScreen } from '../screens/ConfigScreen'
 
 interface MenuProps {
   onResume: () => void
@@ -19,7 +19,9 @@ export function GameMenu({ onResume, onRestart, onExit }: MenuProps) {
   if (showConfig) {
     return (
       <FadeOverlay delayMS={0} durationMS={200} midDelayMS={999999}>
-        <ConfigScreen back={() => setShowConfig(false)} />
+        <div className="flex flex-col items-center justify-center relative w-full h-full">
+          <ConfigMenu back={() => setShowConfig(false)} />
+        </div>
       </FadeOverlay>
     )
   }
