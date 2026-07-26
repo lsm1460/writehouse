@@ -104,6 +104,13 @@ export class GameEngine {
     this.ctx.retryStage()
   }
 
+  public goToTitle() {
+    this.status = 'TITLE'
+    this.ctx.map.currentRoomId = ''
+    this.ctx.sound.stopAll()
+    this.notify()
+  }
+
   public togglePause() {
     this.status = this.status === 'PAUSE' ? 'PLAYING' : 'PAUSE'
     this.notify()

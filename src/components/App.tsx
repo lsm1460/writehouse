@@ -56,6 +56,7 @@ function App() {
   }, [isFontReady])
 
   const backToTitle = () => {
+    engine.goToTitle()
     setGameState('TITLE')
   }
 

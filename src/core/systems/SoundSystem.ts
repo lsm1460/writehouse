@@ -38,6 +38,7 @@ export class SoundSystem {
   }
 
   public playBgm(key: string, options?: { loop?: boolean; fadeIn?: number }): void {
+    this.stopBgm()
     this.bgmCategory.play(key, options)
   }
 
