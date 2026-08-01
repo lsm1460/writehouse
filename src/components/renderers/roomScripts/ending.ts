@@ -35,6 +35,9 @@ class EndingScript extends BaseRoomScript {
     await wait(6000)
 
     engine.ctx.nextStage()
+
+    engine.ctx.map.currentRoomId = ''
+    this.cleanup(camera)
   }
 }
 
