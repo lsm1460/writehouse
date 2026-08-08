@@ -71,7 +71,21 @@
     "4-2": "Escape",
     "4-3": "Ambush",
     "4-4": "Counter",
-    "4-5": "Material Storage"
+    "4-5": "Material Storage",
+    "4-6": "Various ways",
+    "4-7": "Sneak in",
+    "4-8": "One-way",
+    "4-9": "Trap",
+    "5-1": "Motion detection sensor",
+    "5-2": "Wireless Power Transfer",
+    "5-3": "Join",
+    "5-4": "Argos Panoptes",
+    "5-5": "Switch",
+    "5-6": "Receiver tower",
+    "5-7": "Confinement",
+    "5-8": "Decalcomania",
+    "5-9": "Top",
+    "6-1": "Light House"
   },
   "tutorial": {
     "0-1": {
@@ -171,6 +185,9 @@
     },
     "Э": {
       "label": "Wireless Power Transmitter"
+    },
+    "]": {
+      "label": "Sliding door"
     }
   }
 }
