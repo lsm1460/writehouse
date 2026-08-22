@@ -36,7 +36,6 @@ export function GameScreen({ backToTitle, onEnding }: GameScreenProps) {
   })
 
   useEffect(() => {
-    console.log('gameState',gameState)
     if (gameState === 'ENDING') {
       onEnding()
     }
@@ -73,11 +72,7 @@ export function GameScreen({ backToTitle, onEnding }: GameScreenProps) {
 
         {gameState === 'GAME_OVER' && <GameOver onRestart={() => engine.retryStage()} />}
 
-        <CheatInput
-          isOpen={cheatMode}
-          onClose={closeCheatMode}
-          onExecuteCheat={(cmd) => engine.ctx.executeCheat(cmd)}
-        />
+        <CheatInput isOpen={cheatMode} onClose={closeCheatMode} onExecuteCheat={(cmd) => engine.ctx.executeCheat(cmd)} />
       </GameScreenWrapper>
 
       {gameState === 'PLAYING' && !isLoading && <GameUi />}
