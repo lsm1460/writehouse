@@ -39,24 +39,16 @@ interface UseGameInputProps {
   openMenu?: () => void
 }
 
-export function useGameInput({
-  engine,
-  onMenuUp,
-  onMenuDown,
-  onMenuLeft,
-  onMenuRight,
-  onMenuSelect,
-  onAction,
-  openMenu,
-  disabled = false,
-  passive = false,
-}: UseGameInputProps) {
-  const lastGamepadTime = useRef<number>(0)
+export function useGameInput({ engine, onMenuUp, onMenuDown, onMenuLeft, onMenuRight, onMenuSelect, onAction, openMenu, disabled = false, passive = false }: UseGameInputProps) {
   const activeCodes = useRef<Record<string, boolean>>({})
 
-  const lastExecutedTimes = useRef<Record<string, number>>({})
+  const lastKeyboardTimes = useRef<Record<string, number>>({})
+  const lastGamepadMoveTimes = useRef<Record<string, number>>({})
 
-  const gamepadCooldownMS = 200
+  // 직전 프레임의 패드 액션 상태 기억 (이벤트 감지용)
+  const previousGamepadActions = useRef<Set<string>>(new Set())
+
+  const gamepadMoveCooldownMS = 200
   const keyboardCooldownMS = 150
 
   const executeAction = (action: GameAction) => {
@@ -100,39 +92,90 @@ export function useGameInput({
     }
   }
 
-  const checkKeyboard = (now: number) => {
+  // 1. 키보드 입력 처리
+  const processKeyboardInput = (now: number) => {
     for (const code in activeCodes.current) {
       if (activeCodes.current[code]) {
-        const lastTime = lastExecutedTimes.current[code] || 0
+        const lastTime = lastKeyboardTimes.current[code] || 0
 
         if (now - lastTime >= keyboardCooldownMS) {
           const fakeEvent = { code } as KeyboardEvent
           const action = mapKeyboardToResponse(fakeEvent)
           if (action) {
             executeAction(action)
-            lastExecutedTimes.current[code] = now
+            lastKeyboardTimes.current[code] = now
           }
         }
       }
     }
   }
 
-  const checkGamepad = (now: number) => {
+  // 2. [단순 체크] 패드가 현재 누르고 있는 모든 액션을 식별자(Set)로만 수집
+  const pollGamepadActions = (): { action: GameAction; key: string } | null => {
     const gamepads = navigator.getGamepads ? navigator.getGamepads() : []
     const gamepad = gamepads[0]
 
-    if (gamepad && now - lastGamepadTime.current >= gamepadCooldownMS) {
-      const action = mapGamepadToResponse(gamepad)
-      if (action) {
-        setGamepadActive(true)
+    if (!gamepad) return null
+
+    const action = mapGamepadToResponse(gamepad)
+    if (!action) return null
+
+    const key = action.type === 'MOVE' ? `MOVE_${action.direction}` : action.type
+
+    return { action, key }
+  }
+
+  // 3. [동작 인식 Engine] 이전 프레임과 비교해 Edge Trigger(KeyDown/Hold) 발생
+  const processGamepadInput = (now: number) => {
+    const current = pollGamepadActions()
+    const prevSet = previousGamepadActions.current
+    const currSet = new Set<string>()
+
+    if (current) {
+      setGamepadActive(true)
+      currSet.add(current.key)
+
+      const isNewPress = !prevSet.has(current.key)
+
+      if (isNewPress) {
+        // [Key Down Event] 버튼을 처음 누른 순간 -> 1회 실행
+        executeAction(current.action)
+        if (current.action.type === 'MOVE') {
+          lastGamepadMoveTimes.current[current.key] = now
+        }
+      } else {
+        // [Key Hold Event] 누르고 있는 상태 유지 -> 이동(MOVE)만 쿨다운 주기로 연사 허용
+        if (current.action.type === 'MOVE') {
+          const lastTime = lastGamepadMoveTimes.current[current.key] || 0
+          if (now - lastTime >= gamepadMoveCooldownMS) {
+            executeAction(current.action)
+            lastGamepadMoveTimes.current[current.key] = now
+          }
+        }
       }
     }
+
+    // 다음 프레임을 위한 상태 갱신
+    previousGamepadActions.current = currSet
   }
 
   useEffect(() => {
-    if (disabled) {
+    // 입력 상태를 완전 초기화하는 함수
+    const flushInputState = () => {
       activeCodes.current = {}
+      previousGamepadActions.current.clear()
+    }
+
+    if (disabled) {
+      flushInputState()
       return
+    }
+
+    // 마운트 시점에 이미 눌려 있는 게임패드 버튼을 이전 상태(prevSet)로 사전 흡수(Consume)
+    // -> 손을 떼었다가 다시 누르기 전까지 New Press 발생 차단
+    const currentGamepad = pollGamepadActions()
+    if (currentGamepad) {
+      previousGamepadActions.current.add(currentGamepad.key)
     }
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -145,13 +188,13 @@ export function useGameInput({
       if (!activeCodes.current[e.code]) {
         activeCodes.current[e.code] = true
         const now = performance.now()
-        const lastTime = lastExecutedTimes.current[e.code] || 0
+        const lastTime = lastKeyboardTimes.current[e.code] || 0
 
         if (now - lastTime >= keyboardCooldownMS) {
           const action = mapKeyboardToResponse(e)
           if (action) {
             executeAction(action)
-            lastExecutedTimes.current[e.code] = now
+            lastKeyboardTimes.current[e.code] = now
           }
         }
       }
@@ -162,7 +205,7 @@ export function useGameInput({
     }
 
     const handleBlur = () => {
-      activeCodes.current = {}
+      flushInputState()
     }
 
     window.addEventListener('keydown', handleKeyDown)
@@ -173,8 +216,8 @@ export function useGameInput({
 
     const loop = () => {
       const now = performance.now()
-      checkKeyboard(now)
-      checkGamepad(now)
+      processKeyboardInput(now)
+      processGamepadInput(now)
       frameId = requestAnimationFrame(loop)
     }
 
@@ -185,7 +228,7 @@ export function useGameInput({
       window.removeEventListener('keyup', handleKeyUp)
       window.removeEventListener('blur', handleBlur)
       cancelAnimationFrame(frameId)
-      activeCodes.current = {}
+      flushInputState()
     }
-  }, [engine, onMenuUp, onMenuDown, onMenuSelect, disabled])
+  }, [engine, onMenuUp, onMenuDown, onMenuLeft, onMenuRight, onMenuSelect, disabled])
 }
