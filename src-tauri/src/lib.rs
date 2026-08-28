@@ -12,6 +12,7 @@ pub fn run() {
 
       #[cfg(not(debug_assertions))]
       {
+        use tauri::Manager;
         if let Some(window) = app.get_webview_window("main") {
           let _ = window.eval(r#"
             window.location.reload = () => {};
