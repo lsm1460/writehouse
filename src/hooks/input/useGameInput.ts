@@ -39,6 +39,10 @@ interface UseGameInputProps {
   openMenu?: () => void
 }
 
+// 입력 루프 목표 FPS 설정 (60FPS 기준 약 16.6ms 간격)
+const INPUT_TARGET_FPS = 30
+const INPUT_FRAME_INTERVAL = 1000 / INPUT_TARGET_FPS
+
 export function useGameInput({ engine, onMenuUp, onMenuDown, onMenuLeft, onMenuRight, onMenuSelect, onAction, openMenu, disabled = false, passive = false }: UseGameInputProps) {
   const activeCodes = useRef<Record<string, boolean>>({})
 
@@ -172,7 +176,6 @@ export function useGameInput({ engine, onMenuUp, onMenuDown, onMenuLeft, onMenuR
     }
 
     // 마운트 시점에 이미 눌려 있는 게임패드 버튼을 이전 상태(prevSet)로 사전 흡수(Consume)
-    // -> 손을 떼었다가 다시 누르기 전까지 New Press 발생 차단
     const currentGamepad = pollGamepadActions()
     if (currentGamepad) {
       previousGamepadActions.current.add(currentGamepad.key)
@@ -213,12 +216,19 @@ export function useGameInput({ engine, onMenuUp, onMenuDown, onMenuLeft, onMenuR
     window.addEventListener('blur', handleBlur)
 
     let frameId: number
+    let lastInputLoopTime = performance.now()
 
     const loop = () => {
-      const now = performance.now()
-      processKeyboardInput(now)
-      processGamepadInput(now)
       frameId = requestAnimationFrame(loop)
+      const now = performance.now()
+      const elapsed = now - lastInputLoopTime
+
+      // 설정한 FPS 주기마다만 입력 검사 실행
+      if (elapsed >= INPUT_FRAME_INTERVAL) {
+        lastInputLoopTime = now - (elapsed % INPUT_FRAME_INTERVAL)
+        processKeyboardInput(now)
+        processGamepadInput(now)
+      }
     }
 
     frameId = requestAnimationFrame(loop)

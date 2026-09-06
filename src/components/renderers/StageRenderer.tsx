@@ -8,6 +8,10 @@ const VERTICAL_PAD = 50
 const VIEW_WIDTH = 1024
 const VIEW_HEIGHT = 576
 
+// FPS 제한 설정 (원하는 FPS 값으로 조정 가능)
+const TARGET_FPS = 60
+const FRAME_INTERVAL = 1000 / TARGET_FPS
+
 export function StageRenderer() {
   const { engine, stageClear, deathEvents, turn } = useGame()
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
@@ -31,24 +35,32 @@ export function StageRenderer() {
     if (!ctx) return
 
     let animationFrameId: number
+    let lastFrameTime = performance.now()
 
     canvas.width = VIEW_WIDTH
     canvas.height = VIEW_HEIGHT
 
     const render = (now: number) => {
-
-      const { engine, stageClear, deathEvents } = gameDataRef.current
-
-      GameRenderer.render({
-        ctx,
-        engine,
-        deathEvents,
-        stageClear,
-        timestamp: now,
-        camera: cameraRef.current,
-      })
-
       animationFrameId = requestAnimationFrame(render)
+
+      const elapsed = now - lastFrameTime
+
+      // 설정한 프레임 주기(약 33.3ms)가 지났을 때만 렌더링 실행
+      if (elapsed >= FRAME_INTERVAL) {
+        // 프레임 오차 보정
+        lastFrameTime = now - (elapsed % FRAME_INTERVAL)
+
+        const { engine, stageClear, deathEvents } = gameDataRef.current
+
+        GameRenderer.render({
+          ctx,
+          engine,
+          deathEvents,
+          stageClear,
+          timestamp: now,
+          camera: cameraRef.current,
+        })
+      }
     }
 
     animationFrameId = requestAnimationFrame(render)
@@ -60,11 +72,7 @@ export function StageRenderer() {
 
   return (
     <div className="w-full h-full relative flex items-center justify-center">
-      <canvas
-        ref={canvasRef}
-        className="max-w-full max-h-full aspect-[16/9] object-contain"
-        style={{ imageRendering: 'pixelated' }}
-      />
+      <canvas ref={canvasRef} className="max-w-full max-h-full aspect-[16/9] object-contain" style={{ imageRendering: 'pixelated' }} />
     </div>
   )
 }
